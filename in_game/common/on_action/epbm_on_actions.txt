@@ -1,0 +1,77 @@
+﻿# Estates Pay Building Maintenance - On Actions
+# Initialize maintenance cache for all locations on game start
+
+on_game_start = {
+	on_actions = {
+		epbm_initialize_all
+	}
+}
+
+epbm_initialize_all = {
+	effect = {
+		every_location_in_the_world = {
+			limit = { is_ownable = yes }
+			epbm_initialize_location = yes
+		}
+		set_global_variable = { name = epbm_initialized value = yes }
+	}
+}
+
+# Monthly collection for player, yearly for AI (performance)
+
+monthly_country_pulse = {
+	on_actions = {
+		epbm_ensure_initialized
+		epbm_player_collection
+	}
+}
+
+# Save-safe initialization: runs once on first pulse if flag is missing
+# Handles saves started before the mod was added
+
+epbm_ensure_initialized = {
+	trigger = {
+		NOT = {
+			has_global_variable = epbm_initialized
+		}
+	}
+
+	effect = {
+		every_location_in_the_world = {
+			limit = { is_ownable = yes }
+			epbm_initialize_location = yes
+		}
+		set_global_variable = { name = epbm_initialized value = yes }
+	}
+}
+
+epbm_player_collection = {
+	trigger = {
+		has_global_variable = epbm_initialized
+		is_ai = no
+		any_estate = { estate_type != estate_type:crown_estate }
+	}
+
+	effect = {
+		epbm_collect_maintenance = yes
+	}
+}
+
+yearly_country_pulse = {
+	on_actions = {
+		epbm_ai_collection
+	}
+}
+
+epbm_ai_collection = {
+	trigger = {
+		has_global_variable = epbm_initialized
+		is_ai = yes
+		is_real_country = yes
+		any_estate = { estate_type != estate_type:crown_estate }
+	}
+
+	effect = {
+		epbm_collect_maintenance = yes
+	}
+}

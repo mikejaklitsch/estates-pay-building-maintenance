@@ -1,0 +1,9 @@
+﻿# Estates Pay Building Maintenance - Scripted Triggers
+# Check if a country has any non-crown estates (should collect maintenance)
+# Scope: country
+
+epbm_has_non_crown_estates = {
+	any_estate = {
+		estate_type != estate_type:crown_estate
+	}
+}

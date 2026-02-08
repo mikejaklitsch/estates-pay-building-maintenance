@@ -1,0 +1,10 @@
+{
+    "name": "Estates Pay Building Maintenance",
+    "id": "EstatesPayBuildingMaintenance",
+    "version": "0.1",
+    "supported_game_version": "1.1.1",
+    "short_description": "# Estates Pay Building Maintenance\n\nEstates contribute to building maintenance costs proportional to their global power.",
+    "tags": ["Gameplay"],
+    "relationships": [],
+    "game_custom_data": {}
+}

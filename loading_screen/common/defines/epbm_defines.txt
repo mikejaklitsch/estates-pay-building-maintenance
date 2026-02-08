@@ -1,0 +1,4 @@
+﻿
+NEconomy = {
+	BUILDING_UPKEEP_FACTOR = 1.0
+}

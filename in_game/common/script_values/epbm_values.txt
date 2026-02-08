@@ -1,0 +1,7 @@
+﻿# Estates Pay Building Maintenance - Script Values
+# Global estate power for a specific estate (uses estate_power function)
+# Accessed from country scope with scope:current_estate saved
+
+epbm_this_estate_global_power = {
+	value = "estate_power(scope:current_estate.estate_type)"
+}

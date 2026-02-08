@@ -1,0 +1,14 @@
+﻿
+INJECT:crown_estate = {
+	low_power = {
+		building_upkeep_costs = -6.0
+	}
+
+	high_power = {
+		building_upkeep_costs = 5.0
+	}
+
+	power = {
+		building_upkeep_costs = -3.0
+	}
+}
