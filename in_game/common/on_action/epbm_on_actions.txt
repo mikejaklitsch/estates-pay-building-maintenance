@@ -2,7 +2,8 @@
 # ═══════════════════════════════════════════════
 # Initialization: stamp global PM maps, build location + country indexes
 # Monthly: player recalc+charge, AI charge only
-# Yearly: AI recalc, all countries rebuild location lists (self-correcting)
+# Yearly: AI recalc
+# Ownership change: move location between country lists
 # ═══════════════════════════════════════════════
 
 on_game_start = {
@@ -28,6 +29,7 @@ epbm_initialize_all = {
 			}
 			epbm_rebuild_location_lists = yes
 			epbm_collect_maintenance = yes
+			set_variable = { name = epbm_rebuild_counter value = 0 }
 		}
 		set_global_variable = { name = epbm_initialized value = yes }
 	}
@@ -66,6 +68,7 @@ epbm_ensure_initialized = {
 			}
 			epbm_rebuild_location_lists = yes
 			epbm_collect_maintenance = yes
+			set_variable = { name = epbm_rebuild_counter value = 0 }
 		}
 		set_global_variable = { name = epbm_initialized value = yes }
 	}
@@ -107,7 +110,7 @@ epbm_ai_monthly_charge = {
 yearly_country_pulse = {
 	on_actions = {
 		epbm_ai_yearly_recalc
-		epbm_yearly_rebuild
+		epbm_decade_rebuild
 	}
 }
 
@@ -126,9 +129,9 @@ epbm_ai_yearly_recalc = {
 	}
 }
 
-# All countries: rebuild location lists yearly (self-correcting for ownership changes)
+# Safety net: rebuild location lists every 10 years to correct any drift
 
-epbm_yearly_rebuild = {
+epbm_decade_rebuild = {
 	trigger = {
 		has_global_variable = epbm_initialized
 		is_real_country = yes
@@ -136,7 +139,64 @@ epbm_yearly_rebuild = {
 	}
 
 	effect = {
-		epbm_rebuild_location_lists = yes
+		if = {
+			limit = { has_variable = epbm_rebuild_counter var:epbm_rebuild_counter >= 9 }
+			epbm_rebuild_location_lists = yes
+			set_variable = { name = epbm_rebuild_counter value = 0 }
+		}
+		else_if = {
+			limit = { has_variable = epbm_rebuild_counter }
+			change_variable = { name = epbm_rebuild_counter add = 1 }
+		}
+	}
+}
+
+# ═══════════════════════════════════════════════
+# Location ownership change: move location between country lists
+# root = location, scope:loser = previous owner, scope:winner = new owner
+# ═══════════════════════════════════════════════
+
+on_location_changed_owner = {
+	on_actions = {
+		epbm_on_location_owner_changed
+	}
+}
+
+epbm_on_location_owner_changed = {
+	trigger = {
+		has_global_variable = epbm_initialized
+	}
+
+	effect = {
+		save_temporary_scope_as = epbm_loc
+		# Remove from loser's list (if they have one)
+		scope:loser ?= {
+			if = {
+				limit = {
+					has_variable_list = epbm_locations
+					is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
+				}
+				remove_list_variable = { name = epbm_locations target = scope:epbm_loc }
+			}
+		}
+		# Add to winner's list if location has tracked buildings
+		scope:winner ?= {
+			if = {
+				limit = {
+					has_variable_list = epbm_locations
+					scope:epbm_loc = {
+						OR = {
+							has_variable_list = epbm_building_types
+							has_variable_list = epbm_fort_types
+						}
+					}
+					NOT = {
+						is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
+					}
+				}
+				add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
+			}
+		}
 	}
 }
 
