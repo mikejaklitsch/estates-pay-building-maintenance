@@ -273,7 +273,7 @@ epbm_charge_estates = {
 		}
 		add_gold_to_estate = {
 			estate_type = estate_type:nobles_estate
-			value = { value = var:epbm_pay_nobles multiply = -1 }
+			value = var:epbm_pay_nobles
 		}
 	}
 
@@ -286,7 +286,7 @@ epbm_charge_estates = {
 		}
 		add_gold_to_estate = {
 			estate_type = estate_type:clergy_estate
-			value = { value = var:epbm_pay_clergy multiply = -1 }
+			value = var:epbm_pay_clergy
 		}
 	}
 	else_if = {
@@ -297,7 +297,7 @@ epbm_charge_estates = {
 		}
 		add_gold_to_estate = {
 			estate_type = estate_type:dhimmi_estate
-			value = { value = var:epbm_pay_clergy multiply = -1 }
+			value = var:epbm_pay_clergy
 		}
 	}
 
@@ -310,7 +310,7 @@ epbm_charge_estates = {
 		}
 		add_gold_to_estate = {
 			estate_type = estate_type:burghers_estate
-			value = { value = var:epbm_pay_burghers multiply = -1 }
+			value = var:epbm_pay_burghers
 		}
 	}
 
@@ -323,7 +323,7 @@ epbm_charge_estates = {
 		}
 		add_gold_to_estate = {
 			estate_type = estate_type:peasants_estate
-			value = { value = var:epbm_pay_peasants multiply = -1 }
+			value = var:epbm_pay_peasants
 		}
 	}
 
@@ -336,7 +336,7 @@ epbm_charge_estates = {
 		}
 		add_gold_to_estate = {
 			estate_type = estate_type:tribes_estate
-			value = { value = var:epbm_pay_tribes multiply = -1 }
+			value = var:epbm_pay_tribes
 		}
 	}
 	else_if = {
@@ -347,17 +347,19 @@ epbm_charge_estates = {
 		}
 		add_gold_to_estate = {
 			estate_type = estate_type:cossacks_estate
-			value = { value = var:epbm_pay_tribes multiply = -1 }
+			value = var:epbm_pay_tribes
 		}
 	}
 }
 
 # ═══════════════════════════════════════════════
-# Combined: calculate + charge (convenience for player monthly)
+# Combined: charge + recalculate (convenience for player monthly)
 # Scope: country
+# Charge first using last month's saved rates (matches engine economy display),
+# then recalculate new rates for next month's charge and tooltip display.
 # ═══════════════════════════════════════════════
 
 epbm_collect_maintenance = {
-	epbm_calculate_maintenance = yes
 	epbm_charge_estates = yes
+	epbm_calculate_maintenance = yes
 }
