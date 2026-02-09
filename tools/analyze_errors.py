@@ -161,7 +161,7 @@ def export_report(messages: dict, output_path: str, log_path: str, mod_filter: s
 def main():
     # Default paths
     logs_dir = Path("/mnt/c/Users/mjaklitsch/Documents/Paradox Interactive/Europa Universalis V/logs")
-    output_dir = Path("/mnt/c/Users/Mjaklitsch/Documents/Paradox Interactive/Europa Universalis V/mod/Specialized Urban Locations/.claude")
+    output_dir = Path(__file__).resolve().parent.parent
 
     # Check for command line args
     log_path = sys.argv[1] if len(sys.argv) > 1 else str(logs_dir / "error.log")

@@ -165,6 +165,7 @@ epbm_calculate_maintenance = {
 			global_var:epbm_pm_ref = {
 				if = {
 					limit = {
+						has_variable_map = epbm_costs
 						is_key_in_variable_map = { name = epbm_costs target = scope:epbm_mkt }
 					}
 					# Cached — read directly
@@ -223,6 +224,7 @@ epbm_calculate_maintenance = {
 			global_var:epbm_pm_ref = {
 				if = {
 					limit = {
+						has_variable_map = epbm_costs
 						is_key_in_variable_map = { name = epbm_costs target = scope:epbm_mkt }
 					}
 					# Cached — read directly
