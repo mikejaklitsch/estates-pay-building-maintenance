@@ -1,10 +1,12 @@
-{
-    "name": "Estates Pay Building Maintenance",
+﻿{
+    "name": "Estates Pay Building Maintenance (Dev)",
     "id": "EstatesPayBuildingMaintenance",
-    "version": "0.2",
+    "version": "1.0",
     "supported_game_version": "1.1.*",
     "short_description": "Estates pay their share of building and fort maintenance based on local pop tax burden, weighted by inverted control. The crown is reimbursed accordingly.",
-    "tags": ["Gameplay"],
+    "tags": [
+        "Balance", "Government and Estates", "Trade and Economics"
+    ],
     "relationships": [],
     "game_custom_data": {}
 }
