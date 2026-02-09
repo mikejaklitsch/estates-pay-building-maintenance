@@ -23,6 +23,8 @@ MOD_DIR = Path(r"/mnt/c/Users/Mjaklitsch/Documents/Paradox Interactive/Europa Un
 OUT_EFFECTS = MOD_DIR / "in_game" / "common" / "scripted_effects"
 OUT_BUILDINGS = MOD_DIR / "in_game" / "common" / "building_types"
 OUT_IOS = MOD_DIR / "in_game" / "common" / "international_organizations"
+OUT_BIASES = MOD_DIR / "in_game" / "common" / "biases"
+OUT_LOC = MOD_DIR / "main_menu" / "localization" / "english"
 
 # Keys in PM definitions that are NOT goods
 PM_META_KEYS = {"category", "no_upkeep", "potential", "produced", "output"}
@@ -216,10 +218,35 @@ def parse_all_buildings():
         for bname, block in data.items():
             if not isinstance(block, dict):
                 continue
+            # Extract garrison size from modifier block
+            garrison_size = 0.0
+            modifier_block = block.get('modifier', {})
+            if isinstance(modifier_block, dict):
+                gs = modifier_block.get('local_garrison_size')
+                if gs:
+                    try:
+                        garrison_size = float(gs)
+                    except (ValueError, TypeError):
+                        pass
+
+            # Extract fort_level from raw_modifier block (forts = buildings with fort_level)
+            fort_level = 0
+            raw_modifier_block = block.get('raw_modifier', {})
+            if isinstance(raw_modifier_block, dict):
+                fl = raw_modifier_block.get('fort_level')
+                if fl:
+                    try:
+                        fort_level = int(fl)
+                    except (ValueError, TypeError):
+                        pass
+
             b = {
                 'file': f,
                 'estate': block.get('estate'),
                 'is_foreign': block.get('is_foreign') == 'yes',
+                'is_fort': fort_level > 0,
+                'fort_level': fort_level,
+                'garrison_size': garrison_size,
                 'has_on_built': 'on_built' in block,
                 'has_on_destroyed': 'on_destroyed' in block,
                 'possible_pms': [],
@@ -272,8 +299,9 @@ def classify(buildings, pms):
       - Has at least one qualifying PM (category=building_maintenance, has goods, no no_upkeep, no output)
 
     Returns:
-      qualifying: list of (building_name, pm_name, pm_source) tuples
+      qualifying: list of (building_name, pm_name, pm_source, is_fort) tuples
         pm_source = 'external' | 'inline'
+        is_fort = True if building has fort_level > 0 in raw_modifier
       all_pm_goods: dict pm_name -> OrderedDict(good->amount)
     """
     qualifying = []
@@ -312,7 +340,7 @@ def classify(buildings, pms):
                 all_pm_goods[pm_name] = pm_data['goods']
 
         if best_pm:
-            qualifying.append((bname, best_pm[0], best_pm[1]))
+            qualifying.append((bname, best_pm[0], best_pm[1], b['is_fort']))
 
     return qualifying, all_pm_goods
 
@@ -351,22 +379,21 @@ def read_raw_building_text(filepath, building_name):
     return None
 
 
-def inject_on_built_hook(raw_text, building_name):
+def inject_on_built_hook(raw_text, building_name, list_name="epbm_building_types"):
     """
     For REPLACE buildings: insert our list-management hook into existing on_built,
     and add on_destroyed if it doesn't exist.
     Also renames inline unique_production_methods PM names to avoid duplicates.
     Returns modified building text.
     """
-    bt_ref = f"building_type:{building_name}"
     add_code = (
         f"\n\t\t# EPBM: Track building for maintenance"
-        f"\n\t\tlocation = {{ add_to_variable_list = {{ name = epbm_building_types target = {bt_ref} }} }}"
+        f"\n\t\tlocation = {{ add_to_variable_list = {{ name = {list_name} target = prev }} }}"
         f"\n\t\tepbm_on_building_built = yes"
     )
     remove_code = (
         f"\n\t\t# EPBM: Untrack building"
-        f"\n\t\tlocation = {{ remove_list_variable = {{ name = epbm_building_types target = {bt_ref} }} }}"
+        f"\n\t\tlocation = {{ remove_list_variable = {{ name = {list_name} target = prev }} }}"
         f"\n\t\tepbm_on_building_destroyed = yes"
     )
 
@@ -452,21 +479,21 @@ def generate_inject(qualifying, buildings):
         "",
     ]
 
-    for bname, pm_name, _ in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
         b = buildings[bname]
         if b['has_on_built'] or b['has_on_destroyed']:
             continue  # These go in REPLACE file
 
-        bt_ref = f"building_type:{bname}"
+        list_name = "epbm_fort_types" if is_fort else "epbm_building_types"
 
-        lines.append(f"# {bname} uses {pm_name}")
+        lines.append(f"# {bname} uses {pm_name}{' (fort)' if is_fort else ''}")
         lines.append(f"INJECT:{bname} = {{")
         lines.append(f"\ton_built = {{")
-        lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = epbm_building_types target = {bt_ref} }} }}")
+        lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = {list_name} target = prev }} }}")
         lines.append(f"\t\tepbm_on_building_built = yes")
         lines.append(f"\t}}")
         lines.append(f"\ton_destroyed = {{")
-        lines.append(f"\t\tlocation = {{ remove_list_variable = {{ name = epbm_building_types target = {bt_ref} }} }}")
+        lines.append(f"\t\tlocation = {{ remove_list_variable = {{ name = {list_name} target = prev }} }}")
         lines.append(f"\t\tepbm_on_building_destroyed = yes")
         lines.append(f"\t}}")
         lines.append("}")
@@ -483,7 +510,7 @@ def generate_replace(qualifying, buildings):
         "",
     ]
 
-    for bname, pm_name, _ in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
         b = buildings[bname]
         if not b['has_on_built'] and not b['has_on_destroyed']:
             continue  # These go in INJECT file
@@ -494,8 +521,9 @@ def generate_replace(qualifying, buildings):
             lines.append("")
             continue
 
-        modified = inject_on_built_hook(raw, bname)
-        lines.append(f"# {bname} uses {pm_name} (REPLACE due to existing on_built)")
+        list_name = "epbm_fort_types" if is_fort else "epbm_building_types"
+        modified = inject_on_built_hook(raw, bname, list_name)
+        lines.append(f"# {bname} uses {pm_name} (REPLACE due to existing on_built){' (fort)' if is_fort else ''}")
         lines.append(f"REPLACE:{modified}")
         lines.append("")
 
@@ -526,6 +554,46 @@ def generate_io_definitions(all_pm_goods):
         lines.append("\tauto_disband_trigger = { always = no }")
         lines.append("}")
         lines.append("")
+
+    return "\n".join(lines)
+
+
+def generate_io_biases(all_pm_goods):
+    """
+    Generate epbm_generated_biases.txt:
+    Opinion biases for each IO (value = 0 since these are hidden data containers).
+    Eliminates 'needs an opinion of other members' warnings.
+    """
+    lines = [
+        "# Auto-generated by tools/generate_building_hooks.py",
+        "# Opinion biases for hidden PM IOs (required by engine, value 0).",
+        "",
+    ]
+
+    for pm_name in sorted(all_pm_goods.keys()):
+        lines.append(f"io_opinion_epbm_pm_{pm_name} = {{")
+        lines.append("\tvalue = 0")
+        lines.append("}")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+def generate_io_localization(all_pm_goods):
+    """
+    Generate epbm_ios_l_english.yml:
+    Localization entries for each IO to suppress auto-generated placeholder warnings.
+    """
+    lines = ["\ufeffl_english:"]
+
+    for pm_name in sorted(all_pm_goods.keys()):
+        io = f"epbm_pm_{pm_name}"
+        lines.append(f' {io}: ""')
+        lines.append(f' {io}_desc: ""')
+        lines.append(f' diplomatic_status_{io}_name: ""')
+        lines.append(f' diplomatic_status_{io}_tooltip: ""')
+        lines.append(f' {io}_list_who_tt: ""')
+        lines.append(f' io_opinion_{io}: ""')
 
     return "\n".join(lines)
 
@@ -566,27 +634,36 @@ def generate_init_effects(qualifying, all_pm_goods, buildings):
     lines.append("")
     lines.append("\t# Parent map: building_type -> IO scope")
 
-    for bname, pm_name, _ in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
         bt_ref = f"building_type:{bname}"
         io_ref = f"international_organization:epbm_pm_{pm_name}"
         lines.append(f"\tadd_to_global_variable_map = {{ name = epbm_profiles key = {bt_ref} value = {io_ref} }}")
+
+    lines.append("")
+    lines.append("\t# Global list of all PM IOs (for monthly cache clearing)")
+    for pm_name in sorted(all_pm_goods.keys()):
+        io_ref = f"international_organization:epbm_pm_{pm_name}"
+        lines.append(f"\tadd_to_global_variable_list = {{ name = epbm_all_ios target = {io_ref} }}")
 
     lines.append("}")
     lines.append("")
 
     # ── Part 2: Init dispatch for pre-existing buildings ──
-    lines.append("# Init dispatch: add building_type to location list for pre-existing buildings")
+    lines.append("# Init dispatch: add building instance to location list for pre-existing buildings")
     lines.append("# Scope: building (called via every_buildings_in_location)")
+    lines.append("# Fort buildings (fort_level > 0) go to epbm_fort_types, others to epbm_building_types")
     lines.append("epbm_init_building = {")
+    lines.append("\tsave_temporary_scope_as = epbm_bldg")
 
     first = True
-    for bname, pm_name, _ in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
         keyword = "if" if first else "else_if"
         first = False
         bt_ref = f"building_type:{bname}"
+        list_name = "epbm_fort_types" if is_fort else "epbm_building_types"
         lines.append(f"\t{keyword} = {{")
         lines.append(f"\t\tlimit = {{ building_type = {bt_ref} }}")
-        lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = epbm_building_types target = {bt_ref} }} }}")
+        lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = {list_name} target = scope:epbm_bldg }} }}")
         lines.append("\t}")
 
     lines.append("}")
@@ -618,19 +695,21 @@ def main():
 
     # Build reverse map: pm_name -> list of building names
     pm_to_buildings = {}
-    for bname, pm_name, _ in qualifying:
+    for bname, pm_name, _, _ in qualifying:
         pm_to_buildings.setdefault(pm_name, []).append(bname)
 
     # Count INJECT vs REPLACE
-    inject_count = sum(1 for b, _, _ in qualifying
+    inject_count = sum(1 for b, _, _, _ in qualifying
                        if not buildings[b]['has_on_built'] and not buildings[b]['has_on_destroyed'])
-    replace_count = sum(1 for b, _, _ in qualifying
+    replace_count = sum(1 for b, _, _, _ in qualifying
                         if buildings[b]['has_on_built'] or buildings[b]['has_on_destroyed'])
+    fort_count = sum(1 for _, _, _, is_fort in qualifying if is_fort)
     print(f"  INJECT buildings: {inject_count}")
     print(f"  REPLACE buildings: {replace_count}")
+    print(f"  Fort buildings (fort_level > 0): {fort_count}")
 
     if replace_count > 0:
-        replace_buildings = [b for b, _, _ in qualifying
+        replace_buildings = [b for b, _, _, _ in qualifying
                             if buildings[b]['has_on_built'] or buildings[b]['has_on_destroyed']]
         print(f"  REPLACE candidates: {', '.join(replace_buildings)}")
 
@@ -658,9 +737,23 @@ def main():
     out_path.write_text(init_effects, encoding="utf-8-sig")
     print(f"  Wrote {out_path.name}")
 
+    biases = generate_io_biases(all_pm_goods)
+    OUT_BIASES.mkdir(parents=True, exist_ok=True)
+    out_path = OUT_BIASES / "epbm_generated_biases.txt"
+    out_path.write_text(biases, encoding="utf-8-sig")
+    print(f"  Wrote {out_path.name}")
+
+    loc = generate_io_localization(all_pm_goods)
+    OUT_LOC.mkdir(parents=True, exist_ok=True)
+    out_path = OUT_LOC / "epbm_ios_l_english.yml"
+    out_path.write_text(loc, encoding="utf-8")
+    print(f"  Wrote {out_path.name}")
+
     # Summary
     print("\n=== Summary ===")
     print(f"Total qualifying buildings: {len(qualifying)}")
+    print(f"  Regular buildings: {len(qualifying) - fort_count}")
+    print(f"  Fort buildings: {fort_count}")
     print(f"Unique PM goods profiles: {len(all_pm_goods)}")
     print(f"INJECT blocks: {inject_count}")
     print(f"REPLACE blocks: {replace_count}")
@@ -671,6 +764,13 @@ def main():
         all_goods.update(goods.keys())
     print(f"Distinct maintenance goods: {len(all_goods)} ({', '.join(sorted(all_goods))})")
 
+    if fort_count > 0:
+        fort_buildings = [(b, buildings[b]['fort_level'], buildings[b]['garrison_size'])
+                         for b, _, _, is_fort in qualifying if is_fort]
+        print(f"\nFort buildings (fort_level, garrison_size):")
+        for b, fl, gs in sorted(fort_buildings, key=lambda x: x[0]):
+            print(f"  {b}: level={fl}, garrison={gs}")
+
     print("\n=== PM to Buildings Mapping ===")
     for pm_name in sorted(all_pm_goods.keys()):
         blist = pm_to_buildings.get(pm_name, [])
@@ -678,8 +778,9 @@ def main():
         goods_str = ", ".join(f"{g}={a}" for g, a in goods.items())
         print(f"  {pm_name} ({len(blist)} buildings): [{goods_str}]")
         for b in sorted(blist):
-            src = "inline" if any(bn == b and s == 'inline' for bn, _, s in qualifying) else "external"
-            print(f"    - {b} ({src})")
+            src = "inline" if any(bn == b and s == 'inline' for bn, _, s, _ in qualifying) else "external"
+            fort_tag = " (fort)" if buildings[b]['is_fort'] else ""
+            print(f"    - {b} ({src}){fort_tag}")
 
     return 0
 

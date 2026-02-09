@@ -4,11 +4,11 @@
 # adm_vatican_library uses library_maintenance
 INJECT:adm_vatican_library = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:adm_vatican_library } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:adm_vatican_library } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -16,11 +16,11 @@ INJECT:adm_vatican_library = {
 # admiralty uses admiralty_requirements
 INJECT:admiralty = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:admiralty } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:admiralty } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -28,11 +28,11 @@ INJECT:admiralty = {
 # al_azhar_madrasa uses library_maintenance
 INJECT:al_azhar_madrasa = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:al_azhar_madrasa } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:al_azhar_madrasa } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -40,11 +40,11 @@ INJECT:al_azhar_madrasa = {
 # alhambra uses early_capital_building_maintenance
 INJECT:alhambra = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:alhambra } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:alhambra } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -52,11 +52,11 @@ INJECT:alhambra = {
 # ambras_castle uses capital_building_maintenance
 INJECT:ambras_castle = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ambras_castle } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ambras_castle } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -64,11 +64,11 @@ INJECT:ambras_castle = {
 # amsterdam_admiralty uses port_building_maintenance
 INJECT:amsterdam_admiralty = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:amsterdam_admiralty } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:amsterdam_admiralty } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -76,11 +76,11 @@ INJECT:amsterdam_admiralty = {
 # archive_of_the_indies uses port_authority_maintenance
 INJECT:archive_of_the_indies = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:archive_of_the_indies } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:archive_of_the_indies } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -88,11 +88,11 @@ INJECT:archive_of_the_indies = {
 # armory uses armory_maintenance
 INJECT:armory = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:armory } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:armory } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -100,11 +100,11 @@ INJECT:armory = {
 # art_school uses art_school_maintenance
 INJECT:art_school = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:art_school } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:art_school } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -112,11 +112,11 @@ INJECT:art_school = {
 # arts_academy uses arts_academy_maintenance
 INJECT:arts_academy = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:arts_academy } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:arts_academy } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -124,11 +124,11 @@ INJECT:arts_academy = {
 # bailiff uses bailiff_input
 INJECT:bailiff = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bailiff } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bailiff } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -136,11 +136,11 @@ INJECT:bailiff = {
 # bajang_ratu uses bajang_ratu_maintenance
 INJECT:bajang_ratu = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bajang_ratu } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bajang_ratu } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -148,11 +148,11 @@ INJECT:bajang_ratu = {
 # barcelona_royal_shipyard uses barcelona_royal_shipyard
 INJECT:barcelona_royal_shipyard = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:barcelona_royal_shipyard } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:barcelona_royal_shipyard } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -160,11 +160,11 @@ INJECT:barcelona_royal_shipyard = {
 # bardic_school uses library_maintenance
 INJECT:bardic_school = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bardic_school } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bardic_school } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -172,23 +172,23 @@ INJECT:bardic_school = {
 # barracks uses barracks_maintenance
 INJECT:barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# bastion uses bastion_maintenance
+# bastion uses bastion_maintenance (fort)
 INJECT:bastion = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bastion } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bastion } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -196,11 +196,11 @@ INJECT:bastion = {
 # bavarian_academy_of_sciences uses library_maintenance
 INJECT:bavarian_academy_of_sciences = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bavarian_academy_of_sciences } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bavarian_academy_of_sciences } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -208,11 +208,11 @@ INJECT:bavarian_academy_of_sciences = {
 # belvedere_palace uses capital_building_maintenance
 INJECT:belvedere_palace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:belvedere_palace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:belvedere_palace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -220,11 +220,11 @@ INJECT:belvedere_palace = {
 # berlin_palace uses early_capital_building_maintenance
 INJECT:berlin_palace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:berlin_palace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:berlin_palace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -232,11 +232,11 @@ INJECT:berlin_palace = {
 # bibliotheca_corviniana uses bibliotheca_corviniana_maintenance
 INJECT:bibliotheca_corviniana = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bibliotheca_corviniana } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bibliotheca_corviniana } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -244,11 +244,11 @@ INJECT:bibliotheca_corviniana = {
 # bolshoi_theater uses bolshoi_theater_maintenance
 INJECT:bolshoi_theater = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bolshoi_theater } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bolshoi_theater } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -256,11 +256,11 @@ INJECT:bolshoi_theater = {
 # brethren_marsh uses brethren_marsh_maintenance
 INJECT:brethren_marsh = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:brethren_marsh } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:brethren_marsh } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -268,11 +268,11 @@ INJECT:brethren_marsh = {
 # bridge_infrastructure uses bridge_maintenance
 INJECT:bridge_infrastructure = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bridge_infrastructure } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bridge_infrastructure } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -280,11 +280,11 @@ INJECT:bridge_infrastructure = {
 # brothel uses brothel_maintenance
 INJECT:brothel = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:brothel } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:brothel } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -292,11 +292,11 @@ INJECT:brothel = {
 # bubu_building uses bubu_building_maintenance
 INJECT:bubu_building = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bubu_building } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bubu_building } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -304,11 +304,11 @@ INJECT:bubu_building = {
 # bund uses bund_maintenance
 INJECT:bund = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bund } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bund } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -316,11 +316,11 @@ INJECT:bund = {
 # calmecac uses nahuatl_warrior_building_maintenance
 INJECT:calmecac = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:calmecac } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:calmecac } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -328,11 +328,11 @@ INJECT:calmecac = {
 # camara_comptos uses capital_administration_maintenance
 INJECT:camara_comptos = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:camara_comptos } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:camara_comptos } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -340,11 +340,11 @@ INJECT:camara_comptos = {
 # cantonments uses soldier_building_maintenance
 INJECT:cantonments = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:cantonments } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:cantonments } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -352,11 +352,11 @@ INJECT:cantonments = {
 # caravan_stop uses caravan_stop_maintenance
 INJECT:caravan_stop = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:caravan_stop } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:caravan_stop } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -364,11 +364,11 @@ INJECT:caravan_stop = {
 # caravanserai uses caravanserai_maintenance
 INJECT:caravanserai = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:caravanserai } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:caravanserai } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -376,23 +376,23 @@ INJECT:caravanserai = {
 # castel_sant_angelo uses basic_castle_maintenance
 INJECT:castel_sant_angelo = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:castel_sant_angelo } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:castel_sant_angelo } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# castle uses castle_maintenance
+# castle uses castle_maintenance (fort)
 INJECT:castle = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:castle } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:castle } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -400,11 +400,11 @@ INJECT:castle = {
 # cathedral uses cathedral_maintenance
 INJECT:cathedral = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:cathedral } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:cathedral } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -412,11 +412,11 @@ INJECT:cathedral = {
 # cawa_barracks uses cawa_barracks_maintenance
 INJECT:cawa_barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:cawa_barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:cawa_barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -424,11 +424,11 @@ INJECT:cawa_barracks = {
 # chancery uses chancery_maintenance
 INJECT:chancery = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:chancery } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:chancery } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -436,11 +436,11 @@ INJECT:chancery = {
 # charite_of_berlin uses hospital_maintenance
 INJECT:charite_of_berlin = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:charite_of_berlin } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:charite_of_berlin } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -448,11 +448,11 @@ INJECT:charite_of_berlin = {
 # city_guard uses early_soldier_building_maintenance
 INJECT:city_guard = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:city_guard } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:city_guard } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -460,11 +460,11 @@ INJECT:city_guard = {
 # city_of_victory uses capital_building_maintenance
 INJECT:city_of_victory = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:city_of_victory } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:city_of_victory } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -472,11 +472,11 @@ INJECT:city_of_victory = {
 # clearing_house uses market_center_building_maintenance
 INJECT:clearing_house = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:clearing_house } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:clearing_house } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -484,11 +484,11 @@ INJECT:clearing_house = {
 # coastal_fort uses coastal_fort_maintenance
 INJECT:coastal_fort = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:coastal_fort } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:coastal_fort } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -496,11 +496,11 @@ INJECT:coastal_fort = {
 # coastal_settlements uses colony_maintenance
 INJECT:coastal_settlements = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:coastal_settlements } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:coastal_settlements } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -508,11 +508,11 @@ INJECT:coastal_settlements = {
 # college_of_poets uses college_of_poets_maintenance
 INJECT:college_of_poets = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:college_of_poets } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:college_of_poets } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -520,11 +520,11 @@ INJECT:college_of_poets = {
 # commerce_center uses commerce_center_maintenance
 INJECT:commerce_center = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:commerce_center } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:commerce_center } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -532,11 +532,11 @@ INJECT:commerce_center = {
 # confucian_academy uses confucian_academy_maintenance
 INJECT:confucian_academy = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:confucian_academy } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:confucian_academy } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -544,11 +544,11 @@ INJECT:confucian_academy = {
 # confucian_school uses confucian_school_maintenance
 INJECT:confucian_school = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:confucian_school } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:confucian_school } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -556,11 +556,11 @@ INJECT:confucian_school = {
 # conscription_center uses conscription_center_maintenance
 INJECT:conscription_center = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:conscription_center } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:conscription_center } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -568,11 +568,11 @@ INJECT:conscription_center = {
 # constantinople_observatory uses library_maintenance
 INJECT:constantinople_observatory = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:constantinople_observatory } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:constantinople_observatory } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -580,11 +580,11 @@ INJECT:constantinople_observatory = {
 # construction_center uses construction_center_maintenance
 INJECT:construction_center = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:construction_center } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:construction_center } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -592,11 +592,11 @@ INJECT:construction_center = {
 # copenhagen_dockyard uses copenhagen_dockyard_maintenance
 INJECT:copenhagen_dockyard = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:copenhagen_dockyard } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:copenhagen_dockyard } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -604,11 +604,11 @@ INJECT:copenhagen_dockyard = {
 # counting_house uses counting_house_maintenance
 INJECT:counting_house = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:counting_house } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:counting_house } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -616,11 +616,11 @@ INJECT:counting_house = {
 # customs_house uses market_center_building_maintenance
 INJECT:customs_house = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:customs_house } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:customs_house } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -628,11 +628,11 @@ INJECT:customs_house = {
 # darussifa uses hospital_maintenance
 INJECT:darussifa = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:darussifa } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:darussifa } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -640,11 +640,11 @@ INJECT:darussifa = {
 # debere_meshwae uses monastery_maintenance
 INJECT:debere_meshwae = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:debere_meshwae } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:debere_meshwae } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -652,11 +652,11 @@ INJECT:debere_meshwae = {
 # delhi_tomb uses temple_maintenance
 INJECT:delhi_tomb = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:delhi_tomb } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:delhi_tomb } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -664,11 +664,11 @@ INJECT:delhi_tomb = {
 # dip_vatican_library uses library_maintenance
 INJECT:dip_vatican_library = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:dip_vatican_library } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:dip_vatican_library } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -676,11 +676,11 @@ INJECT:dip_vatican_library = {
 # dock uses dock_maintenance
 INJECT:dock = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:dock } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:dock } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -688,11 +688,11 @@ INJECT:dock = {
 # doges_palace uses capital_building_maintenance
 INJECT:doges_palace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:doges_palace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:doges_palace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -700,11 +700,11 @@ INJECT:doges_palace = {
 # dry_dock uses dry_dock_maintenance
 INJECT:dry_dock = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:dry_dock } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:dry_dock } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -712,11 +712,11 @@ INJECT:dry_dock = {
 # dun_fort uses dun_fort_maintenance
 INJECT:dun_fort = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:dun_fort } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:dun_fort } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -724,11 +724,11 @@ INJECT:dun_fort = {
 # eghabho_nore_mansion uses eghabho_nore_mansion_maintenance
 INJECT:eghabho_nore_mansion = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:eghabho_nore_mansion } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:eghabho_nore_mansion } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -736,11 +736,11 @@ INJECT:eghabho_nore_mansion = {
 # el_escorial_palace uses capital_building_maintenance
 INJECT:el_escorial_palace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:el_escorial_palace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:el_escorial_palace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -748,11 +748,11 @@ INJECT:el_escorial_palace = {
 # enderun_academy uses endrun_academy_maintenance
 INJECT:enderun_academy = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:enderun_academy } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:enderun_academy } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -760,11 +760,11 @@ INJECT:enderun_academy = {
 # entrepot uses market_center_building_maintenance
 INJECT:entrepot = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:entrepot } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:entrepot } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -772,11 +772,11 @@ INJECT:entrepot = {
 # forbidden_city uses capital_building_maintenance
 INJECT:forbidden_city = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:forbidden_city } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:forbidden_city } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -784,23 +784,23 @@ INJECT:forbidden_city = {
 # fortezza_di_sant_andrea uses basic_castle_maintenance
 INJECT:fortezza_di_sant_andrea = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:fortezza_di_sant_andrea } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:fortezza_di_sant_andrea } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# fortress uses fortress_maintenance
+# fortress uses fortress_maintenance (fort)
 INJECT:fortress = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:fortress } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:fortress } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -808,11 +808,11 @@ INJECT:fortress = {
 # fortress_church uses fortress_church_maintenance
 INJECT:fortress_church = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:fortress_church } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:fortress_church } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -820,11 +820,11 @@ INJECT:fortress_church = {
 # fortress_granary uses fortress_granary_maintenance
 INJECT:fortress_granary = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:fortress_granary } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:fortress_granary } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -832,11 +832,11 @@ INJECT:fortress_granary = {
 # fra_louvre_museum uses library_maintenance
 INJECT:fra_louvre_museum = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:fra_louvre_museum } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:fra_louvre_museum } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -844,11 +844,11 @@ INJECT:fra_louvre_museum = {
 # friesland_admiralty uses port_building_maintenance
 INJECT:friesland_admiralty = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:friesland_admiralty } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:friesland_admiralty } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -856,11 +856,11 @@ INJECT:friesland_admiralty = {
 # fulani_cattle_rearing_pen uses colony_maintenance
 INJECT:fulani_cattle_rearing_pen = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:fulani_cattle_rearing_pen } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:fulani_cattle_rearing_pen } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -868,11 +868,11 @@ INJECT:fulani_cattle_rearing_pen = {
 # funduq uses funduq_maintenance
 INJECT:funduq = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:funduq } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:funduq } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -880,11 +880,11 @@ INJECT:funduq = {
 # galley_barracks uses galley_barracks_maintenance
 INJECT:galley_barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:galley_barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:galley_barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -892,11 +892,11 @@ INJECT:galley_barracks = {
 # general_archive_of_simancas uses capital_building_maintenance
 INJECT:general_archive_of_simancas = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:general_archive_of_simancas } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:general_archive_of_simancas } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -904,11 +904,11 @@ INJECT:general_archive_of_simancas = {
 # ghilman_barracks uses ghilman_barracks_maintenance
 INJECT:ghilman_barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ghilman_barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ghilman_barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -916,11 +916,11 @@ INJECT:ghilman_barracks = {
 # globe_theatre uses globe_theater_maintenance
 INJECT:globe_theatre = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:globe_theatre } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:globe_theatre } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -928,11 +928,11 @@ INJECT:globe_theatre = {
 # granary uses granary_maintenance
 INJECT:granary = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:granary } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:granary } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -940,11 +940,11 @@ INJECT:granary = {
 # grand_apartment uses grand_apartment_maintenance
 INJECT:grand_apartment = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:grand_apartment } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:grand_apartment } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -952,11 +952,11 @@ INJECT:grand_apartment = {
 # grand_marketplace uses grand_marketplace_maintenance
 INJECT:grand_marketplace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:grand_marketplace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:grand_marketplace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -964,11 +964,11 @@ INJECT:grand_marketplace = {
 # grand_palace uses early_capital_building_maintenance
 INJECT:grand_palace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:grand_palace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:grand_palace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -976,11 +976,11 @@ INJECT:grand_palace = {
 # grand_shipyard uses grand_shipyard_maintenance
 INJECT:grand_shipyard = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:grand_shipyard } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:grand_shipyard } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -988,11 +988,11 @@ INJECT:grand_shipyard = {
 # great_enclosure uses great_zimbabwe_maintenance
 INJECT:great_enclosure = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:great_enclosure } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:great_enclosure } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1000,11 +1000,11 @@ INJECT:great_enclosure = {
 # great_hill_complex uses great_zimbabwe_maintenance
 INJECT:great_hill_complex = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:great_hill_complex } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:great_hill_complex } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1012,11 +1012,11 @@ INJECT:great_hill_complex = {
 # great_madrasa uses great_madrasa_maintenance
 INJECT:great_madrasa = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:great_madrasa } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:great_madrasa } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1024,11 +1024,11 @@ INJECT:great_madrasa = {
 # great_temple_of_tenochtitlan uses temple_maintenance
 INJECT:great_temple_of_tenochtitlan = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:great_temple_of_tenochtitlan } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:great_temple_of_tenochtitlan } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1036,11 +1036,11 @@ INJECT:great_temple_of_tenochtitlan = {
 # great_valley_complex uses great_zimbabwe_maintenance
 INJECT:great_valley_complex = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:great_valley_complex } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:great_valley_complex } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1048,11 +1048,11 @@ INJECT:great_valley_complex = {
 # guich_garrison uses guich_garrison_maintenance
 INJECT:guich_garrison = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:guich_garrison } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:guich_garrison } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1060,23 +1060,23 @@ INJECT:guich_garrison = {
 # herrenchiemsee_abbey uses herrenchiemsee_abbey_maintenance
 INJECT:herrenchiemsee_abbey = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:herrenchiemsee_abbey } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:herrenchiemsee_abbey } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# hexamilion_wall uses basic_castle_maintenance
+# hexamilion_wall uses basic_castle_maintenance (fort)
 INJECT:hexamilion_wall = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:hexamilion_wall } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:hexamilion_wall } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1084,11 +1084,11 @@ INJECT:hexamilion_wall = {
 # hospital uses hospital_maintenance
 INJECT:hospital = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:hospital } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:hospital } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1096,11 +1096,11 @@ INJECT:hospital = {
 # house_of_parliament uses house_of_parliament_requirements
 INJECT:house_of_parliament = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:house_of_parliament } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:house_of_parliament } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1108,11 +1108,11 @@ INJECT:house_of_parliament = {
 # hsa_burgtor uses basic_castle_maintenance
 INJECT:hsa_burgtor = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:hsa_burgtor } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:hsa_burgtor } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1120,11 +1120,11 @@ INJECT:hsa_burgtor = {
 # husuni_kubwa uses capital_building_maintenance
 INJECT:husuni_kubwa = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:husuni_kubwa } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:husuni_kubwa } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1132,11 +1132,11 @@ INJECT:husuni_kubwa = {
 # ibadat_khana uses ibadat_khana_maintenance
 INJECT:ibadat_khana = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ibadat_khana } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ibadat_khana } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1144,11 +1144,11 @@ INJECT:ibadat_khana = {
 # imperial_academy_of_arts uses arts_academy_maintenance
 INJECT:imperial_academy_of_arts = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:imperial_academy_of_arts } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:imperial_academy_of_arts } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1156,11 +1156,11 @@ INJECT:imperial_academy_of_arts = {
 # imperial_city_of_hue uses capital_building_maintenance
 INJECT:imperial_city_of_hue = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:imperial_city_of_hue } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:imperial_city_of_hue } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1168,11 +1168,11 @@ INJECT:imperial_city_of_hue = {
 # imperial_halic_shipyards uses imperial_halic_shipyards_maintenance
 INJECT:imperial_halic_shipyards = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:imperial_halic_shipyards } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:imperial_halic_shipyards } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1180,11 +1180,11 @@ INJECT:imperial_halic_shipyards = {
 # incamisana uses incamisana_maintennace
 INJECT:incamisana = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:incamisana } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:incamisana } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1192,11 +1192,11 @@ INJECT:incamisana = {
 # irrigation_systems uses irrigation_maintenance
 INJECT:irrigation_systems = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:irrigation_systems } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:irrigation_systems } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1204,11 +1204,11 @@ INJECT:irrigation_systems = {
 # janissary_barracks uses janissary_barracks_maintenance
 INJECT:janissary_barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:janissary_barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:janissary_barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1216,11 +1216,11 @@ INJECT:janissary_barracks = {
 # jesuit_college uses jesuit_college_maintenance
 INJECT:jesuit_college = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:jesuit_college } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:jesuit_college } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1228,11 +1228,11 @@ INJECT:jesuit_college = {
 # jewish_district uses jewish_district_maintenance
 INJECT:jewish_district = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:jewish_district } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:jewish_district } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1240,11 +1240,11 @@ INJECT:jewish_district = {
 # jurchen_barracks uses early_soldier_building_maintenance
 INJECT:jurchen_barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:jurchen_barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:jurchen_barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1252,11 +1252,11 @@ INJECT:jurchen_barracks = {
 # kalari uses early_soldier_building_maintenance
 INJECT:kalari = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kalari } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kalari } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1264,11 +1264,11 @@ INJECT:kalari = {
 # kastellet uses basic_castle_maintenance
 INJECT:kastellet = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kastellet } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kastellet } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1276,11 +1276,11 @@ INJECT:kastellet = {
 # khmer_baray uses khmer_baray_maintenance
 INJECT:khmer_baray = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:khmer_baray } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:khmer_baray } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1288,11 +1288,11 @@ INJECT:khmer_baray = {
 # kilwan_shipwrights uses port_building_maintenance
 INJECT:kilwan_shipwrights = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kilwan_shipwrights } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kilwan_shipwrights } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1300,11 +1300,11 @@ INJECT:kilwan_shipwrights = {
 # kings_manor uses kings_manor_maintenance
 INJECT:kings_manor = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kings_manor } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kings_manor } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1312,11 +1312,11 @@ INJECT:kings_manor = {
 # korean_gunnery_coastal_defense uses korean_gunnery_maintenance
 INJECT:korean_gunnery_coastal_defense = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:korean_gunnery_coastal_defense } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:korean_gunnery_coastal_defense } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1324,11 +1324,11 @@ INJECT:korean_gunnery_coastal_defense = {
 # korean_gunnery_land_defense uses korean_gunnery_maintenance
 INJECT:korean_gunnery_land_defense = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:korean_gunnery_land_defense } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:korean_gunnery_land_defense } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1336,11 +1336,11 @@ INJECT:korean_gunnery_land_defense = {
 # kremlin uses early_soldier_building_maintenance
 INJECT:kremlin = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kremlin } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kremlin } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1348,11 +1348,11 @@ INJECT:kremlin = {
 # kronborg uses basic_castle_maintenance
 INJECT:kronborg = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kronborg } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kronborg } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1360,11 +1360,11 @@ INJECT:kronborg = {
 # kurmina_headquarter uses early_soldier_building_maintenance
 INJECT:kurmina_headquarter = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kurmina_headquarter } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kurmina_headquarter } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1372,11 +1372,11 @@ INJECT:kurmina_headquarter = {
 # kurultai uses kurultai_maintenance
 INJECT:kurultai = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:kurultai } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:kurultai } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1384,11 +1384,11 @@ INJECT:kurultai = {
 # lazaretto uses lazaretto_maintenance
 INJECT:lazaretto = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:lazaretto } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:lazaretto } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1396,11 +1396,11 @@ INJECT:lazaretto = {
 # library uses library_maintenance
 INJECT:library = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:library } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:library } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1408,11 +1408,11 @@ INJECT:library = {
 # library_of_vijayanagar uses library_maintenance
 INJECT:library_of_vijayanagar = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:library_of_vijayanagar } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:library_of_vijayanagar } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1420,11 +1420,11 @@ INJECT:library_of_vijayanagar = {
 # lieutenancy uses capital_administration_maintenance
 INJECT:lieutenancy = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:lieutenancy } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:lieutenancy } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1432,11 +1432,11 @@ INJECT:lieutenancy = {
 # lighthouse_of_alexandria uses lighthouse_of_alexandria_maintenance
 INJECT:lighthouse_of_alexandria = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:lighthouse_of_alexandria } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:lighthouse_of_alexandria } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1444,11 +1444,11 @@ INJECT:lighthouse_of_alexandria = {
 # local_governor uses local_governor_maintenance
 INJECT:local_governor = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:local_governor } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:local_governor } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1456,11 +1456,11 @@ INJECT:local_governor = {
 # local_smelters uses local_smelters_maintenance
 INJECT:local_smelters = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:local_smelters } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:local_smelters } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1468,11 +1468,11 @@ INJECT:local_smelters = {
 # madrasa uses madrasa_maintenance
 INJECT:madrasa = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:madrasa } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:madrasa } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1480,11 +1480,11 @@ INJECT:madrasa = {
 # magistrato_alla_sanita uses hospital_maintenance
 INJECT:magistrato_alla_sanita = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:magistrato_alla_sanita } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:magistrato_alla_sanita } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1492,11 +1492,11 @@ INJECT:magistrato_alla_sanita = {
 # mahmud_gawan_madrasa uses library_maintenance
 INJECT:mahmud_gawan_madrasa = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:mahmud_gawan_madrasa } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:mahmud_gawan_madrasa } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1504,11 +1504,11 @@ INJECT:mahmud_gawan_madrasa = {
 # mamluk_barracks uses mamluk_barracks_maintenance
 INJECT:mamluk_barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:mamluk_barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:mamluk_barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1516,11 +1516,11 @@ INJECT:mamluk_barracks = {
 # market_warehouse uses warehouse_maintenance
 INJECT:market_warehouse = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:market_warehouse } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:market_warehouse } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1528,11 +1528,11 @@ INJECT:market_warehouse = {
 # marketplace uses marketplace_maintenance
 INJECT:marketplace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:marketplace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:marketplace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1540,11 +1540,11 @@ INJECT:marketplace = {
 # medical_school uses temple_maintenance
 INJECT:medical_school = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:medical_school } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:medical_school } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1552,11 +1552,11 @@ INJECT:medical_school = {
 # merchants_quarters uses merchants_quarters_maintenance
 INJECT:merchants_quarters = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:merchants_quarters } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:merchants_quarters } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1564,11 +1564,11 @@ INJECT:merchants_quarters = {
 # mercury_patio uses mercury_patio_maintenance
 INJECT:mercury_patio = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:mercury_patio } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:mercury_patio } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1576,11 +1576,11 @@ INJECT:mercury_patio = {
 # miaphysite_monastery uses monastery_maintenance
 INJECT:miaphysite_monastery = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:miaphysite_monastery } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:miaphysite_monastery } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1588,11 +1588,11 @@ INJECT:miaphysite_monastery = {
 # mil_vatican_library uses library_maintenance
 INJECT:mil_vatican_library = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:mil_vatican_library } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:mil_vatican_library } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1600,11 +1600,11 @@ INJECT:mil_vatican_library = {
 # minting_office uses mint_maintenance
 INJECT:minting_office = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:minting_office } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:minting_office } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1612,11 +1612,11 @@ INJECT:minting_office = {
 # moscow_artillery_yard uses moscow_artillery_yard_maintenance
 INJECT:moscow_artillery_yard = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:moscow_artillery_yard } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:moscow_artillery_yard } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1624,11 +1624,11 @@ INJECT:moscow_artillery_yard = {
 # munich_residenz_baroque_expansion uses capital_building_maintenance
 INJECT:munich_residenz_baroque_expansion = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:munich_residenz_baroque_expansion } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:munich_residenz_baroque_expansion } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1636,11 +1636,11 @@ INJECT:munich_residenz_baroque_expansion = {
 # munich_residenz_founding uses early_capital_building_maintenance
 INJECT:munich_residenz_founding = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:munich_residenz_founding } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:munich_residenz_founding } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1648,11 +1648,11 @@ INJECT:munich_residenz_founding = {
 # munich_residenz_renaissance_expansion uses early_capital_building_maintenance
 INJECT:munich_residenz_renaissance_expansion = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:munich_residenz_renaissance_expansion } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:munich_residenz_renaissance_expansion } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1660,11 +1660,11 @@ INJECT:munich_residenz_renaissance_expansion = {
 # naval_base uses naval_base_maintenance
 INJECT:naval_base = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:naval_base } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:naval_base } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1672,11 +1672,11 @@ INJECT:naval_base = {
 # naval_battery uses naval_battery_maintenance
 INJECT:naval_battery = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:naval_battery } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:naval_battery } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1684,11 +1684,11 @@ INJECT:naval_battery = {
 # naval_governor uses naval_governor_maintenance
 INJECT:naval_governor = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:naval_governor } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:naval_governor } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1696,11 +1696,11 @@ INJECT:naval_governor = {
 # north_sea_shipyards uses north_sea_shipyards_maintenance
 INJECT:north_sea_shipyards = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:north_sea_shipyards } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:north_sea_shipyards } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1708,11 +1708,11 @@ INJECT:north_sea_shipyards = {
 # novodevichy_convent uses monastery_maintenance
 INJECT:novodevichy_convent = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:novodevichy_convent } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:novodevichy_convent } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1720,11 +1720,11 @@ INJECT:novodevichy_convent = {
 # oma_falaj uses oma_falaj_maintenance
 INJECT:oma_falaj = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:oma_falaj } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:oma_falaj } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1732,11 +1732,11 @@ INJECT:oma_falaj = {
 # oma_nizwa_fort uses basic_castle_maintenance
 INJECT:oma_nizwa_fort = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:oma_nizwa_fort } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:oma_nizwa_fort } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1744,11 +1744,11 @@ INJECT:oma_nizwa_fort = {
 # opera_house uses opera_house_maintenance
 INJECT:opera_house = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:opera_house } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:opera_house } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1756,11 +1756,11 @@ INJECT:opera_house = {
 # order_headquarters uses order_headquarters_requirements
 INJECT:order_headquarters = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:order_headquarters } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:order_headquarters } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1768,11 +1768,11 @@ INJECT:order_headquarters = {
 # order_stronghold uses order_commandery_maintenance
 INJECT:order_stronghold = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:order_stronghold } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:order_stronghold } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1780,11 +1780,11 @@ INJECT:order_stronghold = {
 # orthodox_monastery uses monastery_maintenance
 INJECT:orthodox_monastery = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:orthodox_monastery } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:orthodox_monastery } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1792,11 +1792,11 @@ INJECT:orthodox_monastery = {
 # ostrog uses ostrog_maintenance
 INJECT:ostrog = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ostrog } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ostrog } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1804,11 +1804,11 @@ INJECT:ostrog = {
 # papal_archives uses library_maintenance
 INJECT:papal_archives = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:papal_archives } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:papal_archives } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1816,11 +1816,11 @@ INJECT:papal_archives = {
 # peel_towers uses peel_towers_maintenance
 INJECT:peel_towers = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:peel_towers } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:peel_towers } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1828,11 +1828,11 @@ INJECT:peel_towers = {
 # pest_house uses pest_house_maintenance
 INJECT:pest_house = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:pest_house } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:pest_house } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1840,11 +1840,11 @@ INJECT:pest_house = {
 # phanariot_district uses phanariot_district_maintenance
 INJECT:phanariot_district = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:phanariot_district } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:phanariot_district } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1852,11 +1852,11 @@ INJECT:phanariot_district = {
 # piazza_san_marco uses capital_building_maintenance
 INJECT:piazza_san_marco = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:piazza_san_marco } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:piazza_san_marco } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1864,11 +1864,11 @@ INJECT:piazza_san_marco = {
 # pirate_tavern uses pirate_tavern_maintenance
 INJECT:pirate_tavern = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:pirate_tavern } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:pirate_tavern } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1876,11 +1876,11 @@ INJECT:pirate_tavern = {
 # polders uses polders_maintenance
 INJECT:polders = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:polders } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:polders } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1888,11 +1888,11 @@ INJECT:polders = {
 # pomor_outpost uses pomor_outpost_maintenance
 INJECT:pomor_outpost = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:pomor_outpost } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:pomor_outpost } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1900,11 +1900,11 @@ INJECT:pomor_outpost = {
 # port_authority uses port_authority_maintenance
 INJECT:port_authority = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:port_authority } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:port_authority } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1912,11 +1912,11 @@ INJECT:port_authority = {
 # pound_lock_canal_infrastructure uses pound_lock_canal_infrastructure_maintenance
 INJECT:pound_lock_canal_infrastructure = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:pound_lock_canal_infrastructure } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:pound_lock_canal_infrastructure } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1924,11 +1924,11 @@ INJECT:pound_lock_canal_infrastructure = {
 # protected_harbor uses protected_harbor_maintenance
 INJECT:protected_harbor = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:protected_harbor } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:protected_harbor } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1936,11 +1936,11 @@ INJECT:protected_harbor = {
 # pukara_building uses pukara_maintenance
 INJECT:pukara_building = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:pukara_building } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:pukara_building } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1948,11 +1948,11 @@ INJECT:pukara_building = {
 # qalat_al_mashwar uses qalat_al_mashwar_maintenance
 INJECT:qalat_al_mashwar = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:qalat_al_mashwar } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:qalat_al_mashwar } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1960,11 +1960,11 @@ INJECT:qalat_al_mashwar = {
 # quirinal_palace uses capital_building_maintenance
 INJECT:quirinal_palace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:quirinal_palace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:quirinal_palace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1972,11 +1972,11 @@ INJECT:quirinal_palace = {
 # rahdar uses rahdar_maintenance
 INJECT:rahdar = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:rahdar } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:rahdar } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1984,11 +1984,11 @@ INJECT:rahdar = {
 # ranganathaswamy_temple_building uses temple_maintenance
 INJECT:ranganathaswamy_temple_building = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ranganathaswamy_temple_building } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ranganathaswamy_temple_building } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -1996,11 +1996,11 @@ INJECT:ranganathaswamy_temple_building = {
 # red_fort uses basic_castle_maintenance
 INJECT:red_fort = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:red_fort } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:red_fort } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2008,23 +2008,23 @@ INJECT:red_fort = {
 # regimental_camp uses regimental_camp_maintenance
 INJECT:regimental_camp = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:regimental_camp } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:regimental_camp } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# repaired_great_wall_of_china uses repaired_great_wall_of_china_maintenance
+# repaired_great_wall_of_china uses repaired_great_wall_of_china_maintenance (fort)
 INJECT:repaired_great_wall_of_china = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:repaired_great_wall_of_china } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:repaired_great_wall_of_china } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2032,11 +2032,11 @@ INJECT:repaired_great_wall_of_china = {
 # republican_assembly uses republican_assembly_maintenance
 INJECT:republican_assembly = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:republican_assembly } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:republican_assembly } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2044,11 +2044,11 @@ INJECT:republican_assembly = {
 # ribat uses ribat_maintenance
 INJECT:ribat = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ribat } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ribat } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2056,11 +2056,11 @@ INJECT:ribat = {
 # ribeira_das_naus uses ribeira_das_naus_maintenance
 INJECT:ribeira_das_naus = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ribeira_das_naus } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ribeira_das_naus } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2068,11 +2068,11 @@ INJECT:ribeira_das_naus = {
 # rock_of_monaco uses early_capital_building_maintenance
 INJECT:rock_of_monaco = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:rock_of_monaco } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:rock_of_monaco } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2080,11 +2080,11 @@ INJECT:rock_of_monaco = {
 # rotterdam_admiralty uses port_building_maintenance
 INJECT:rotterdam_admiralty = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:rotterdam_admiralty } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:rotterdam_admiralty } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2092,11 +2092,11 @@ INJECT:rotterdam_admiralty = {
 # royal_academy_of_arts uses arts_academy_maintenance
 INJECT:royal_academy_of_arts = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:royal_academy_of_arts } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:royal_academy_of_arts } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2104,11 +2104,11 @@ INJECT:royal_academy_of_arts = {
 # royal_atarazanas_seville uses royal_atarazanas_seville_maintenance
 INJECT:royal_atarazanas_seville = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:royal_atarazanas_seville } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:royal_atarazanas_seville } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2116,11 +2116,11 @@ INJECT:royal_atarazanas_seville = {
 # royal_audience_and_chancery uses library_maintenance
 INJECT:royal_audience_and_chancery = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:royal_audience_and_chancery } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:royal_audience_and_chancery } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2128,11 +2128,11 @@ INJECT:royal_audience_and_chancery = {
 # royal_court uses royal_court_maintenance
 INJECT:royal_court = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:royal_court } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:royal_court } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2140,11 +2140,11 @@ INJECT:royal_court = {
 # royal_garden uses royal_garden_maintenance
 INJECT:royal_garden = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:royal_garden } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:royal_garden } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2152,23 +2152,23 @@ INJECT:royal_garden = {
 # royal_society uses royal_society_maintenance
 INJECT:royal_society = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:royal_society } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:royal_society } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# ruined_great_wall_of_china uses ruined_great_wall_of_china_maintenance
+# ruined_great_wall_of_china uses ruined_great_wall_of_china_maintenance (fort)
 INJECT:ruined_great_wall_of_china = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:ruined_great_wall_of_china } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:ruined_great_wall_of_china } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2176,11 +2176,11 @@ INJECT:ruined_great_wall_of_china = {
 # safaviyya_order_hall uses safaviyya_order_hall_maintenance
 INJECT:safaviyya_order_hall = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:safaviyya_order_hall } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:safaviyya_order_hall } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2188,11 +2188,11 @@ INJECT:safaviyya_order_hall = {
 # sanssouci uses capital_building_maintenance
 INJECT:sanssouci = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sanssouci } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sanssouci } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2200,11 +2200,11 @@ INJECT:sanssouci = {
 # sawmill uses sawmill_maintenance
 INJECT:sawmill = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sawmill } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sawmill } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2212,11 +2212,11 @@ INJECT:sawmill = {
 # schonbrunn_palace uses capital_building_maintenance
 INJECT:schonbrunn_palace = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:schonbrunn_palace } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:schonbrunn_palace } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2224,11 +2224,11 @@ INJECT:schonbrunn_palace = {
 # school_of_salamanca uses library_maintenance
 INJECT:school_of_salamanca = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:school_of_salamanca } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:school_of_salamanca } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2236,11 +2236,11 @@ INJECT:school_of_salamanca = {
 # sco_palace_of_holyroodhouse uses capital_building_maintenance
 INJECT:sco_palace_of_holyroodhouse = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sco_palace_of_holyroodhouse } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sco_palace_of_holyroodhouse } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2248,11 +2248,11 @@ INJECT:sco_palace_of_holyroodhouse = {
 # segovia_artillery_academy uses soldier_building_maintenance
 INJECT:segovia_artillery_academy = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:segovia_artillery_academy } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:segovia_artillery_academy } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2260,11 +2260,11 @@ INJECT:segovia_artillery_academy = {
 # seljuk_mint uses seljuk_mint_maintenance
 INJECT:seljuk_mint = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:seljuk_mint } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:seljuk_mint } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2272,11 +2272,11 @@ INJECT:seljuk_mint = {
 # sergeantry uses early_soldier_building_maintenance
 INJECT:sergeantry = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sergeantry } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sergeantry } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2284,11 +2284,11 @@ INJECT:sergeantry = {
 # settlement_building uses colony_maintenance
 INJECT:settlement_building = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:settlement_building } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:settlement_building } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2296,11 +2296,11 @@ INJECT:settlement_building = {
 # sevilla_bullfighting_school uses sevilla_bullfighting_school_maintenance
 INJECT:sevilla_bullfighting_school = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sevilla_bullfighting_school } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sevilla_bullfighting_school } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2308,11 +2308,11 @@ INJECT:sevilla_bullfighting_school = {
 # shipyard uses shipyard_maintenance
 INJECT:shipyard = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:shipyard } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:shipyard } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2320,11 +2320,11 @@ INJECT:shipyard = {
 # smuggler_cove uses smuggler_cove_maintenance
 INJECT:smuggler_cove = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:smuggler_cove } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:smuggler_cove } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2332,23 +2332,23 @@ INJECT:smuggler_cove = {
 # sofa_barracks uses early_soldier_building_maintenance
 INJECT:sofa_barracks = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sofa_barracks } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sofa_barracks } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# star_fort uses star_fort_maintenance
+# star_fort uses star_fort_maintenance (fort)
 INJECT:star_fort = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:star_fort } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:star_fort } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2356,23 +2356,23 @@ INJECT:star_fort = {
 # stock_exchange uses market_center_building_maintenance
 INJECT:stock_exchange = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:stock_exchange } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:stock_exchange } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# stockade uses stockade_maintenance
+# stockade uses stockade_maintenance (fort)
 INJECT:stockade = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:stockade } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:stockade } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2380,11 +2380,11 @@ INJECT:stockade = {
 # sufi_lodge uses sufi_lodge_maintenance
 INJECT:sufi_lodge = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sufi_lodge } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sufi_lodge } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2392,11 +2392,11 @@ INJECT:sufi_lodge = {
 # sufi_mosque uses monastery_maintenance
 INJECT:sufi_mosque = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:sufi_mosque } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:sufi_mosque } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2404,11 +2404,11 @@ INJECT:sufi_mosque = {
 # supreme_court uses supreme_court_requirements
 INJECT:supreme_court = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:supreme_court } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:supreme_court } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2416,11 +2416,11 @@ INJECT:supreme_court = {
 # tambo uses tambo_maintenance
 INJECT:tambo = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:tambo } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:tambo } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2428,11 +2428,11 @@ INJECT:tambo = {
 # tax_assessor uses tax_assessor_requirements
 INJECT:tax_assessor = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:tax_assessor } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:tax_assessor } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2440,11 +2440,11 @@ INJECT:tax_assessor = {
 # teatro_san_cassiano uses theater_maintenance
 INJECT:teatro_san_cassiano = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:teatro_san_cassiano } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:teatro_san_cassiano } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2452,11 +2452,11 @@ INJECT:teatro_san_cassiano = {
 # telpochcalli uses nahuatl_warrior_building_maintenance
 INJECT:telpochcalli = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:telpochcalli } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:telpochcalli } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2464,11 +2464,11 @@ INJECT:telpochcalli = {
 # temple uses temple_maintenance
 INJECT:temple = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:temple } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:temple } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2476,11 +2476,11 @@ INJECT:temple = {
 # terraces uses terraces_maintenance
 INJECT:terraces = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:terraces } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:terraces } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2488,11 +2488,11 @@ INJECT:terraces = {
 # the_bock_fortifications uses early_soldier_building_maintenance
 INJECT:the_bock_fortifications = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:the_bock_fortifications } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:the_bock_fortifications } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2500,11 +2500,11 @@ INJECT:the_bock_fortifications = {
 # the_cipher_secretary uses library_maintenance
 INJECT:the_cipher_secretary = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:the_cipher_secretary } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:the_cipher_secretary } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2512,11 +2512,11 @@ INJECT:the_cipher_secretary = {
 # theater uses theater_maintenance
 INJECT:theater = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:theater } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:theater } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2524,23 +2524,23 @@ INJECT:theater = {
 # thema_headquarters uses early_soldier_building_maintenance
 INJECT:thema_headquarters = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:thema_headquarters } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:thema_headquarters } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
 
-# theodosian_walls uses basic_castle_maintenance
+# theodosian_walls uses basic_castle_maintenance (fort)
 INJECT:theodosian_walls = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:theodosian_walls } }
+		location = { add_to_variable_list = { name = epbm_fort_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:theodosian_walls } }
+		location = { remove_list_variable = { name = epbm_fort_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2548,11 +2548,11 @@ INJECT:theodosian_walls = {
 # tibetan_great_monastery uses temple_maintenance
 INJECT:tibetan_great_monastery = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:tibetan_great_monastery } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:tibetan_great_monastery } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2560,11 +2560,11 @@ INJECT:tibetan_great_monastery = {
 # tower_of_belem uses basic_castle_maintenance
 INJECT:tower_of_belem = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:tower_of_belem } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:tower_of_belem } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2572,11 +2572,11 @@ INJECT:tower_of_belem = {
 # trading_hub uses market_center_building_maintenance
 INJECT:trading_hub = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:trading_hub } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:trading_hub } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2584,11 +2584,11 @@ INJECT:trading_hub = {
 # training_fields uses training_fields_maintenance
 INJECT:training_fields = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:training_fields } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:training_fields } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2596,11 +2596,11 @@ INJECT:training_fields = {
 # tribes_of_galway uses tribes_of_galway_maintenance
 INJECT:tribes_of_galway = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:tribes_of_galway } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:tribes_of_galway } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2608,11 +2608,11 @@ INJECT:tribes_of_galway = {
 # tur_kodjabashi_office uses tur_kodjabashi_office_maintenance
 INJECT:tur_kodjabashi_office = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:tur_kodjabashi_office } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:tur_kodjabashi_office } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2620,11 +2620,11 @@ INJECT:tur_kodjabashi_office = {
 # uffizi uses early_capital_building_maintenance
 INJECT:uffizi = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:uffizi } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:uffizi } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2632,11 +2632,11 @@ INJECT:uffizi = {
 # university uses university_maintenance
 INJECT:university = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:university } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:university } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2644,11 +2644,11 @@ INJECT:university = {
 # usa_academy_of_arts_and_sciences uses usa_academy_of_arts_and_sciences_maintenance
 INJECT:usa_academy_of_arts_and_sciences = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:usa_academy_of_arts_and_sciences } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:usa_academy_of_arts_and_sciences } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2656,11 +2656,11 @@ INJECT:usa_academy_of_arts_and_sciences = {
 # usa_national_bank uses usa_national_bank_maintenance
 INJECT:usa_national_bank = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:usa_national_bank } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:usa_national_bank } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2668,11 +2668,11 @@ INJECT:usa_national_bank = {
 # usa_national_mint uses usa_national_mint_maintenance
 INJECT:usa_national_mint = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:usa_national_mint } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:usa_national_mint } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2680,11 +2680,11 @@ INJECT:usa_national_mint = {
 # usa_philosophical_society uses usa_philosophical_society_maintenance
 INJECT:usa_philosophical_society = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:usa_philosophical_society } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:usa_philosophical_society } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2692,11 +2692,11 @@ INJECT:usa_philosophical_society = {
 # venetian_arsenal uses venetian_arsenal_maintenance
 INJECT:venetian_arsenal = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:venetian_arsenal } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:venetian_arsenal } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2704,11 +2704,11 @@ INJECT:venetian_arsenal = {
 # venetian_palaces uses venetian_palaces_maintenance
 INJECT:venetian_palaces = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:venetian_palaces } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:venetian_palaces } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2716,11 +2716,11 @@ INJECT:venetian_palaces = {
 # venkateswara_temple uses temple_maintenance
 INJECT:venkateswara_temple = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:venkateswara_temple } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:venkateswara_temple } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2728,11 +2728,11 @@ INJECT:venkateswara_temple = {
 # versailles uses capital_building_maintenance
 INJECT:versailles = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:versailles } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:versailles } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2740,11 +2740,11 @@ INJECT:versailles = {
 # viceroyalty uses expensive_capital_administration_maintenance
 INJECT:viceroyalty = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:viceroyalty } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:viceroyalty } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2752,11 +2752,11 @@ INJECT:viceroyalty = {
 # wali_songo_shrine uses monastery_maintenance
 INJECT:wali_songo_shrine = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:wali_songo_shrine } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:wali_songo_shrine } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2764,11 +2764,11 @@ INJECT:wali_songo_shrine = {
 # walls_of_benin uses basic_castle_maintenance
 INJECT:walls_of_benin = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:walls_of_benin } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:walls_of_benin } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2776,11 +2776,11 @@ INJECT:walls_of_benin = {
 # walls_of_ston uses basic_castle_maintenance
 INJECT:walls_of_ston = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:walls_of_ston } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:walls_of_ston } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2788,11 +2788,11 @@ INJECT:walls_of_ston = {
 # war_college uses war_college_requirements
 INJECT:war_college = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:war_college } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:war_college } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2800,11 +2800,11 @@ INJECT:war_college = {
 # warrior_temple uses nahuatl_warrior_building_maintenance
 INJECT:warrior_temple = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:warrior_temple } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:warrior_temple } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2812,11 +2812,11 @@ INJECT:warrior_temple = {
 # wat_chaiwatthanaram_temple_building uses temple_maintenance
 INJECT:wat_chaiwatthanaram_temple_building = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:wat_chaiwatthanaram_temple_building } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:wat_chaiwatthanaram_temple_building } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2824,11 +2824,11 @@ INJECT:wat_chaiwatthanaram_temple_building = {
 # west_friesland_admiralty uses port_building_maintenance
 INJECT:west_friesland_admiralty = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:west_friesland_admiralty } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:west_friesland_admiralty } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2836,11 +2836,11 @@ INJECT:west_friesland_admiralty = {
 # wharf uses wharf_maintenance
 INJECT:wharf = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:wharf } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:wharf } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2848,11 +2848,11 @@ INJECT:wharf = {
 # windmill uses windmill_maintenance
 INJECT:windmill = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:windmill } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:windmill } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2860,11 +2860,11 @@ INJECT:windmill = {
 # wisselbank uses wissel_bank_maintenance
 INJECT:wisselbank = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:wisselbank } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:wisselbank } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2872,11 +2872,11 @@ INJECT:wisselbank = {
 # woodhenge_of_cahokia uses cahokia_woodhenge_production_method
 INJECT:woodhenge_of_cahokia = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:woodhenge_of_cahokia } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:woodhenge_of_cahokia } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2884,11 +2884,11 @@ INJECT:woodhenge_of_cahokia = {
 # zazzau_walls uses basic_castle_maintenance
 INJECT:zazzau_walls = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:zazzau_walls } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:zazzau_walls } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2896,11 +2896,11 @@ INJECT:zazzau_walls = {
 # zeeland_admiralty uses port_building_maintenance
 INJECT:zeeland_admiralty = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:zeeland_admiralty } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:zeeland_admiralty } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2908,11 +2908,11 @@ INJECT:zeeland_admiralty = {
 # zhixian uses zhixian_maintenance
 INJECT:zhixian = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:zhixian } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:zhixian } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -2920,11 +2920,11 @@ INJECT:zhixian = {
 # zwinger uses early_capital_building_maintenance
 INJECT:zwinger = {
 	on_built = {
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:zwinger } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 	on_destroyed = {
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:zwinger } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }

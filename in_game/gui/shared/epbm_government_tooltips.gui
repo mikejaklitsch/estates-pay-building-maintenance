@@ -36,7 +36,7 @@ template Estate_tooltip {
 					visible = "[Not(Estate.GetType.IsAlwaysLoyal)]"
 					textcontext = "[Estate.GetEconomyInfo]"
 				}
-				### EPBM: Building Maintenance line (one per estate type, only matching shows)
+				### EPBM: Building Maintenance lines (one per estate type, only matching shows)
 				TooltipManualTableField = {
 					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('nobles_estate').GetType), Estate.GetCountry.MakeScope.GetVariable('epbm_pay_nobles').IsSet)]"
 					text_single = { text = "EPBM_ESTATE_MAINT_LABEL" }
@@ -91,6 +91,23 @@ template Estate_tooltip {
 					expand = {  }
 					text_single = {
 						raw_text = "-[Estate.GetCountry.MakeScope.GetVariable('epbm_pay_cossacks').GetValue|2]@gold!"
+					}
+				}
+				### EPBM: Fort Maintenance lines (nobles + dhimmi only)
+				TooltipManualTableField = {
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('nobles_estate').GetType), Estate.GetCountry.MakeScope.GetVariable('epbm_fort_pay_nobles').IsSet)]"
+					text_single = { text = "EPBM_FORT_MAINT_LABEL" }
+					expand = {  }
+					text_single = {
+						raw_text = "-[Estate.GetCountry.MakeScope.GetVariable('epbm_fort_pay_nobles').GetValue|2]@gold!"
+					}
+				}
+				TooltipManualTableField = {
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('dhimmi_estate').GetType), Estate.GetCountry.MakeScope.GetVariable('epbm_fort_pay_dhimmi').IsSet)]"
+					text_single = { text = "EPBM_FORT_MAINT_LABEL" }
+					expand = {  }
+					text_single = {
+						raw_text = "-[Estate.GetCountry.MakeScope.GetVariable('epbm_fort_pay_dhimmi').GetValue|2]@gold!"
 					}
 				}
 				### End EPBM

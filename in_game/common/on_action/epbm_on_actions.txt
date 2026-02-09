@@ -15,7 +15,7 @@ epbm_initialize_all = {
 	effect = {
 		# Stamp global PM goods maps + parent profile lookup
 		epbm_stamp_globals = yes
-		# Build each location's epbm_building_types list from existing buildings
+		# Build each location's tracking lists from existing buildings
 		every_location_in_the_world = {
 			limit = { is_ownable = yes }
 			epbm_initialize_location = yes
@@ -123,6 +123,29 @@ epbm_ai_yearly_recalc = {
 
 	effect = {
 		epbm_calculate_maintenance = yes
+	}
+}
+
+# ═══════════════════════════════════════════════
+# Monthly global pulse: clear cached PM costs so prices refresh
+# ═══════════════════════════════════════════════
+
+weather_monthly_pulse = {
+	on_actions = {
+		epbm_monthly_cache_clear
+	}
+}
+
+epbm_monthly_cache_clear = {
+	trigger = {
+		has_global_variable = epbm_initialized
+	}
+
+	effect = {
+		every_in_global_list = {
+			variable = epbm_all_ios
+			clear_variable_map = epbm_costs
+		}
 	}
 }
 

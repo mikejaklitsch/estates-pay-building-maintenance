@@ -101,13 +101,13 @@ REPLACE:bey_fortress = {
 		}
 	
 		# EPBM: Track building for maintenance
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bey_fortress } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 
 	on_destroyed = {
 		# EPBM: Untrack building
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:bey_fortress } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
@@ -164,7 +164,7 @@ REPLACE:monastery = {
 		}
 	
 		# EPBM: Track building for maintenance
-		location = { add_to_variable_list = { name = epbm_building_types target = building_type:monastery } }
+		location = { add_to_variable_list = { name = epbm_building_types target = prev } }
 		epbm_on_building_built = yes
 	}
 
@@ -178,7 +178,7 @@ REPLACE:monastery = {
 
 	on_destroyed = {
 		# EPBM: Untrack building
-		location = { remove_list_variable = { name = epbm_building_types target = building_type:monastery } }
+		location = { remove_list_variable = { name = epbm_building_types target = prev } }
 		epbm_on_building_destroyed = yes
 	}
 }
