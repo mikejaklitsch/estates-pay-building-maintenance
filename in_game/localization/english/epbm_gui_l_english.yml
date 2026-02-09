@@ -1,4 +1,5 @@
 ﻿l_english:
  EPBM_BUILDING_MAINTENANCE: "[building_maintenance|e]"
+ EPBM_ESTATE_MAINT_LABEL: "[building_maintenance|e] (low [control|e])"
  ESTATE_ECO_INFO_building: "Estate Building Maintenance: $VAL|+=2$@gold!"
  ESTATE_ECO_INFO_other: "Other (incl. maintenance): $VAL|+=2$@gold!"

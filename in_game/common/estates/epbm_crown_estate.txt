@@ -1,14 +1,13 @@
-﻿
+﻿# Negate vanilla crown_estate building_upkeep_costs so engine always charges 100%
+# Vanilla: low_power = 2.0, high_power = -1.0 → INJECT cancels both to 0
+# Estates reimburse the crown via script based on (1 - local_control)
+
 INJECT:crown_estate = {
 	low_power = {
-		building_upkeep_costs = -6.0
+		building_upkeep_costs = -2.0
 	}
 
 	high_power = {
-		building_upkeep_costs = 5.0
-	}
-
-	power = {
-		building_upkeep_costs = -3.0
+		building_upkeep_costs = 1.0
 	}
 }

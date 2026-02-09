@@ -1,0 +1,10 @@
+﻿# Estates Pay Building Maintenance - Country Modifiers
+# Applied via add_country_modifier, size adjusted monthly to match estate reimbursement
+
+epbm_estate_reimbursement = {
+	game_data = {
+		category = country
+	}
+
+	monthly_gold_income = 1
+}

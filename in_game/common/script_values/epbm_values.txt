@@ -1,7 +1,130 @@
 ﻿# Estates Pay Building Maintenance - Script Values
-# Global estate power for a specific estate (uses estate_power function)
-# Accessed from country scope with scope:current_estate saved
+# ═══════════════════════════════════════════════
+# Local estate tax share calculations (SUL method)
+# Power = num_pop_type * tax_weight
+# Share = estate_power / total_non_crown_power
+# Scope: location
+# ═══════════════════════════════════════════════
+# Tax base weights (from SUL tax_base_share calculation)
+@epbm_nobles_weight = 150
+@epbm_clergy_weight = 25
+@epbm_burghers_weight = 20
+@epbm_peasants_weight = 1
+@epbm_tribes_weight = 0.01
+# ═══════════════════════════════════════════════
+# Per-estate local tax power (location scope)
+# ═══════════════════════════════════════════════
 
-epbm_this_estate_global_power = {
-	value = "estate_power(scope:current_estate.estate_type)"
+epbm_local_nobles_power = {
+	value = num_pop_type:nobles
+	multiply = @epbm_nobles_weight
+}
+
+# Clergy pop type serves both clergy_estate and dhimmi_estate
+
+epbm_local_clergy_power = {
+	value = num_pop_type:clergy
+	multiply = @epbm_clergy_weight
+}
+
+epbm_local_burghers_power = {
+	value = num_pop_type:burghers
+	multiply = @epbm_burghers_weight
+}
+
+# Peasants estate aggregates: peasants + laborers + soldiers + slaves
+
+epbm_local_peasants_power = {
+	add = {
+		value = num_pop_type:peasants
+		multiply = @epbm_peasants_weight
+	}
+	add = {
+		value = num_pop_type:laborers
+		multiply = @epbm_peasants_weight
+	}
+	add = {
+		value = num_pop_type:soldiers
+		multiply = @epbm_peasants_weight
+	}
+	add = {
+		value = num_pop_type:slaves
+		multiply = @epbm_peasants_weight
+	}
+}
+
+# Tribesmen pop type serves both tribes_estate and cossacks_estate
+
+epbm_local_tribes_power = {
+	value = num_pop_type:tribesmen
+	multiply = @epbm_tribes_weight
+}
+
+# ═══════════════════════════════════════════════
+# Total non-crown power (location scope)
+# ═══════════════════════════════════════════════
+
+epbm_local_total_power = {
+	add = epbm_local_nobles_power
+	add = epbm_local_clergy_power
+	add = epbm_local_burghers_power
+	add = epbm_local_peasants_power
+	add = epbm_local_tribes_power
+	min = 0.001
+}
+
+# ═══════════════════════════════════════════════
+# Raw power shares (location scope, returns 0.0-1.0)
+# ═══════════════════════════════════════════════
+
+epbm_local_nobles_raw_share = {
+	value = epbm_local_nobles_power
+	divide = epbm_local_total_power
+}
+
+epbm_local_clergy_share = {
+	value = epbm_local_clergy_power
+	divide = epbm_local_total_power
+}
+
+epbm_local_burghers_share = {
+	value = epbm_local_burghers_power
+	divide = epbm_local_total_power
+}
+
+epbm_local_peasants_raw_share = {
+	value = epbm_local_peasants_power
+	divide = epbm_local_total_power
+}
+
+epbm_local_tribes_share = {
+	value = epbm_local_tribes_power
+	divide = epbm_local_total_power
+}
+
+# ═══════════════════════════════════════════════
+# Enfranchisement-adjusted shares (location scope)
+# Low enfranchisement transfers peasant share to nobles
+# Peasant effective = raw_share * enfranchisement
+# Noble effective = raw_share + peasant_raw * (1 - enfranchisement)
+# ═══════════════════════════════════════════════
+
+epbm_local_enfranchisement = {
+	value = modifier:local_peasant_enfranchisment
+	min = 0.1
+	max = 1.0
+}
+
+epbm_local_peasants_share = {
+	value = epbm_local_peasants_raw_share
+	multiply = epbm_local_enfranchisement
+}
+
+epbm_local_nobles_share = {
+	value = epbm_local_nobles_raw_share
+
+	add = {
+		value = epbm_local_peasants_raw_share
+		multiply = { value = 1 subtract = epbm_local_enfranchisement }
+	}
 }

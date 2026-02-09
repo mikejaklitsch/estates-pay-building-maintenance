@@ -100,13 +100,15 @@ REPLACE:bey_fortress = {
 			location = { trigger_event_non_silently = rise_of_the_ottomans.207 }
 		}
 	
-		# EPBM: Track maintenance goods
-		location = { epbm_add_bey_fortress_maintenance = yes }
+		# EPBM: Track building for maintenance
+		location = { add_to_variable_list = { name = epbm_building_types target = building_type:bey_fortress } }
+		epbm_on_building_built = yes
 	}
 
 	on_destroyed = {
-		# EPBM: Remove maintenance goods
-		location = { epbm_remove_bey_fortress_maintenance = yes }
+		# EPBM: Untrack building
+		location = { remove_list_variable = { name = epbm_building_types target = building_type:bey_fortress } }
+		epbm_on_building_destroyed = yes
 	}
 }
 
@@ -161,8 +163,9 @@ REPLACE:monastery = {
 			}
 		}
 	
-		# EPBM: Track maintenance goods
-		location = { epbm_add_monastery_maintenance = yes }
+		# EPBM: Track building for maintenance
+		location = { add_to_variable_list = { name = epbm_building_types target = building_type:monastery } }
+		epbm_on_building_built = yes
 	}
 
 	construction_demand = town_building_construction
@@ -174,7 +177,8 @@ REPLACE:monastery = {
 	}
 
 	on_destroyed = {
-		# EPBM: Remove maintenance goods
-		location = { epbm_remove_monastery_maintenance = yes }
+		# EPBM: Untrack building
+		location = { remove_list_variable = { name = epbm_building_types target = building_type:monastery } }
+		epbm_on_building_destroyed = yes
 	}
 }

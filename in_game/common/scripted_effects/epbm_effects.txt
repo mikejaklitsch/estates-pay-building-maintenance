@@ -1,216 +1,363 @@
 ﻿# Estates Pay Building Maintenance - Core Scripted Effects
 # ═══════════════════════════════════════════════
-# Note: add/remove/init good helpers are now inlined in generated PM effects
-# with hardcoded goods names (variable_map() does not support $PARAM$ substitution)
+# List-based architecture:
+#   international_organization:epbm_pm_{name} → variable map per PM profile (goods_ref → per_level_amount)
+#   global epbm_profiles → variable map (building_type → IO scope ref)
+#   location             → epbm_building_types variable list (building_type refs)
+#   country              → epbm_locations variable list (location refs)
 # ═══════════════════════════════════════════════
-# Initialization effects
 # ═══════════════════════════════════════════════
-# Initialize maintenance cache for a single location
+# Initialization
+# ═══════════════════════════════════════════════
+# Build a location's epbm_building_types list from existing buildings
 # Scope: location
-# The dispatch effect only matches qualifying (non-estate, non-foreign) buildings
 
 epbm_initialize_location = {
 	every_buildings_in_location = {
-		# Dispatches to correct PM init based on building_type
-		# Non-qualifying buildings simply don't match any case
-		epbm_init_building_maintenance = yes
+		epbm_init_building = yes
 	}
 }
 
-# Safety recalculation: clear and rebuild from scratch
-# Scope: location
-
-epbm_recalculate_location = {
-	clear_variable_map = epbm_maint
-	epbm_initialize_location = yes
-	remove_variable = epbm_needs_recalc
-}
-
-# ═══════════════════════════════════════════════
-# Monthly collection
-# ═══════════════════════════════════════════════
-# Main monthly effect: collect maintenance costs from estates
+# Build a country's epbm_locations list from owned locations
 # Scope: country
-# Accumulate gold cost of all cached maintenance goods at this location
-# Uses every_key_in_variable_map to dynamically iterate only existing goods
-# Scope: location
-# Writes to: local_var:epbm_loc_total (additive)
 
-epbm_accumulate_location_cost = {
-	# Caller guarantees has_variable_map = epbm_maint via iterator limit
-	save_temporary_scope_as = epbm_loc
+epbm_rebuild_location_lists = {
+	clear_variable_list = epbm_locations
 
-	market ?= {
-		save_temporary_scope_as = epbm_market
+	every_owned_location = {
+		limit = { has_variable_list = epbm_building_types }
+		save_temporary_scope_as = epbm_loc
+		prev = {
+			add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
+		}
+	}
+}
+
+# ═══════════════════════════════════════════════
+# Building event handlers (called from INJECT hooks)
+# ═══════════════════════════════════════════════
+# on_built handler: register location with owner country
+# Scope: building (INJECT already added building_type to location's list)
+
+epbm_on_building_built = {
+	location = {
+		save_temporary_scope_as = epbm_loc
 	}
 
-	every_key_in_variable_map = {
-		variable = epbm_maint
-		# this = goods reference (e.g., goods:stone), prev = location
-		# Read quantity by scoping back to location
-		scope:epbm_loc = {
-			set_local_variable = {
-				name = epbm_qty
-				value = "variable_map(epbm_maint|prev)"
+	owner ?= {
+		if = {
+			limit = {
+				NOT = {
+					is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
+				}
 			}
+			add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
 		}
-		# Back in goods scope - get market price * quantity
-		change_local_variable = {
-			name = epbm_loc_total
-			add = {
-				value = "price_in_market(scope:epbm_market)"
-				multiply = local_var:epbm_qty
+	}
+}
+
+# on_destroyed handler: clean up empty locations from country list
+# Scope: building (INJECT already removed building_type from location's list)
+
+epbm_on_building_destroyed = {
+	location = {
+		if = {
+			limit = {
+				NOT = {
+					has_variable_list = epbm_building_types
+				}
+			}
+			save_temporary_scope_as = epbm_loc
+			owner ?= {
+				remove_list_variable = { name = epbm_locations target = scope:epbm_loc }
 			}
 		}
 	}
 }
 
-epbm_collect_maintenance = {
-	# Calculate total maintenance cost across all owned locations
+# ═══════════════════════════════════════════════
+# Calculation: iterate tracked locations and buildings
+# Scope: country
+# Runs monthly for player, yearly for AI
+# Reads building_level and is_opened at scan time (handles level changes + closures)
+# Saves epbm_pay_* persistent variables and updates country modifier
+# ═══════════════════════════════════════════════
+
+epbm_calculate_maintenance = {
+	# Per-estate accumulators (5 pop-type groups covering all 7 estate types)
 	set_local_variable = {
-		name = epbm_country_total
+		name = epbm_accum_nobles
+		value = 0
+	}
+	set_local_variable = {
+		name = epbm_accum_clergy
+		value = 0
+	}
+	set_local_variable = {
+		name = epbm_accum_burghers
+		value = 0
+	}
+	set_local_variable = {
+		name = epbm_accum_peasants
+		value = 0
+	}
+	set_local_variable = {
+		name = epbm_accum_tribes
 		value = 0
 	}
 
-	# Only iterate locations with cached maintenance data
-	every_owned_location = {
-		limit = { has_variable_map = epbm_maint }
-		# Safety recalculation if flagged
-		if = {
-			limit = { has_variable = epbm_needs_recalc }
-			epbm_recalculate_location = yes
+	# Iterate tracked locations (skip 100% crown control — estate fraction would be 0)
+	every_in_list = {
+		variable = epbm_locations
+		limit = { local_control < 1 }
+		save_temporary_scope_as = epbm_loc
+		market ?= { save_temporary_scope_as = epbm_mkt }
+		set_local_variable = { name = epbm_loc_cost value = 0 }
+		# Iterate tracked building types at this location
+		every_in_list = {
+			variable = epbm_building_types
+			save_temporary_scope_as = epbm_bt
+			# Look up PM scope for this building type from global parent map
+			set_global_variable = {
+				name = epbm_pm_ref
+				value = "global_variable_map(epbm_profiles|scope:epbm_bt)"
+			}
+			# Find the actual building instance
+			scope:epbm_loc = {
+				every_buildings_in_location = {
+					limit = { building_type = scope:epbm_bt is_opened = yes }
+					save_temporary_scope_as = epbm_bldg
+					# Scope into PM and iterate its goods map
+					global_var:epbm_pm_ref = {
+						every_key_in_variable_map = {
+							variable = epbm_goods
+							# this = goods ref, prev = production_method scope
+							# Scope back to PM to rotate prev to goods key
+							global_var:epbm_pm_ref = {
+								# this = production_method, prev = goods
+								set_local_variable = {
+									name = epbm_qty
+									value = "variable_map(epbm_goods|prev)"
+								}
+							}
+							# Scale by building level
+							change_local_variable = {
+								name = epbm_qty
+								multiply = scope:epbm_bldg.building_level
+							}
+							# Add gold cost: qty * market price (this = goods scope)
+							change_local_variable = {
+								name = epbm_loc_cost
+								add = {
+									value = "price_in_market(scope:epbm_mkt)"
+									multiply = local_var:epbm_qty
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		# Accumulate gold cost of all cached goods at this location
-		set_local_variable = { name = epbm_loc_total value = 0 }
-		epbm_accumulate_location_cost = yes
-		# Add to country total (local vars are shared across the execution context)
+		# Apply estate fraction: (1 - control) of maintenance falls on estates
 		change_local_variable = {
-			name = epbm_country_total
-			add = local_var:epbm_loc_total
+			name = epbm_loc_cost
+			multiply = { value = 1 subtract = local_control }
+		}
+		# Distribute to per-estate accumulators by local tax share
+		change_local_variable = {
+			name = epbm_accum_nobles
+			add = { value = local_var:epbm_loc_cost multiply = epbm_local_nobles_share }
+		}
+		change_local_variable = {
+			name = epbm_accum_clergy
+			add = { value = local_var:epbm_loc_cost multiply = epbm_local_clergy_share }
+		}
+		change_local_variable = {
+			name = epbm_accum_burghers
+			add = { value = local_var:epbm_loc_cost multiply = epbm_local_burghers_share }
+		}
+		change_local_variable = {
+			name = epbm_accum_peasants
+			add = { value = local_var:epbm_loc_cost multiply = epbm_local_peasants_share }
+		}
+		change_local_variable = {
+			name = epbm_accum_tribes
+			add = { value = local_var:epbm_loc_cost multiply = epbm_local_tribes_share }
 		}
 	}
 
-	# Early exit if no maintenance costs
+	# Save per-estate monthly amounts (used by epbm_charge_estates)
+	set_variable = {
+		name = epbm_pay_nobles
+		value = local_var:epbm_accum_nobles
+	}
+	set_variable = {
+		name = epbm_pay_clergy
+		value = local_var:epbm_accum_clergy
+	}
+	set_variable = {
+		name = epbm_pay_burghers
+		value = local_var:epbm_accum_burghers
+	}
+	set_variable = {
+		name = epbm_pay_peasants
+		value = local_var:epbm_accum_peasants
+	}
+	set_variable = {
+		name = epbm_pay_tribes
+		value = local_var:epbm_accum_tribes
+	}
+
+	# Dhimmi/Cossacks share the clergy/tribes accumulators (same pop types)
+	# Set separate variables so GUI tooltips display correctly
 	if = {
-		limit = { local_var:epbm_country_total > 0 }
-		# Estate fraction = 1 - crown_power (linear: 100% at P=0, 0% at P=1)
-		set_local_variable = {
-			name = epbm_estate_fraction
-			value = { value = 1 subtract = "estate_power(estate_type:crown_estate)" }
+		limit = { any_estate = { estate_type = estate_type:dhimmi_estate } }
+		set_variable = { name = epbm_pay_dhimmi value = local_var:epbm_accum_clergy }
+	}
+	if = {
+		limit = { any_estate = { estate_type = estate_type:cossacks_estate } }
+		set_variable = {
+			name = epbm_pay_cossacks
+			value = local_var:epbm_accum_tribes
 		}
-		# Apply estate fraction to country total
-		change_local_variable = {
-			name = epbm_country_total
-			multiply = local_var:epbm_estate_fraction
-		}
-		# Calculate total non-crown estate power for distribution
-		set_local_variable = { name = epbm_non_crown_power value = 0 }
-		every_estate = {
-			limit = { estate_type != estate_type:crown_estate }
-			save_scope_as = current_estate
-			owner = {
-				change_local_variable = {
-					name = epbm_non_crown_power
-					add = "estate_power(scope:current_estate.estate_type)"
-				}
-			}
-		}
-		# Distribute maintenance costs to each non-crown estate proportional to power
-		if = {
-			limit = { local_var:epbm_non_crown_power > 0.01 }
-			every_estate = {
-				limit = { estate_type != estate_type:crown_estate }
-				save_scope_as = current_estate
-				owner = {
-					set_local_variable = {
-						name = epbm_estate_share
-						value = {
-							value = "estate_power(scope:current_estate.estate_type)"
-							divide = { value = local_var:epbm_non_crown_power min = 0.01 }
-						}
-					}
-					set_local_variable = {
-						name = epbm_estate_payment
-						value = {
-							value = local_var:epbm_country_total
-							multiply = local_var:epbm_estate_share
-						}
-					}
-					if = {
-						limit = { local_var:epbm_estate_payment > 0 }
-						add_gold_to_estate = {
-							estate_type = scope:current_estate.estate_type
-							value = local_var:epbm_estate_payment
-						}
-						# Save for GUI tooltip display
-						scope:current_estate = {
-							set_variable = {
-								name = epbm_maintenance
-								value = PREV.local_var:epbm_estate_payment
-							}
-						}
-						epbm_save_estate_payment = yes
-					}
-				}
-			}
+	}
+
+	# Update crown reimbursement modifier
+	set_local_variable = {
+		name = epbm_total
+		value = local_var:epbm_accum_nobles
+	}
+
+	change_local_variable = {
+		name = epbm_total
+		add = local_var:epbm_accum_clergy
+	}
+	change_local_variable = {
+		name = epbm_total
+		add = local_var:epbm_accum_burghers
+	}
+	change_local_variable = {
+		name = epbm_total
+		add = local_var:epbm_accum_peasants
+	}
+	change_local_variable = {
+		name = epbm_total
+		add = local_var:epbm_accum_tribes
+	}
+
+	remove_country_modifier = epbm_estate_reimbursement
+	if = {
+		limit = { local_var:epbm_total > 0 }
+		add_country_modifier = {
+			modifier = epbm_estate_reimbursement
+			days = -1
+			size = local_var:epbm_total
 		}
 	}
 }
 
 # ═══════════════════════════════════════════════
-# GUI payment variable helpers
+# Charging: apply saved per-estate monthly amounts
+# Scope: country
+# Cheap — runs monthly for both player and AI
+# Reads epbm_pay_* persistent variables set by epbm_calculate_maintenance
 # ═══════════════════════════════════════════════
-# Save current estate's payment to a named country variable for GUI access
-# Scope: country (with scope:current_estate and local_var:epbm_estate_payment set)
 
-epbm_save_estate_payment = {
+epbm_charge_estates = {
+	# Nobles
 	if = {
-		limit = { scope:current_estate = { estate_type = estate_type:nobles_estate } }
-		set_variable = {
-			name = epbm_pay_nobles
-			value = local_var:epbm_estate_payment
+		limit = {
+			has_variable = epbm_pay_nobles
+			var:epbm_pay_nobles > 0
+			any_estate = { estate_type = estate_type:nobles_estate }
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:nobles_estate
+			value = { value = var:epbm_pay_nobles multiply = -1 }
+		}
+	}
+
+	# Clergy or Dhimmi (mutually exclusive, same pop type accumulator)
+	if = {
+		limit = {
+			has_variable = epbm_pay_clergy
+			var:epbm_pay_clergy > 0
+			any_estate = { estate_type = estate_type:clergy_estate }
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:clergy_estate
+			value = { value = var:epbm_pay_clergy multiply = -1 }
 		}
 	}
 	else_if = {
-		limit = { scope:current_estate = { estate_type = estate_type:clergy_estate } }
-		set_variable = {
-			name = epbm_pay_clergy
-			value = local_var:epbm_estate_payment
+		limit = {
+			has_variable = epbm_pay_clergy
+			var:epbm_pay_clergy > 0
+			any_estate = { estate_type = estate_type:dhimmi_estate }
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:dhimmi_estate
+			value = { value = var:epbm_pay_clergy multiply = -1 }
+		}
+	}
+
+	# Burghers
+	if = {
+		limit = {
+			has_variable = epbm_pay_burghers
+			var:epbm_pay_burghers > 0
+			any_estate = { estate_type = estate_type:burghers_estate }
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:burghers_estate
+			value = { value = var:epbm_pay_burghers multiply = -1 }
+		}
+	}
+
+	# Peasants
+	if = {
+		limit = {
+			has_variable = epbm_pay_peasants
+			var:epbm_pay_peasants > 0
+			any_estate = { estate_type = estate_type:peasants_estate }
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:peasants_estate
+			value = { value = var:epbm_pay_peasants multiply = -1 }
+		}
+	}
+
+	# Tribes or Cossacks (mutually exclusive, same pop type accumulator)
+	if = {
+		limit = {
+			has_variable = epbm_pay_tribes
+			var:epbm_pay_tribes > 0
+			any_estate = { estate_type = estate_type:tribes_estate }
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:tribes_estate
+			value = { value = var:epbm_pay_tribes multiply = -1 }
 		}
 	}
 	else_if = {
-		limit = { scope:current_estate = { estate_type = estate_type:burghers_estate } }
-		set_variable = {
-			name = epbm_pay_burghers
-			value = local_var:epbm_estate_payment
+		limit = {
+			has_variable = epbm_pay_tribes
+			var:epbm_pay_tribes > 0
+			any_estate = { estate_type = estate_type:cossacks_estate }
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:cossacks_estate
+			value = { value = var:epbm_pay_tribes multiply = -1 }
 		}
 	}
-	else_if = {
-		limit = { scope:current_estate = { estate_type = estate_type:peasants_estate } }
-		set_variable = {
-			name = epbm_pay_peasants
-			value = local_var:epbm_estate_payment
-		}
-	}
-	else_if = {
-		limit = { scope:current_estate = { estate_type = estate_type:dhimmi_estate } }
-		set_variable = {
-			name = epbm_pay_dhimmi
-			value = local_var:epbm_estate_payment
-		}
-	}
-	else_if = {
-		limit = { scope:current_estate = { estate_type = estate_type:tribes_estate } }
-		set_variable = {
-			name = epbm_pay_tribes
-			value = local_var:epbm_estate_payment
-		}
-	}
-	else_if = {
-		limit = { scope:current_estate = { estate_type = estate_type:cossacks_estate } }
-		set_variable = {
-			name = epbm_pay_cossacks
-			value = local_var:epbm_estate_payment
-		}
-	}
+}
+
+# ═══════════════════════════════════════════════
+# Combined: calculate + charge (convenience for player monthly)
+# Scope: country
+# ═══════════════════════════════════════════════
+
+epbm_collect_maintenance = {
+	epbm_calculate_maintenance = yes
+	epbm_charge_estates = yes
 }

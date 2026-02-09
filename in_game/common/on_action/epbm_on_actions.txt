@@ -1,5 +1,9 @@
 ﻿# Estates Pay Building Maintenance - On Actions
-# Initialize maintenance cache for all locations on game start
+# ═══════════════════════════════════════════════
+# Initialization: stamp global PM maps, build location + country indexes
+# Monthly: player recalc+charge, AI charge only
+# Yearly: AI recalc, all countries rebuild location lists (self-correcting)
+# ═══════════════════════════════════════════════
 
 on_game_start = {
 	on_actions = {
@@ -9,25 +13,38 @@ on_game_start = {
 
 epbm_initialize_all = {
 	effect = {
+		# Stamp global PM goods maps + parent profile lookup
+		epbm_stamp_globals = yes
+		# Build each location's epbm_building_types list from existing buildings
 		every_location_in_the_world = {
 			limit = { is_ownable = yes }
 			epbm_initialize_location = yes
+		}
+		# Build each country's epbm_locations list and seed initial calculation
+		every_country = {
+			limit = {
+				is_real_country = yes
+				any_estate = { estate_type != estate_type:crown_estate }
+			}
+			epbm_rebuild_location_lists = yes
+			epbm_calculate_maintenance = yes
 		}
 		set_global_variable = { name = epbm_initialized value = yes }
 	}
 }
 
-# Monthly collection for player, yearly for AI (performance)
+# ═══════════════════════════════════════════════
+# Save-safe initialization: runs once on first pulse if flag is missing
+# Handles saves started before the mod was added
+# ═══════════════════════════════════════════════
 
 monthly_country_pulse = {
 	on_actions = {
 		epbm_ensure_initialized
-		epbm_player_collection
+		epbm_player_monthly
+		epbm_ai_monthly_charge
 	}
 }
-
-# Save-safe initialization: runs once on first pulse if flag is missing
-# Handles saves started before the mod was added
 
 epbm_ensure_initialized = {
 	trigger = {
@@ -37,15 +54,26 @@ epbm_ensure_initialized = {
 	}
 
 	effect = {
+		epbm_stamp_globals = yes
 		every_location_in_the_world = {
 			limit = { is_ownable = yes }
 			epbm_initialize_location = yes
+		}
+		every_country = {
+			limit = {
+				is_real_country = yes
+				any_estate = { estate_type != estate_type:crown_estate }
+			}
+			epbm_rebuild_location_lists = yes
+			epbm_calculate_maintenance = yes
 		}
 		set_global_variable = { name = epbm_initialized value = yes }
 	}
 }
 
-epbm_player_collection = {
+# Player: full recalculation + charge every month
+
+epbm_player_monthly = {
 	trigger = {
 		has_global_variable = epbm_initialized
 		is_ai = no
@@ -57,13 +85,9 @@ epbm_player_collection = {
 	}
 }
 
-yearly_country_pulse = {
-	on_actions = {
-		epbm_ai_collection
-	}
-}
+# AI: charge estates monthly using saved rates from last yearly calculation
 
-epbm_ai_collection = {
+epbm_ai_monthly_charge = {
 	trigger = {
 		has_global_variable = epbm_initialized
 		is_ai = yes
@@ -72,6 +96,46 @@ epbm_ai_collection = {
 	}
 
 	effect = {
-		epbm_collect_maintenance = yes
+		epbm_charge_estates = yes
+	}
+}
+
+# ═══════════════════════════════════════════════
+# Yearly pulse
+# ═══════════════════════════════════════════════
+
+yearly_country_pulse = {
+	on_actions = {
+		epbm_ai_yearly_recalc
+		epbm_yearly_rebuild
+	}
+}
+
+# AI: recalculate maintenance rates yearly (expensive iteration)
+
+epbm_ai_yearly_recalc = {
+	trigger = {
+		has_global_variable = epbm_initialized
+		is_ai = yes
+		is_real_country = yes
+		any_estate = { estate_type != estate_type:crown_estate }
+	}
+
+	effect = {
+		epbm_calculate_maintenance = yes
+	}
+}
+
+# All countries: rebuild location lists yearly (self-correcting for ownership changes)
+
+epbm_yearly_rebuild = {
+	trigger = {
+		has_global_variable = epbm_initialized
+		is_real_country = yes
+		any_estate = { estate_type != estate_type:crown_estate }
+	}
+
+	effect = {
+		epbm_rebuild_location_lists = yes
 	}
 }

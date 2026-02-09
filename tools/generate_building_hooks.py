@@ -3,10 +3,10 @@
 Generate Paradox script files for Estates Pay Building Maintenance mod.
 
 Parses base game building_types/ and production_methods/ to produce:
-  - epbm_generated_pm_effects.txt     (per-PM add/remove scripted effects)
-  - epbm_generated_inject.txt         (INJECT blocks for buildings without on_built)
-  - epbm_generated_replace.txt        (REPLACE blocks for buildings with on_built)
-  - epbm_generated_init_effects.txt   (init dispatch + per-PM init effects)
+  - epbm_generated_inject.txt         (INJECT blocks: list management on build/destroy)
+  - epbm_generated_replace.txt        (REPLACE blocks: same for buildings with existing on_built)
+  - epbm_generated_init_effects.txt   (IO creation + parent profile map + init dispatch)
+  - epbm_generated_ios.txt            (hidden international organizations as variable map hosts)
 """
 
 import os
@@ -22,6 +22,7 @@ PM_FILE = GAME_DIR / "common" / "production_methods" / "unsorted_building_inputs
 MOD_DIR = Path(r"/mnt/c/Users/Mjaklitsch/Documents/Paradox Interactive/Europa Universalis V/mod/Estates Pay Building Maintenance")
 OUT_EFFECTS = MOD_DIR / "in_game" / "common" / "scripted_effects"
 OUT_BUILDINGS = MOD_DIR / "in_game" / "common" / "building_types"
+OUT_IOS = MOD_DIR / "in_game" / "common" / "international_organizations"
 
 # Keys in PM definitions that are NOT goods
 PM_META_KEYS = {"category", "no_upkeep", "potential", "produced", "output"}
@@ -350,24 +351,29 @@ def read_raw_building_text(filepath, building_name):
     return None
 
 
-def inject_on_built_hook(raw_text, building_name, pm_name):
+def inject_on_built_hook(raw_text, building_name):
     """
-    For REPLACE buildings: insert our hook into the existing on_built block,
+    For REPLACE buildings: insert our list-management hook into existing on_built,
     and add on_destroyed if it doesn't exist.
-    Also renames inline unique_production_methods PM names to avoid duplicates
-    (prefix with epbm_) since REPLACE redefines the building but the engine
-    still sees the original PM name.
+    Also renames inline unique_production_methods PM names to avoid duplicates.
     Returns modified building text.
     """
-    add_effect = f"epbm_add_{pm_name}"
-    remove_effect = f"epbm_remove_{pm_name}"
+    bt_ref = f"building_type:{building_name}"
+    add_code = (
+        f"\n\t\t# EPBM: Track building for maintenance"
+        f"\n\t\tlocation = {{ add_to_variable_list = {{ name = epbm_building_types target = {bt_ref} }} }}"
+        f"\n\t\tepbm_on_building_built = yes"
+    )
+    remove_code = (
+        f"\n\t\t# EPBM: Untrack building"
+        f"\n\t\tlocation = {{ remove_list_variable = {{ name = epbm_building_types target = {bt_ref} }} }}"
+        f"\n\t\tepbm_on_building_destroyed = yes"
+    )
 
     # Rename inline PM names to avoid duplicate PM name errors
-    # Find unique_production_methods block and prefix PM names with epbm_
     upm_pattern = re.compile(r'unique_production_methods\s*=\s*\{')
     upm_match = upm_pattern.search(raw_text)
     if upm_match:
-        # Find all PM name definitions inside the block (name = {)
         brace_start = upm_match.end() - 1
         depth = 0
         i = brace_start
@@ -382,9 +388,7 @@ def inject_on_built_hook(raw_text, building_name, pm_name):
             i += 1
         else:
             upm_end = len(raw_text)
-        # Extract the UPM block and rename PM names within it
         upm_block = raw_text[upm_match.start():upm_end]
-        # Find PM definitions: word followed by = {
         pm_def_pattern = re.compile(r'(\t\t)(\w+)(\s*=\s*\{)')
         def rename_pm(m):
             name = m.group(2)
@@ -398,7 +402,6 @@ def inject_on_built_hook(raw_text, building_name, pm_name):
     on_built_pattern = re.compile(r'(on_built\s*=\s*\{)')
     match = on_built_pattern.search(raw_text)
     if match:
-        # Find the matching closing brace for on_built
         brace_start = match.end() - 1
         depth = 0
         i = brace_start
@@ -408,20 +411,16 @@ def inject_on_built_hook(raw_text, building_name, pm_name):
             elif raw_text[i] == '}':
                 depth -= 1
                 if depth == 0:
-                    # Insert our hook before the closing brace
-                    inject = f"\n\t\t# EPBM: Track maintenance goods\n\t\tlocation = {{ {add_effect} = yes }}"
-                    raw_text = raw_text[:i] + inject + "\n\t" + raw_text[i:]
+                    raw_text = raw_text[:i] + add_code + "\n\t" + raw_text[i:]
                     break
             i += 1
 
     # Add on_destroyed if not present
     if 'on_destroyed' not in raw_text:
-        # Find the final closing brace of the building
         last_brace = raw_text.rindex('}')
-        on_destroyed = f"\n\ton_destroyed = {{\n\t\t# EPBM: Remove maintenance goods\n\t\tlocation = {{ {remove_effect} = yes }}\n\t}}"
+        on_destroyed = f"\n\ton_destroyed = {{{remove_code}\n\t}}"
         raw_text = raw_text[:last_brace] + on_destroyed + "\n" + raw_text[last_brace:]
     else:
-        # Inject into existing on_destroyed
         on_destroyed_pattern = re.compile(r'(on_destroyed\s*=\s*\{)')
         match = on_destroyed_pattern.search(raw_text)
         if match:
@@ -434,8 +433,7 @@ def inject_on_built_hook(raw_text, building_name, pm_name):
                 elif raw_text[i] == '}':
                     depth -= 1
                     if depth == 0:
-                        inject = f"\n\t\t# EPBM: Remove maintenance goods\n\t\tlocation = {{ {remove_effect} = yes }}"
-                        raw_text = raw_text[:i] + inject + "\n\t" + raw_text[i:]
+                        raw_text = raw_text[:i] + remove_code + "\n\t" + raw_text[i:]
                         break
                 i += 1
 
@@ -446,75 +444,11 @@ def inject_on_built_hook(raw_text, building_name, pm_name):
 # Code generation
 # ─────────────────────────────────────────────
 
-def _emit_add_good(lines, good, amount, indent="\t"):
-    """Emit inlined add-good logic for a single hardcoded good."""
-    i = indent
-    lines.append(f"{i}if = {{")
-    lines.append(f"{i}\tlimit = {{ has_variable_map = epbm_maint is_key_in_variable_map = {{ name = epbm_maint target = goods:{good} }} }}")
-    lines.append(f'{i}\tset_local_variable = {{ name = epbm_temp value = "variable_map(epbm_maint|goods:{good})" }}')
-    lines.append(f"{i}\tchange_local_variable = {{ name = epbm_temp add = {amount} }}")
-    lines.append(f"{i}\tadd_to_variable_map = {{ name = epbm_maint key = goods:{good} value = local_var:epbm_temp }}")
-    lines.append(f"{i}}}")
-    lines.append(f"{i}else = {{")
-    lines.append(f"{i}\tadd_to_variable_map = {{ name = epbm_maint key = goods:{good} value = {amount} }}")
-    lines.append(f"{i}}}")
-
-
-def _emit_remove_good(lines, good, amount, indent="\t"):
-    """Emit inlined remove-good logic for a single hardcoded good."""
-    i = indent
-    lines.append(f"{i}if = {{")
-    lines.append(f"{i}\tlimit = {{ has_variable_map = epbm_maint is_key_in_variable_map = {{ name = epbm_maint target = goods:{good} }} }}")
-    lines.append(f'{i}\tset_local_variable = {{ name = epbm_temp value = "variable_map(epbm_maint|goods:{good})" }}')
-    lines.append(f"{i}\tchange_local_variable = {{ name = epbm_temp subtract = {amount} }}")
-    lines.append(f"{i}\tif = {{ limit = {{ local_var:epbm_temp < 0 }} set_local_variable = {{ name = epbm_temp value = 0 }} }}")
-    lines.append(f"{i}\tadd_to_variable_map = {{ name = epbm_maint key = goods:{good} value = local_var:epbm_temp }}")
-    lines.append(f"{i}}}")
-    lines.append(f"{i}else = {{")
-    lines.append(f"{i}\tset_variable = {{ name = epbm_needs_recalc value = 1 }}")
-    lines.append(f"{i}}}")
-
-
-def generate_pm_effects(all_pm_goods, pm_to_buildings):
-    """Generate epbm_generated_pm_effects.txt with inlined variable map logic."""
-    lines = [
-        "# Auto-generated by tools/generate_building_hooks.py",
-        "# Per-PM scripted effects for add/remove maintenance goods",
-        "# Uses hardcoded goods names to avoid $PARAM$ issues with variable_map()",
-        "",
-    ]
-
-    for pm_name, goods in sorted(all_pm_goods.items()):
-        buildings_using = pm_to_buildings.get(pm_name, [])
-        goods_comment = ", ".join(f"{g} {a}" for g, a in goods.items())
-
-        lines.append(f"# {pm_name}")
-        if buildings_using:
-            lines.append(f"# Used by: {', '.join(sorted(buildings_using))}")
-        lines.append(f"# Goods: {goods_comment}")
-
-        # Add effect
-        lines.append(f"epbm_add_{pm_name} = {{")
-        for good, amount in goods.items():
-            _emit_add_good(lines, good, amount)
-        lines.append("}")
-        lines.append("")
-
-        # Remove effect
-        lines.append(f"epbm_remove_{pm_name} = {{")
-        for good, amount in goods.items():
-            _emit_remove_good(lines, good, amount)
-        lines.append("}")
-        lines.append("")
-
-    return "\n".join(lines)
-
-
 def generate_inject(qualifying, buildings):
     """Generate epbm_generated_inject.txt (INJECT blocks for buildings without on_built)."""
     lines = [
         "# Auto-generated by tools/generate_building_hooks.py",
-        "# INJECT blocks for building on_built/on_destroyed hooks",
+        "# INJECT blocks: manage location tracking list on build/destroy",
         "",
     ]
 
@@ -523,20 +457,25 @@ def generate_inject(qualifying, buildings):
         if b['has_on_built'] or b['has_on_destroyed']:
             continue  # These go in REPLACE file
 
-        add_effect = f"epbm_add_{pm_name}"
-        remove_effect = f"epbm_remove_{pm_name}"
+        bt_ref = f"building_type:{bname}"
 
         lines.append(f"# {bname} uses {pm_name}")
         lines.append(f"INJECT:{bname} = {{")
-        lines.append(f"\ton_built = {{ location = {{ {add_effect} = yes }} }}")
-        lines.append(f"\ton_destroyed = {{ location = {{ {remove_effect} = yes }} }}")
+        lines.append(f"\ton_built = {{")
+        lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = epbm_building_types target = {bt_ref} }} }}")
+        lines.append(f"\t\tepbm_on_building_built = yes")
+        lines.append(f"\t}}")
+        lines.append(f"\ton_destroyed = {{")
+        lines.append(f"\t\tlocation = {{ remove_list_variable = {{ name = epbm_building_types target = {bt_ref} }} }}")
+        lines.append(f"\t\tepbm_on_building_destroyed = yes")
+        lines.append(f"\t}}")
         lines.append("}")
         lines.append("")
 
     return "\n".join(lines)
 
 
-def generate_replace(qualifying, buildings, all_pm_goods):
+def generate_replace(qualifying, buildings):
     """Generate epbm_generated_replace.txt (REPLACE blocks for buildings with existing on_built)."""
     lines = [
         "# Auto-generated by tools/generate_building_hooks.py",
@@ -555,7 +494,7 @@ def generate_replace(qualifying, buildings, all_pm_goods):
             lines.append("")
             continue
 
-        modified = inject_on_built_hook(raw, bname, pm_name)
+        modified = inject_on_built_hook(raw, bname)
         lines.append(f"# {bname} uses {pm_name} (REPLACE due to existing on_built)")
         lines.append(f"REPLACE:{modified}")
         lines.append("")
@@ -563,59 +502,91 @@ def generate_replace(qualifying, buildings, all_pm_goods):
     return "\n".join(lines)
 
 
-def _emit_init_good(lines, good, amount, indent="\t"):
-    """Emit inlined init-good logic: multiply amount by building level, add to map."""
-    i = indent
-    # prev = the building being iterated
-    # Calculate amount * building_level, accumulate with existing value
-    # (multiple buildings at same location can share goods)
-    lines.append(f"{i}set_local_variable = {{")
-    lines.append(f"{i}\tname = epbm_temp")
-    lines.append(f"{i}\tvalue = {{ value = {amount} multiply = prev.building_level }}")
-    lines.append(f"{i}}}")
-    lines.append(f"{i}if = {{")
-    lines.append(f"{i}\tlimit = {{ has_variable_map = epbm_maint is_key_in_variable_map = {{ name = epbm_maint target = goods:{good} }} }}")
-    lines.append(f"{i}\tchange_local_variable = {{ name = epbm_temp add = \"variable_map(epbm_maint|goods:{good})\" }}")
-    lines.append(f"{i}}}")
-    lines.append(f"{i}add_to_variable_map = {{ name = epbm_maint key = goods:{good} value = local_var:epbm_temp }}")
-
-
-def generate_init_effects(qualifying, all_pm_goods, buildings):
-    """Generate epbm_generated_init_effects.txt with inlined variable map logic."""
+def generate_io_definitions(all_pm_goods):
+    """
+    Generate epbm_generated_ios.txt:
+    Hidden international organizations, one per unique PM profile.
+    Each IO hosts an epbm_goods variable map (goods_ref -> per_level_amount),
+    populated at creation time via the create_international_organization block.
+    """
     lines = [
         "# Auto-generated by tools/generate_building_hooks.py",
-        "# Initialization effects for game start",
-        "# Uses hardcoded goods names to avoid $PARAM$ issues with variable_map()",
+        "# Hidden international organizations used as variable map containers.",
+        "# Each IO hosts an epbm_goods variable map for one PM profile.",
         "",
     ]
 
-    # Per-PM init effects (multiply goods by building level)
-    generated_pms = set()
-    for bname, pm_name, _ in qualifying:
-        if pm_name in generated_pms:
-            continue
-        generated_pms.add(pm_name)
-
-        goods = all_pm_goods[pm_name]
-        lines.append(f"# Init effect for {pm_name}")
-        lines.append(f"epbm_init_{pm_name} = {{")
-        for good, amount in goods.items():
-            _emit_init_good(lines, good, amount)
+    for pm_name in sorted(all_pm_goods.keys()):
+        io_name = f"epbm_pm_{pm_name}"
+        lines.append(f"{io_name} = {{")
+        lines.append("\tunique = yes")
+        lines.append("\thas_target = no")
+        lines.append("\tshow_on_diplomatic_map = no")
+        lines.append("\tcreate_visible_trigger = { always = no }")
+        lines.append("\tauto_disband_trigger = { always = no }")
         lines.append("}")
         lines.append("")
 
-    # Dispatch effect: routes building_type -> correct init
-    lines.append("# Dispatch effect: called per building during init scan")
-    lines.append("# Scope: building, location accessible via 'location'")
-    lines.append("epbm_init_building_maintenance = {")
+    return "\n".join(lines)
+
+
+def generate_init_effects(qualifying, all_pm_goods, buildings):
+    """
+    Generate epbm_generated_init_effects.txt:
+    1. epbm_stamp_globals: creates PM IOs + stamps parent building_type->IO map
+    2. epbm_init_building: dispatch that adds building_type to location list (game start)
+    """
+    lines = [
+        "# Auto-generated by tools/generate_building_hooks.py",
+        "# IO creation + parent profile lookup + init dispatch",
+        "",
+    ]
+
+    # ── Part 1: Create IOs and stamp parent profile map ──
+    lines.append("# Create PM international organizations and populate their goods maps,")
+    lines.append("# then stamp global parent map epbm_profiles (building_type -> IO scope).")
+    lines.append("# Called once at game start.")
+    lines.append("epbm_stamp_globals = {")
+    lines.append("\t# Create all PM IOs and populate goods maps inside creation scope")
+    lines.append("\trandom_country = {")
+    lines.append("\t\tlimit = { is_real_country = yes }")
+
+    for pm_name in sorted(all_pm_goods.keys()):
+        goods = all_pm_goods[pm_name]
+        io_type = f"international_organization_type:epbm_pm_{pm_name}"
+        goods_str = ", ".join(f"{g} {a}" for g, a in goods.items())
+        lines.append(f"\t\t# PM: {pm_name} ({goods_str})")
+        lines.append(f"\t\tcreate_international_organization = {{")
+        lines.append(f"\t\t\ttype = {io_type}")
+        for good, amount in goods.items():
+            lines.append(f"\t\t\tadd_to_variable_map = {{ name = epbm_goods key = goods:{good} value = {amount} }}")
+        lines.append("\t\t}")
+
+    lines.append("\t}")
+    lines.append("")
+    lines.append("\t# Parent map: building_type -> IO scope")
+
+    for bname, pm_name, _ in sorted(qualifying, key=lambda x: x[0]):
+        bt_ref = f"building_type:{bname}"
+        io_ref = f"international_organization:epbm_pm_{pm_name}"
+        lines.append(f"\tadd_to_global_variable_map = {{ name = epbm_profiles key = {bt_ref} value = {io_ref} }}")
+
+    lines.append("}")
+    lines.append("")
+
+    # ── Part 2: Init dispatch for pre-existing buildings ──
+    lines.append("# Init dispatch: add building_type to location list for pre-existing buildings")
+    lines.append("# Scope: building (called via every_buildings_in_location)")
+    lines.append("epbm_init_building = {")
 
     first = True
     for bname, pm_name, _ in sorted(qualifying, key=lambda x: x[0]):
         keyword = "if" if first else "else_if"
         first = False
+        bt_ref = f"building_type:{bname}"
         lines.append(f"\t{keyword} = {{")
-        lines.append(f"\t\tlimit = {{ building_type = building_type:{bname} }}")
-        lines.append(f"\t\tlocation = {{ epbm_init_{pm_name} = yes }}")
+        lines.append(f"\t\tlimit = {{ building_type = {bt_ref} }}")
+        lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = epbm_building_types target = {bt_ref} }} }}")
         lines.append("\t}")
 
     lines.append("}")
@@ -643,7 +614,7 @@ def main():
     print("\nClassifying qualifying buildings...")
     qualifying, all_pm_goods = classify(buildings, pms)
     print(f"  Qualifying buildings: {len(qualifying)}")
-    print(f"  Unique PM effect pairs needed: {len(all_pm_goods)}")
+    print(f"  Unique PM goods profiles: {len(all_pm_goods)}")
 
     # Build reverse map: pm_name -> list of building names
     pm_to_buildings = {}
@@ -658,7 +629,6 @@ def main():
     print(f"  INJECT buildings: {inject_count}")
     print(f"  REPLACE buildings: {replace_count}")
 
-    # List REPLACE buildings
     if replace_count > 0:
         replace_buildings = [b for b, _, _ in qualifying
                             if buildings[b]['has_on_built'] or buildings[b]['has_on_destroyed']]
@@ -667,19 +637,20 @@ def main():
     # Generate files
     print("\nGenerating files...")
 
-    pm_effects = generate_pm_effects(all_pm_goods, pm_to_buildings)
-    out_path = OUT_EFFECTS / "epbm_generated_pm_effects.txt"
-    out_path.write_text(pm_effects, encoding="utf-8-sig")
-    print(f"  Wrote {out_path.name}")
-
     inject_code = generate_inject(qualifying, buildings)
     out_path = OUT_BUILDINGS / "epbm_generated_inject.txt"
     out_path.write_text(inject_code, encoding="utf-8-sig")
     print(f"  Wrote {out_path.name}")
 
-    replace_code = generate_replace(qualifying, buildings, all_pm_goods)
+    replace_code = generate_replace(qualifying, buildings)
     out_path = OUT_BUILDINGS / "epbm_generated_replace.txt"
     out_path.write_text(replace_code, encoding="utf-8-sig")
+    print(f"  Wrote {out_path.name}")
+
+    io_defs = generate_io_definitions(all_pm_goods)
+    OUT_IOS.mkdir(parents=True, exist_ok=True)
+    out_path = OUT_IOS / "epbm_generated_ios.txt"
+    out_path.write_text(io_defs, encoding="utf-8-sig")
     print(f"  Wrote {out_path.name}")
 
     init_effects = generate_init_effects(qualifying, all_pm_goods, buildings)
@@ -690,11 +661,16 @@ def main():
     # Summary
     print("\n=== Summary ===")
     print(f"Total qualifying buildings: {len(qualifying)}")
-    print(f"PM effect pairs generated: {len(all_pm_goods)}")
+    print(f"Unique PM goods profiles: {len(all_pm_goods)}")
     print(f"INJECT blocks: {inject_count}")
     print(f"REPLACE blocks: {replace_count}")
 
-    # Show PM -> buildings mapping
+    # Count unique goods across all PMs
+    all_goods = set()
+    for goods in all_pm_goods.values():
+        all_goods.update(goods.keys())
+    print(f"Distinct maintenance goods: {len(all_goods)} ({', '.join(sorted(all_goods))})")
+
     print("\n=== PM to Buildings Mapping ===")
     for pm_name in sorted(all_pm_goods.keys()):
         blist = pm_to_buildings.get(pm_name, [])
