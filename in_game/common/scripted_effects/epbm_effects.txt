@@ -95,6 +95,51 @@ epbm_on_building_destroyed = {
 }
 
 # ═══════════════════════════════════════════════
+# PM cost lookup with lazy market cache
+# Scope: international_organization (PM IO via global_var:epbm_pm_ref)
+# Requires: scope:epbm_mkt (market ref for price lookup)
+# Sets: local_var:epbm_pm_cost (total goods cost per building level)
+# Cache: epbm_costs variable map on IO (market → cost), cleared monthly
+# ═══════════════════════════════════════════════
+
+epbm_lookup_pm_cost = {
+	if = {
+		limit = {
+			has_variable_map = epbm_costs
+			is_key_in_variable_map = { name = epbm_costs target = scope:epbm_mkt }
+		}
+		set_local_variable = {
+			name = epbm_pm_cost
+			value = "variable_map(epbm_costs|scope:epbm_mkt)"
+		}
+	}
+	else = {
+		set_local_variable = { name = epbm_pm_cost value = 0 }
+		every_key_in_variable_map = {
+			variable = epbm_goods
+			global_var:epbm_pm_ref = {
+				set_local_variable = {
+					name = epbm_qty
+					value = "variable_map(epbm_goods|prev)"
+				}
+			}
+			change_local_variable = {
+				name = epbm_pm_cost
+				add = {
+					value = "price_in_market(scope:epbm_mkt)"
+					multiply = local_var:epbm_qty
+				}
+			}
+		}
+		add_to_variable_map = {
+			name = epbm_costs
+			key = scope:epbm_mkt
+			value = local_var:epbm_pm_cost
+		}
+	}
+}
+
+# ═══════════════════════════════════════════════
 # Calculation: iterate tracked locations and buildings
 # Scope: country
 # Runs monthly for player, yearly for AI
@@ -162,46 +207,8 @@ epbm_calculate_maintenance = {
 				name = epbm_pm_ref
 				value = "global_variable_map(epbm_profiles|scope:epbm_bt)"
 			}
-			global_var:epbm_pm_ref = {
-				if = {
-					limit = {
-						has_variable_map = epbm_costs
-						is_key_in_variable_map = { name = epbm_costs target = scope:epbm_mkt }
-					}
-					# Cached — read directly
-					set_local_variable = {
-						name = epbm_pm_cost
-						value = "variable_map(epbm_costs|scope:epbm_mkt)"
-					}
-				}
-				else = {
-					# Not cached — compute sum(qty × market price)
-					set_local_variable = { name = epbm_pm_cost value = 0 }
-					every_key_in_variable_map = {
-						variable = epbm_goods
-						global_var:epbm_pm_ref = {
-							set_local_variable = {
-								name = epbm_qty
-								value = "variable_map(epbm_goods|prev)"
-							}
-						}
-						change_local_variable = {
-							name = epbm_pm_cost
-							add = {
-								value = "price_in_market(scope:epbm_mkt)"
-								multiply = local_var:epbm_qty
-							}
-						}
-					}
-					# Cache it
-					add_to_variable_map = {
-						name = epbm_costs
-						key = scope:epbm_mkt
-						value = local_var:epbm_pm_cost
-					}
-				}
-			}
-			# Apply cached cost × building level
+			global_var:epbm_pm_ref = { epbm_lookup_pm_cost = yes }
+			# Apply PM cost × building level
 			change_local_variable = {
 				name = epbm_loc_cost
 				add = {
@@ -221,46 +228,8 @@ epbm_calculate_maintenance = {
 				name = epbm_pm_ref
 				value = "global_variable_map(epbm_profiles|scope:epbm_bt)"
 			}
-			global_var:epbm_pm_ref = {
-				if = {
-					limit = {
-						has_variable_map = epbm_costs
-						is_key_in_variable_map = { name = epbm_costs target = scope:epbm_mkt }
-					}
-					# Cached — read directly
-					set_local_variable = {
-						name = epbm_pm_cost
-						value = "variable_map(epbm_costs|scope:epbm_mkt)"
-					}
-				}
-				else = {
-					# Not cached — compute sum(qty × market price)
-					set_local_variable = { name = epbm_pm_cost value = 0 }
-					every_key_in_variable_map = {
-						variable = epbm_goods
-						global_var:epbm_pm_ref = {
-							set_local_variable = {
-								name = epbm_qty
-								value = "variable_map(epbm_goods|prev)"
-							}
-						}
-						change_local_variable = {
-							name = epbm_pm_cost
-							add = {
-								value = "price_in_market(scope:epbm_mkt)"
-								multiply = local_var:epbm_qty
-							}
-						}
-					}
-					# Cache it
-					add_to_variable_map = {
-						name = epbm_costs
-						key = scope:epbm_mkt
-						value = local_var:epbm_pm_cost
-					}
-				}
-			}
-			# Apply cached cost × building level
+			global_var:epbm_pm_ref = { epbm_lookup_pm_cost = yes }
+			# Apply PM cost × building level
 			change_local_variable = {
 				name = epbm_fort_cost
 				add = {

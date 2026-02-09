@@ -1,6 +1,6 @@
 ﻿l_english:
  EPBM_BUILDING_MAINTENANCE: "[building_maintenance|e]"
- EPBM_ESTATE_MAINT_LABEL: " - @building_maintenance! From Estate Share of Building Maintenance"
- EPBM_FORT_MAINT_LABEL: " - @building_maintenance! From Estate Share of Fort Maintenance"
- ESTATE_ECO_INFO_building: "Estate Building Maintenance: $VAL|+=2$@gold!"
+ EPBM_ESTATE_MAINT_LABEL: " - @building_maintenance! From [epbm_estate_building_maintenance|E]"
+ EPBM_FORT_MAINT_LABEL: " - @building_maintenance! From [epbm_estate_fort_maintenance|E]"
+ ESTATE_ECO_INFO_building: "[epbm_estate_building_maintenance|E]: $VAL|+=2$@gold!"
  ESTATE_ECO_INFO_other: "Other (incl. maintenance): $VAL|+=2$@gold!"

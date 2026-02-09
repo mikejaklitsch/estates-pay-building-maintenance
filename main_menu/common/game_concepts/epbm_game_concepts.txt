@@ -1,0 +1,8 @@
+﻿
+epbm_estate_building_maintenance = {
+	texture = "flat_icons/building_panel/building_maintenance"
+}
+
+epbm_estate_fort_maintenance = {
+	texture = "flat_icons/balance/cost_of_fort"
+}

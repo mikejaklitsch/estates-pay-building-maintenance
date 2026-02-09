@@ -1,3 +1,7 @@
 ﻿l_english:
- STATIC_MODIFIER_NAME_epbm_estate_reimbursement: "Estate Building Maintenance Reimbursement"
- STATIC_MODIFIER_NAME_epbm_fort_reimbursement: "Estate Fort Maintenance Reimbursement"
+ STATIC_MODIFIER_NAME_epbm_estate_reimbursement: "[epbm_estate_building_maintenance|E] Reimbursement"
+ STATIC_MODIFIER_NAME_epbm_fort_reimbursement: "[epbm_estate_fort_maintenance|E] Reimbursement"
+ game_concept_epbm_estate_building_maintenance: "Estate Building Maintenance"
+ game_concept_epbm_estate_building_maintenance_desc: "[estates|E] pay a share of [building_maintenance|E] in each [location|E] based on pop tax burden, weighted by inverted [control|E]. This amount is reimbursed to the crown as [income|e]."
+ game_concept_epbm_estate_fort_maintenance: "Estate Fort Maintenance"
+ game_concept_epbm_estate_fort_maintenance_desc: "The Nobles and Nobles within the Dhimmi [estates|E] pay a share of [fort_maintenance|E] in each [location|E], weighted by inverted [control|E]. This amount is reimbursed to the crown as [income|e]."
