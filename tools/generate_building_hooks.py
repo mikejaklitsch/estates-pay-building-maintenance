@@ -19,7 +19,7 @@ from pathlib import Path
 GAME_DIR = Path(r"/mnt/c/SteamLibrary/steamapps/common/Europa Universalis V/game/in_game")
 BUILDING_DIR = GAME_DIR / "common" / "building_types"
 PM_FILE = GAME_DIR / "common" / "production_methods" / "unsorted_building_inputs.txt"
-MOD_DIR = Path(r"/mnt/c/Users/Mjaklitsch/Documents/Paradox Interactive/Europa Universalis V/mod/Estates Pay Building Maintenance")
+MOD_DIR = Path(__file__).resolve().parent.parent
 OUT_EFFECTS = MOD_DIR / "in_game" / "common" / "scripted_effects"
 OUT_BUILDINGS = MOD_DIR / "in_game" / "common" / "building_types"
 OUT_IOS = MOD_DIR / "in_game" / "common" / "international_organizations"
@@ -240,11 +240,19 @@ def parse_all_buildings():
                     except (ValueError, TypeError):
                         pass
 
+            # Detect trade capacity modifiers in modifier block
+            has_trade_capacity = False
+            if isinstance(modifier_block, dict):
+                if ('local_merchant_capacity' in modifier_block or
+                        'merchant_capacity_from_building' in modifier_block):
+                    has_trade_capacity = True
+
             b = {
                 'file': f,
                 'estate': block.get('estate'),
                 'is_foreign': block.get('is_foreign') == 'yes',
                 'is_fort': fort_level > 0,
+                'has_trade_capacity': has_trade_capacity,
                 'fort_level': fort_level,
                 'garrison_size': garrison_size,
                 'has_on_built': 'on_built' in block,
@@ -295,13 +303,14 @@ def classify(buildings, pms):
     Determine which buildings qualify for maintenance tracking.
     A building qualifies if:
       - No estate = X assignment
-      - Not is_foreign = yes
       - Has at least one qualifying PM (category=building_maintenance, has goods, no no_upkeep, no output)
 
     Returns:
-      qualifying: list of (building_name, pm_name, pm_source, is_fort) tuples
+      qualifying: list of (building_name, pm_name, pm_source, is_fort, is_trade, is_foreign) tuples
         pm_source = 'external' | 'inline'
         is_fort = True if building has fort_level > 0 in raw_modifier
+        is_trade = True if building has trade capacity modifiers (and not foreign)
+        is_foreign = True if building has is_foreign = yes
       all_pm_goods: dict pm_name -> OrderedDict(good->amount)
     """
     qualifying = []
@@ -309,8 +318,6 @@ def classify(buildings, pms):
 
     for bname, b in buildings.items():
         if b['estate'] is not None:
-            continue
-        if b['is_foreign']:
             continue
 
         # Check external PMs
@@ -340,7 +347,8 @@ def classify(buildings, pms):
                 all_pm_goods[pm_name] = pm_data['goods']
 
         if best_pm:
-            qualifying.append((bname, best_pm[0], best_pm[1], b['is_fort']))
+            is_trade = b['has_trade_capacity'] and not b['is_foreign']
+            qualifying.append((bname, best_pm[0], best_pm[1], b['is_fort'], is_trade, b['is_foreign']))
 
     return qualifying, all_pm_goods
 
@@ -479,14 +487,22 @@ def generate_inject(qualifying, buildings):
         "",
     ]
 
-    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort, is_trade, is_foreign in sorted(qualifying, key=lambda x: x[0]):
         b = buildings[bname]
+        if is_foreign:
+            continue  # Foreign buildings don't get list hooks
         if b['has_on_built'] or b['has_on_destroyed']:
             continue  # These go in REPLACE file
 
-        list_name = "epbm_fort_types" if is_fort else "epbm_building_types"
+        if is_trade:
+            list_name = "epbm_trade_types"
+        elif is_fort:
+            list_name = "epbm_fort_types"
+        else:
+            list_name = "epbm_building_types"
 
-        lines.append(f"# {bname} uses {pm_name}{' (fort)' if is_fort else ''}")
+        tag = ' (trade)' if is_trade else (' (fort)' if is_fort else '')
+        lines.append(f"# {bname} uses {pm_name}{tag}")
         lines.append(f"INJECT:{bname} = {{")
         lines.append(f"\ton_built = {{")
         lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = {list_name} target = prev }} }}")
@@ -510,8 +526,10 @@ def generate_replace(qualifying, buildings):
         "",
     ]
 
-    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort, is_trade, is_foreign in sorted(qualifying, key=lambda x: x[0]):
         b = buildings[bname]
+        if is_foreign:
+            continue  # Foreign buildings don't get list hooks
         if not b['has_on_built'] and not b['has_on_destroyed']:
             continue  # These go in INJECT file
 
@@ -521,9 +539,16 @@ def generate_replace(qualifying, buildings):
             lines.append("")
             continue
 
-        list_name = "epbm_fort_types" if is_fort else "epbm_building_types"
+        if is_trade:
+            list_name = "epbm_trade_types"
+        elif is_fort:
+            list_name = "epbm_fort_types"
+        else:
+            list_name = "epbm_building_types"
+
+        tag = ' (trade)' if is_trade else (' (fort)' if is_fort else '')
         modified = inject_on_built_hook(raw, bname, list_name)
-        lines.append(f"# {bname} uses {pm_name} (REPLACE due to existing on_built){' (fort)' if is_fort else ''}")
+        lines.append(f"# {bname} uses {pm_name} (REPLACE due to existing on_built){tag}")
         lines.append(f"REPLACE:{modified}")
         lines.append("")
 
@@ -615,6 +640,14 @@ def generate_init_effects(qualifying, all_pm_goods, buildings):
     lines.append("# then stamp global parent map epbm_profiles (building_type -> IO scope).")
     lines.append("# Called once at game start.")
     lines.append("epbm_stamp_globals = {")
+    lines.append("\t# Clean up any existing IOs and stale global state from previous init")
+    lines.append("\tevery_in_global_list = {")
+    lines.append("\t\tvariable = epbm_all_ios")
+    lines.append("\t\tdestroy_international_organization = prev")
+    lines.append("\t}")
+    lines.append("\tclear_global_variable_list = epbm_all_ios")
+    lines.append("\tclear_global_variable_map = epbm_profiles")
+    lines.append("")
     lines.append("\t# Create all PM IOs and populate goods maps inside creation scope")
     lines.append("\trandom_country = {")
     lines.append("\t\tlimit = { is_real_country = yes }")
@@ -634,10 +667,11 @@ def generate_init_effects(qualifying, all_pm_goods, buildings):
     lines.append("")
     lines.append("\t# Parent map: building_type -> IO scope")
 
-    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort, is_trade, is_foreign in sorted(qualifying, key=lambda x: x[0]):
         bt_ref = f"building_type:{bname}"
         io_ref = f"international_organization:epbm_pm_{pm_name}"
-        lines.append(f"\tadd_to_global_variable_map = {{ name = epbm_profiles key = {bt_ref} value = {io_ref} }}")
+        tag = ' (foreign)' if is_foreign else (' (trade)' if is_trade else '')
+        lines.append(f"\tadd_to_global_variable_map = {{ name = epbm_profiles key = {bt_ref} value = {io_ref} }}{f'  # {tag.strip()}' if tag else ''}")
 
     lines.append("")
     lines.append("\t# Global list of all PM IOs (for monthly cache clearing)")
@@ -651,16 +685,24 @@ def generate_init_effects(qualifying, all_pm_goods, buildings):
     # ── Part 2: Init dispatch for pre-existing buildings ──
     lines.append("# Init dispatch: add building instance to location list for pre-existing buildings")
     lines.append("# Scope: building (called via every_buildings_in_location)")
-    lines.append("# Fort buildings (fort_level > 0) go to epbm_fort_types, others to epbm_building_types")
+    lines.append("# Fort buildings go to epbm_fort_types, trade buildings to epbm_trade_types,")
+    lines.append("# regular buildings to epbm_building_types. Foreign buildings are skipped (no location list).")
     lines.append("epbm_init_building = {")
     lines.append("\tsave_temporary_scope_as = epbm_bldg")
 
     first = True
-    for bname, pm_name, _, is_fort in sorted(qualifying, key=lambda x: x[0]):
+    for bname, pm_name, _, is_fort, is_trade, is_foreign in sorted(qualifying, key=lambda x: x[0]):
+        if is_foreign:
+            continue  # Foreign buildings aren't tracked in location lists
         keyword = "if" if first else "else_if"
         first = False
         bt_ref = f"building_type:{bname}"
-        list_name = "epbm_fort_types" if is_fort else "epbm_building_types"
+        if is_trade:
+            list_name = "epbm_trade_types"
+        elif is_fort:
+            list_name = "epbm_fort_types"
+        else:
+            list_name = "epbm_building_types"
         lines.append(f"\t{keyword} = {{")
         lines.append(f"\t\tlimit = {{ building_type = {bt_ref} }}")
         lines.append(f"\t\tlocation = {{ add_to_variable_list = {{ name = {list_name} target = scope:epbm_bldg }} }}")
@@ -695,22 +737,27 @@ def main():
 
     # Build reverse map: pm_name -> list of building names
     pm_to_buildings = {}
-    for bname, pm_name, _, _ in qualifying:
+    for bname, pm_name, _, _, _, _ in qualifying:
         pm_to_buildings.setdefault(pm_name, []).append(bname)
 
-    # Count INJECT vs REPLACE
-    inject_count = sum(1 for b, _, _, _ in qualifying
+    # Count categories
+    non_foreign = [(b, _, _, f, t, fg) for b, _, _, f, t, fg in qualifying if not fg]
+    inject_count = sum(1 for b, _, _, _, _, _ in non_foreign
                        if not buildings[b]['has_on_built'] and not buildings[b]['has_on_destroyed'])
-    replace_count = sum(1 for b, _, _, _ in qualifying
+    replace_count = sum(1 for b, _, _, _, _, _ in non_foreign
                         if buildings[b]['has_on_built'] or buildings[b]['has_on_destroyed'])
-    fort_count = sum(1 for _, _, _, is_fort in qualifying if is_fort)
+    fort_count = sum(1 for _, _, _, is_fort, _, _ in qualifying if is_fort)
+    trade_count = sum(1 for _, _, _, _, is_trade, _ in qualifying if is_trade)
+    foreign_count = sum(1 for _, _, _, _, _, is_foreign in qualifying if is_foreign)
     print(f"  INJECT buildings: {inject_count}")
     print(f"  REPLACE buildings: {replace_count}")
     print(f"  Fort buildings (fort_level > 0): {fort_count}")
+    print(f"  Trade capacity buildings: {trade_count}")
+    print(f"  Foreign buildings: {foreign_count}")
 
     if replace_count > 0:
-        replace_buildings = [b for b, _, _, _ in qualifying
-                            if buildings[b]['has_on_built'] or buildings[b]['has_on_destroyed']]
+        replace_buildings = [b for b, _, _, _, _, fg in qualifying
+                            if not fg and (buildings[b]['has_on_built'] or buildings[b]['has_on_destroyed'])]
         print(f"  REPLACE candidates: {', '.join(replace_buildings)}")
 
     # Generate files
@@ -752,8 +799,10 @@ def main():
     # Summary
     print("\n=== Summary ===")
     print(f"Total qualifying buildings: {len(qualifying)}")
-    print(f"  Regular buildings: {len(qualifying) - fort_count}")
+    print(f"  Regular buildings: {len(qualifying) - fort_count - trade_count - foreign_count}")
     print(f"  Fort buildings: {fort_count}")
+    print(f"  Trade capacity buildings: {trade_count}")
+    print(f"  Foreign buildings: {foreign_count}")
     print(f"Unique PM goods profiles: {len(all_pm_goods)}")
     print(f"INJECT blocks: {inject_count}")
     print(f"REPLACE blocks: {replace_count}")
@@ -766,7 +815,7 @@ def main():
 
     if fort_count > 0:
         fort_buildings = [(b, buildings[b]['fort_level'], buildings[b]['garrison_size'])
-                         for b, _, _, is_fort in qualifying if is_fort]
+                         for b, _, _, is_fort, _, _ in qualifying if is_fort]
         print(f"\nFort buildings (fort_level, garrison_size):")
         for b, fl, gs in sorted(fort_buildings, key=lambda x: x[0]):
             print(f"  {b}: level={fl}, garrison={gs}")
@@ -778,9 +827,16 @@ def main():
         goods_str = ", ".join(f"{g}={a}" for g, a in goods.items())
         print(f"  {pm_name} ({len(blist)} buildings): [{goods_str}]")
         for b in sorted(blist):
-            src = "inline" if any(bn == b and s == 'inline' for bn, _, s, _ in qualifying) else "external"
-            fort_tag = " (fort)" if buildings[b]['is_fort'] else ""
-            print(f"    - {b} ({src}){fort_tag}")
+            src = "inline" if any(bn == b and s == 'inline' for bn, _, s, _, _, _ in qualifying) else "external"
+            tags = []
+            if buildings[b]['is_fort']:
+                tags.append("fort")
+            if buildings[b].get('has_trade_capacity') and not buildings[b]['is_foreign']:
+                tags.append("trade")
+            if buildings[b]['is_foreign']:
+                tags.append("foreign")
+            tag_str = f" ({', '.join(tags)})" if tags else ""
+            print(f"    - {b} ({src}){tag_str}")
 
     return 0
 

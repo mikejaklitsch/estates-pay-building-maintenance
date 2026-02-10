@@ -1,5 +1,15 @@
-﻿# Estates Pay Building Maintenance - Country Modifiers
-# Applied via add_country_modifier, size adjusted monthly to match estate reimbursement
+﻿# Estates Pay Building Maintenance - Modifiers
+# Mod state marker: applied to Bouvet Island (27954) during rebuild.
+# Stripped by the engine when mod is removed (definition disappears).
+# Absence triggers full rebuild on re-add.
+
+epbm_active = {
+	game_data = {
+		category = location
+	}
+}
+
+# Country modifiers: applied via add_country_modifier, size adjusted monthly
 
 epbm_estate_reimbursement = {
 	game_data = {
@@ -10,6 +20,22 @@ epbm_estate_reimbursement = {
 }
 
 epbm_fort_reimbursement = {
+	game_data = {
+		category = country
+	}
+
+	monthly_gold_income = 1
+}
+
+epbm_trade_reimbursement = {
+	game_data = {
+		category = country
+	}
+
+	monthly_gold_income = 1
+}
+
+epbm_foreign_reimbursement = {
 	game_data = {
 		category = country
 	}

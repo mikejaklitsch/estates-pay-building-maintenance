@@ -5,6 +5,12 @@
 # Yearly: AI recalc
 # Ownership change: move location between country lists
 # ═══════════════════════════════════════════════
+# Rebuild version: major * 100 + minor (patch changes don't trigger rebuild)
+# Updated by deploy.py from .metadata/metadata.json
+@epbm_rebuild_version = 101 # 1.1.x — sync with .metadata/metadata.json
+# Bouvet Island (27954): impassable location used as mod state anchor.
+# epbm_active modifier applied here — stripped by engine when mod is removed.
+# epbm_version variable stored here for version-based rebuild detection.
 
 on_game_start = {
 	on_actions = {
@@ -14,63 +20,64 @@ on_game_start = {
 
 epbm_initialize_all = {
 	effect = {
-		# Stamp global PM goods maps + parent profile lookup
-		epbm_stamp_globals = yes
-		# Build each location's tracking lists from existing buildings
-		every_location_in_the_world = {
-			limit = { is_ownable = yes }
-			epbm_initialize_location = yes
+		epbm_full_rebuild = yes
+		# Stamp version on Bouvet Island
+		location:bouvet_island = {
+			remove_location_modifier = epbm_active
+			add_location_modifier = { modifier = epbm_active days = -1 }
+			set_variable = { name = epbm_version value = @epbm_rebuild_version }
 		}
-		# Build each country's epbm_locations list and run initial collection
-		every_country = {
-			limit = {
-				is_real_country = yes
-				any_estate = { estate_type != estate_type:crown_estate }
-			}
-			epbm_rebuild_location_lists = yes
-			epbm_collect_maintenance = yes
-			set_variable = { name = epbm_rebuild_counter value = 0 }
-		}
-		set_global_variable = { name = epbm_initialized value = yes }
 	}
 }
 
 # ═══════════════════════════════════════════════
-# Save-safe initialization: runs once on first pulse if flag is missing
-# Handles saves started before the mod was added
+# Version check: runs monthly, triggers rebuild if marker is missing or outdated
+# Handles first-time init, version upgrades, and mod remove/re-add
 # ═══════════════════════════════════════════════
 
 monthly_country_pulse = {
 	on_actions = {
-		epbm_ensure_initialized
+		epbm_version_check
 		epbm_player_monthly
 		epbm_ai_monthly_charge
 	}
 }
 
-epbm_ensure_initialized = {
+epbm_version_check = {
 	trigger = {
+		OR = {
+			# Modifier missing = mod was removed and re-added (or first init on existing save)
+			location:bouvet_island = {
+				NOT = {
+					has_location_modifier = epbm_active
+				}
+			}
+
+			# Modifier present but version outdated = mod was updated
+			location:bouvet_island = {
+				has_location_modifier = epbm_active
+				has_variable = epbm_version
+				var:epbm_version < @epbm_rebuild_version
+			}
+		}
+
+		# Guard: don't let multiple countries trigger rebuild in the same tick
 		NOT = {
-			has_global_variable = epbm_initialized
+			has_global_variable = epbm_rebuilding
 		}
 	}
 
 	effect = {
-		epbm_stamp_globals = yes
-		every_location_in_the_world = {
-			limit = { is_ownable = yes }
-			epbm_initialize_location = yes
+		set_global_variable = { name = epbm_rebuilding value = yes }
+		epbm_full_rebuild = yes
+		# Stamp version on Bouvet Island
+		location:bouvet_island = {
+			remove_location_modifier = epbm_active
+			add_location_modifier = { modifier = epbm_active days = -1 }
+			set_variable = { name = epbm_version value = @epbm_rebuild_version }
 		}
-		every_country = {
-			limit = {
-				is_real_country = yes
-				any_estate = { estate_type != estate_type:crown_estate }
-			}
-			epbm_rebuild_location_lists = yes
-			epbm_collect_maintenance = yes
-			set_variable = { name = epbm_rebuild_counter value = 0 }
-		}
-		set_global_variable = { name = epbm_initialized value = yes }
+
+		remove_global_variable = epbm_rebuilding
 	}
 }
 
@@ -78,7 +85,7 @@ epbm_ensure_initialized = {
 
 epbm_player_monthly = {
 	trigger = {
-		has_global_variable = epbm_initialized
+		location:bouvet_island = { has_location_modifier = epbm_active }
 		is_ai = no
 		any_estate = { estate_type != estate_type:crown_estate }
 	}
@@ -92,7 +99,7 @@ epbm_player_monthly = {
 
 epbm_ai_monthly_charge = {
 	trigger = {
-		has_global_variable = epbm_initialized
+		location:bouvet_island = { has_location_modifier = epbm_active }
 		is_ai = yes
 		is_real_country = yes
 		any_estate = { estate_type != estate_type:crown_estate }
@@ -118,7 +125,7 @@ yearly_country_pulse = {
 
 epbm_ai_yearly_recalc = {
 	trigger = {
-		has_global_variable = epbm_initialized
+		location:bouvet_island = { has_location_modifier = epbm_active }
 		is_ai = yes
 		is_real_country = yes
 		any_estate = { estate_type != estate_type:crown_estate }
@@ -133,7 +140,7 @@ epbm_ai_yearly_recalc = {
 
 epbm_decade_rebuild = {
 	trigger = {
-		has_global_variable = epbm_initialized
+		location:bouvet_island = { has_location_modifier = epbm_active }
 		is_real_country = yes
 		any_estate = { estate_type != estate_type:crown_estate }
 	}
@@ -164,7 +171,7 @@ on_location_changed_owner = {
 
 epbm_on_location_owner_changed = {
 	trigger = {
-		has_global_variable = epbm_initialized
+		location:bouvet_island = { has_location_modifier = epbm_active }
 	}
 
 	effect = {
@@ -176,24 +183,29 @@ epbm_on_location_owner_changed = {
 					has_variable_list = epbm_locations
 					is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
 				}
+
 				remove_list_variable = { name = epbm_locations target = scope:epbm_loc }
 			}
 		}
+
 		# Add to winner's list if location has tracked buildings
 		scope:winner ?= {
 			if = {
 				limit = {
 					has_variable_list = epbm_locations
+
 					scope:epbm_loc = {
 						OR = {
 							has_variable_list = epbm_building_types
 							has_variable_list = epbm_fort_types
+							has_variable_list = epbm_trade_types
 						}
 					}
 					NOT = {
 						is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
 					}
 				}
+
 				add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
 			}
 		}
@@ -212,7 +224,7 @@ weather_monthly_pulse = {
 
 epbm_monthly_cache_clear = {
 	trigger = {
-		has_global_variable = epbm_initialized
+		location:bouvet_island = { has_location_modifier = epbm_active }
 	}
 
 	effect = {
