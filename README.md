@@ -1,6 +1,15 @@
 # Estates Pay Building Maintenance
 
-Estates pay their share of building and fort maintenance based on local pop tax burden, weighted by inverted control. The crown is reimbursed accordingly.
+Estates pay their share of building maintenance. The crown is reimbursed accordingly.
+
+## How It Works
+
+Buildings are split into four categories, each with its own maintenance distribution:
+
+- **Regular buildings** — Maintenance is split among estates based on local pop tax burden, weighted by inverted control.
+- **Fort buildings** — Maintenance is split between the Nobles estate (and Nobles within Dhimmi), weighted by inverted control.
+- **Trade capacity buildings** (without output production methods) — Maintenance is split among estates based on global estate power, matching how trade profit is distributed. Not impacted by control.
+- **Foreign buildings** — Maintenance is split among estates based on global estate power. Not impacted by control.
 
 ## Performance, Implementation, and Coding Jargon
 
@@ -12,10 +21,12 @@ Estates pay their share of building and fort maintenance based on local pop tax 
   - **Goods map** — goods to quantity needed. Set once during initialization, never changes.
   - **Cost cache** — market to total cost per building level. Calculated lazily and cleared every month so prices stay current.
 
-- A Python script collects all production methods and buildings that contribute to maintenance and hardcodes them into the initialization script. This handles generating the IOs, assigning their production method recipes to the goods maps, and probably some other stuff I'm forgetting.
+- A Python script collects all production methods and buildings that contribute to maintenance and hardcodes them into the initialization script. This handles generating the IOs, assigning their production method recipes to the goods maps, classifying buildings into the four categories, and probably some other stuff I'm forgetting.
 
-- On initialization, every location is checked for buildings that contribute to maintenance. Each country stores a variable list of its locations that have relevant buildings, and each of those locations stores a variable list of the buildings that require maintenance. Events that fire when the first level of a building is constructed or the last level is destroyed keep these lists updated. Ownership transfer is also handled; when a location changes hands, it is moved between the old and new owner's lists. All of this allows us to iterate over every relevant building without ever missing one or wasting time on locations and buildings we don't care about.
+- On initialization, every location is checked for buildings that contribute to maintenance. Each country stores a variable list of its locations that have relevant buildings, and each of those locations stores variable lists of the buildings that require maintenance (one list per category: regular, fort, trade). Foreign buildings are iterated directly from country scope and don't need location list tracking. Events that fire when the first level of a building is constructed or the last level is destroyed keep these lists updated. Ownership transfer is also handled; when a location changes hands, it is moved between the old and new owner's lists. All of this allows us to iterate over every relevant building without ever missing one or wasting time on locations and buildings we don't care about.
 
 - As a safety net, the full location list is rebuilt from scratch every 10 years. This is still very lightweight compared to the full initialization, which only ever runs once.
 
 - The player country's maintenance is recalculated monthly; AI countries are recalculated yearly. These values are saved to variables on the country and referenced by silent modifiers that pull gold from the estates and reimburse the crown accordingly.
+
+- Mod state is tracked via a location modifier on an impassable location. When the mod is removed, the engine strips the modifier definition, and its absence triggers a full rebuild on re-add. A version variable on the same location detects mod updates.
