@@ -413,7 +413,9 @@ epbm_calculate_maintenance = {
 					}
 				}
 
-				# Apply estate fraction: (1 - control) goes to estates
+				# Apply maintenance burden and estate fraction
+				change_local_variable = { name = epbm_loc_cost multiply = epbm_maint_burden }
+				change_local_variable = { name = epbm_fort_cost multiply = epbm_maint_burden }
 				change_local_variable = {
 					name = epbm_loc_cost
 					multiply = { value = 1 subtract = local_control }
@@ -816,6 +818,9 @@ epbm_calculate_maintenance = {
 			}
 		} # end local_control < 1 guard
 
+		# Apply maintenance burden to trade costs (regular/fort already scaled above)
+		change_local_variable = { name = epbm_loc_trade multiply = epbm_maint_burden }
+
 		# ── Store per-location costs for GUI display ──
 		set_variable = { name = epbm_maint_regular value = local_var:epbm_loc_cost }
 		set_variable = { name = epbm_maint_fort value = local_var:epbm_fort_cost }
@@ -931,6 +936,10 @@ epbm_calculate_maintenance = {
 	}
 
 	# ── Split trade costs by estate power ──
+	change_local_variable = {
+		name = epbm_trade_cost
+		multiply = epbm_maint_burden
+	}
 	if = {
 		limit = { local_var:epbm_trade_cost > 0 }
 
@@ -1016,6 +1025,10 @@ epbm_calculate_maintenance = {
 	}
 
 	# ── Split foreign costs by estate power ──
+	change_local_variable = {
+		name = epbm_foreign_cost
+		multiply = epbm_maint_burden
+	}
 	if = {
 		limit = { local_var:epbm_foreign_cost > 0 }
 
