@@ -197,7 +197,6 @@ epbm_on_location_owner_changed = {
 					scope:epbm_loc = {
 						OR = {
 							has_variable_list = epbm_building_types
-							has_variable_list = epbm_fort_types
 							has_variable_list = epbm_trade_types
 						}
 					}

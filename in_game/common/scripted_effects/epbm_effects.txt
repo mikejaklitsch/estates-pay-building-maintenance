@@ -4,7 +4,6 @@
 #   international_organization:epbm_pm_{name} → variable map per PM profile (goods_ref → per_level_amount)
 #   global epbm_profiles → variable map (building_type → IO scope ref)
 #   location → epbm_building_types variable list (regular building_type refs)
-#   location → epbm_fort_types variable list (fort building_type refs)
 #   location → epbm_trade_types variable list (trade capacity building_type refs)
 #   country → epbm_locations variable list (location refs)
 # ═══════════════════════════════════════════════
@@ -16,8 +15,6 @@
 @epbm_tribes_weight = 0.01
 @epbm_dhimmi_weight = 1
 @epbm_cossacks_weight = 0.02
-# Fort garrison upkeep (from game define FORT_GARRISON_UPKEEP)
-@epbm_garrison_upkeep = 2
 # ═══════════════════════════════════════════════
 # Initialization
 # ═══════════════════════════════════════════════
@@ -40,7 +37,6 @@ epbm_rebuild_location_lists = {
 		limit = {
 			OR = {
 				has_variable_list = epbm_building_types
-				has_variable_list = epbm_fort_types
 				has_variable_list = epbm_trade_types
 			}
 		}
@@ -63,10 +59,8 @@ epbm_full_rebuild = {
 	every_location_in_the_world = {
 		limit = { is_ownable = yes }
 		clear_variable_list = epbm_building_types
-		clear_variable_list = epbm_fort_types
 		clear_variable_list = epbm_trade_types
 		set_variable = { name = epbm_maint_regular value = 0 }
-		set_variable = { name = epbm_maint_fort value = 0 }
 		set_variable = { name = epbm_maint_trade value = 0 }
 		# Per-estate per-location breakdown vars
 		set_variable = { name = epbm_loc_r_nobles value = 0 }
@@ -76,8 +70,6 @@ epbm_full_rebuild = {
 		set_variable = { name = epbm_loc_r_tribes value = 0 }
 		set_variable = { name = epbm_loc_r_dhimmi value = 0 }
 		set_variable = { name = epbm_loc_r_cossacks value = 0 }
-		set_variable = { name = epbm_loc_f_nobles value = 0 }
-		set_variable = { name = epbm_loc_f_dhimmi value = 0 }
 		set_variable = { name = epbm_loc_t_nobles value = 0 }
 		set_variable = { name = epbm_loc_t_clergy value = 0 }
 		set_variable = { name = epbm_loc_t_burghers value = 0 }
@@ -105,7 +97,6 @@ epbm_full_rebuild = {
 			set_variable = { name = epbm_pay_burghers value = 0 }
 			set_variable = { name = epbm_pay_peasants value = 0 }
 			set_variable = { name = epbm_pay_tribes value = 0 }
-			set_variable = { name = epbm_fort_pay_nobles value = 0 }
 			set_variable = { name = epbm_trade_pay_nobles value = 0 }
 			set_variable = { name = epbm_trade_pay_clergy value = 0 }
 			set_variable = { name = epbm_trade_pay_burghers value = 0 }
@@ -119,7 +110,6 @@ epbm_full_rebuild = {
 			if = {
 				limit = { country_has_estate = estate_type:dhimmi_estate }
 				set_variable = { name = epbm_pay_dhimmi value = 0 }
-				set_variable = { name = epbm_fort_pay_dhimmi value = 0 }
 				set_variable = { name = epbm_trade_pay_dhimmi value = 0 }
 				set_variable = { name = epbm_foreign_pay_dhimmi value = 0 }
 			}
@@ -170,7 +160,6 @@ epbm_on_building_destroyed = {
 				NOT = {
 					OR = {
 						has_variable_list = epbm_building_types
-						has_variable_list = epbm_fort_types
 						has_variable_list = epbm_trade_types
 					}
 				}
@@ -242,7 +231,6 @@ epbm_lookup_pm_cost = {
 # Runs monthly for player, yearly for AI
 # Reads building_level and is_opened at scan time
 # Computes per-location tax shares with dhimmi/cossacks correction
-# Separates fort costs (nobles + dhimmi only) from regular costs
 # Saves epbm_pay_* persistent variables and updates country modifiers
 # ═══════════════════════════════════════════════
 
@@ -274,16 +262,6 @@ epbm_calculate_maintenance = {
 	}
 	set_local_variable = {
 		name = epbm_accum_cossacks
-		value = 0
-	}
-
-	# Fort maintenance accumulators (only nobles + dhimmi pay)
-	set_local_variable = {
-		name = epbm_fort_nobles
-		value = 0
-	}
-	set_local_variable = {
-		name = epbm_fort_dhimmi
 		value = 0
 	}
 
@@ -330,10 +308,9 @@ epbm_calculate_maintenance = {
 			}
 		}
 
-		# Initialize regular/fort cost accumulators (outside guard so they exist for GUI storage)
+		# Initialize regular cost accumulator (outside guard so it exists for GUI storage)
 		set_local_variable = { name = epbm_loc_cost value = 0 }
-		set_local_variable = { name = epbm_fort_cost value = 0 }
-		# ── Regular and fort costs only apply when estates have local control ──
+		# ── Regular costs only apply when estates have local control ──
 		if = {
 			limit = { local_control < 1 }
 			# ── Calculate regular building costs ──
@@ -356,72 +333,14 @@ epbm_calculate_maintenance = {
 				}
 			}
 
-			# ── Calculate fort building costs (goods-based) ──
-			every_in_list = {
-				variable = epbm_fort_types
-				limit = { is_opened = yes }
-				save_temporary_scope_as = epbm_bldg
-				building_type ?= { save_temporary_scope_as = epbm_bt }
-
-				set_global_variable = {
-					name = epbm_pm_ref
-					value = "global_variable_map(epbm_profiles|scope:epbm_bt)"
-				}
-
-				global_var:epbm_pm_ref = { epbm_lookup_pm_cost = yes }
-				# Apply PM cost × building level
-				change_local_variable = {
-					name = epbm_fort_cost
-					add = { value = local_var:epbm_pm_cost multiply = building_level }
-				}
-			}
-
-			# ── Garrison maintenance: location garrison_size × upkeep rate ──
-			# local_garrison_size already accounts for building levels
-			set_local_variable = {
-				name = epbm_garrison_cost
-
-				value = {
-					value = modifier:local_garrison_size
-					multiply = @epbm_garrison_upkeep
-				}
-			}
-
-			# Apply fort maintenance cost modifiers to garrison portion
-			owner ?= {
-				change_local_variable = {
-					name = epbm_garrison_cost
-					multiply = { value = 1 add = modifier:fort_maintenance_cost }
-				}
-			}
-
-			change_local_variable = {
-				name = epbm_garrison_cost
-				multiply = { value = 1 add = modifier:local_fort_maintenance_cost }
-			}
-			change_local_variable = {
-				name = epbm_fort_cost
-				add = local_var:epbm_garrison_cost
-			}
-
 			# Skip locations with no qualifying buildings
 			if = {
-				limit = {
-					OR = {
-						local_var:epbm_loc_cost > 0
-						local_var:epbm_fort_cost > 0
-					}
-				}
+				limit = { local_var:epbm_loc_cost > 0 }
 
 				# Apply maintenance burden and estate fraction
 				change_local_variable = { name = epbm_loc_cost multiply = epbm_maint_burden }
-				change_local_variable = { name = epbm_fort_cost multiply = epbm_maint_burden }
 				change_local_variable = {
 					name = epbm_loc_cost
-					multiply = { value = 1 subtract = local_control }
-				}
-				change_local_variable = {
-					name = epbm_fort_cost
 					multiply = { value = 1 subtract = local_control }
 				}
 
@@ -465,8 +384,6 @@ epbm_calculate_maintenance = {
 				}
 				set_local_variable = { name = epbm_tax_dhimmi value = 0 }
 				set_local_variable = { name = epbm_tax_cossacks value = 0 }
-				# Dhimmi nobles tracked separately for fort distribution (at nobles weight)
-				set_local_variable = { name = epbm_fort_dhimmi_tax value = 0 }
 				# ── Dhimmi correction ──
 				# Shift dhimmi pops from their pop_type's estate to dhimmi estate
 				if = {
@@ -494,12 +411,6 @@ epbm_calculate_maintenance = {
 							change_local_variable = {
 								name = epbm_tax_nobles
 								subtract = { value = pop_size multiply = @epbm_nobles_weight }
-							}
-
-							# Track dhimmi nobles for fort distribution (valued at nobles rate)
-							change_local_variable = {
-								name = epbm_fort_dhimmi_tax
-								add = { value = pop_size multiply = @epbm_nobles_weight }
 							}
 						}
 						else_if = {
@@ -757,64 +668,6 @@ epbm_calculate_maintenance = {
 						}
 					}
 				}
-
-				# ── Distribute fort costs to nobles + dhimmi nobles only ──
-				# Dhimmi fort share is based on dhimmi nobles count at nobles weight
-				if = {
-					limit = { local_var:epbm_fort_cost > 0 }
-
-					set_local_variable = {
-						name = epbm_fort_tax_total
-						value = local_var:epbm_tax_nobles
-					}
-
-					change_local_variable = {
-						name = epbm_fort_tax_total
-						add = local_var:epbm_fort_dhimmi_tax
-					}
-					if = {
-						limit = { local_var:epbm_fort_tax_total < 0.001 }
-						set_local_variable = { name = epbm_fort_tax_total value = 0.001 }
-					}
-					change_local_variable = {
-						name = epbm_fort_nobles
-
-						add = {
-							value = local_var:epbm_fort_cost
-							multiply = local_var:epbm_tax_nobles
-							divide = local_var:epbm_fort_tax_total
-						}
-					}
-					change_local_variable = {
-						name = epbm_fort_dhimmi
-
-						add = {
-							value = local_var:epbm_fort_cost
-							multiply = local_var:epbm_fort_dhimmi_tax
-							divide = local_var:epbm_fort_tax_total
-						}
-					}
-
-					# ── Store per-estate fort breakdown on location ──
-					set_variable = {
-						name = epbm_loc_f_nobles
-
-						value = {
-							value = local_var:epbm_fort_cost
-							multiply = local_var:epbm_tax_nobles
-							divide = local_var:epbm_fort_tax_total
-						}
-					}
-					set_variable = {
-						name = epbm_loc_f_dhimmi
-
-						value = {
-							value = local_var:epbm_fort_cost
-							multiply = local_var:epbm_fort_dhimmi_tax
-							divide = local_var:epbm_fort_tax_total
-						}
-					}
-				}
 			}
 		} # end local_control < 1 guard
 
@@ -823,7 +676,6 @@ epbm_calculate_maintenance = {
 
 		# ── Store per-location costs for GUI display ──
 		set_variable = { name = epbm_maint_regular value = local_var:epbm_loc_cost }
-		set_variable = { name = epbm_maint_fort value = local_var:epbm_fort_cost }
 		set_variable = { name = epbm_maint_trade value = local_var:epbm_loc_trade }
 		# ── Store per-estate trade breakdown on location (split by estate_power) ──
 		if = {
@@ -1113,17 +965,6 @@ epbm_calculate_maintenance = {
 		}
 	}
 
-	# ── Scale fort costs with fort maintenance slider (0-1) ──
-	# At lower slider settings the crown pays less, so estates should too
-	change_local_variable = {
-		name = epbm_fort_nobles
-		multiply = fort_maintenance
-	}
-	change_local_variable = {
-		name = epbm_fort_dhimmi
-		multiply = fort_maintenance
-	}
-
 	# ── Save per-estate monthly amounts ──
 	# Regular building maintenance
 	set_variable = {
@@ -1160,20 +1001,6 @@ epbm_calculate_maintenance = {
 		set_variable = {
 			name = epbm_pay_cossacks
 			value = local_var:epbm_accum_cossacks
-		}
-	}
-
-	# Fort maintenance (nobles + dhimmi only, for tooltip display)
-	set_variable = {
-		name = epbm_fort_pay_nobles
-		value = local_var:epbm_fort_nobles
-	}
-	if = {
-		limit = { country_has_estate = estate_type:dhimmi_estate }
-
-		set_variable = {
-			name = epbm_fort_pay_dhimmi
-			value = local_var:epbm_fort_dhimmi
 		}
 	}
 
@@ -1217,28 +1044,6 @@ epbm_calculate_maintenance = {
 			modifier = epbm_estate_reimbursement
 			days = -1
 			size = local_var:epbm_total
-		}
-	}
-
-	# Fort maintenance reimbursement
-	set_local_variable = {
-		name = epbm_fort_reimb
-		value = local_var:epbm_fort_nobles
-	}
-
-	change_local_variable = {
-		name = epbm_fort_reimb
-		add = local_var:epbm_fort_dhimmi
-	}
-
-	remove_country_modifier = epbm_fort_reimbursement
-	if = {
-		limit = { local_var:epbm_fort_reimb > 0 }
-
-		add_country_modifier = {
-			modifier = epbm_fort_reimbursement
-			days = -1
-			size = local_var:epbm_fort_reimb
 		}
 	}
 
@@ -1347,21 +1152,17 @@ epbm_calculate_maintenance = {
 # Charging: apply saved per-estate monthly amounts
 # Scope: country
 # Cheap — runs monthly for both player and AI
-# Reads epbm_pay_* and epbm_fort_pay_* persistent variables
+# Reads epbm_pay_* persistent variables
 # ═══════════════════════════════════════════════
 
 epbm_charge_estates = {
-	# Nobles: regular + fort + trade + foreign
+	# Nobles: regular + trade + foreign
 	if = {
 		limit = { any_estate = { estate_type = estate_type:nobles_estate } }
 		set_local_variable = { name = epbm_charge value = 0 }
 		if = {
 			limit = { has_variable = epbm_pay_nobles var:epbm_pay_nobles > 0 }
 			change_local_variable = { name = epbm_charge add = var:epbm_pay_nobles }
-		}
-		if = {
-			limit = { has_variable = epbm_fort_pay_nobles var:epbm_fort_pay_nobles > 0 }
-			change_local_variable = { name = epbm_charge add = var:epbm_fort_pay_nobles }
 		}
 		if = {
 			limit = { has_variable = epbm_trade_pay_nobles var:epbm_trade_pay_nobles > 0 }
@@ -1534,17 +1335,13 @@ epbm_charge_estates = {
 		}
 	}
 
-	# Dhimmi: regular + fort + trade + foreign
+	# Dhimmi: regular + trade + foreign
 	if = {
 		limit = { any_estate = { estate_type = estate_type:dhimmi_estate } }
 		set_local_variable = { name = epbm_charge value = 0 }
 		if = {
 			limit = { has_variable = epbm_pay_dhimmi var:epbm_pay_dhimmi > 0 }
 			change_local_variable = { name = epbm_charge add = var:epbm_pay_dhimmi }
-		}
-		if = {
-			limit = { has_variable = epbm_fort_pay_dhimmi var:epbm_fort_pay_dhimmi > 0 }
-			change_local_variable = { name = epbm_charge add = var:epbm_fort_pay_dhimmi }
 		}
 		if = {
 			limit = { has_variable = epbm_trade_pay_dhimmi var:epbm_trade_pay_dhimmi > 0 }
@@ -1643,12 +1440,6 @@ epbm_snapshot_for_display = {
 		value = var:epbm_pay_tribes
 	}
 
-	# Fort maintenance
-	set_variable = {
-		name = epbm_show_fort_nobles
-		value = var:epbm_fort_pay_nobles
-	}
-
 	# Trade building maintenance
 	set_variable = {
 		name = epbm_show_trade_nobles
@@ -1697,10 +1488,6 @@ epbm_snapshot_for_display = {
 	if = {
 		limit = { country_has_estate = estate_type:dhimmi_estate }
 		set_variable = { name = epbm_show_dhimmi value = var:epbm_pay_dhimmi }
-		set_variable = {
-			name = epbm_show_fort_dhimmi
-			value = var:epbm_fort_pay_dhimmi
-		}
 		set_variable = {
 			name = epbm_show_trade_dhimmi
 			value = var:epbm_trade_pay_dhimmi

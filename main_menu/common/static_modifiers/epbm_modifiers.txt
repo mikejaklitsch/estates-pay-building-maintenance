@@ -19,14 +19,6 @@ epbm_estate_reimbursement = {
 	monthly_gold_income = 1
 }
 
-epbm_fort_reimbursement = {
-	game_data = {
-		category = country
-	}
-
-	monthly_gold_income = 1
-}
-
 epbm_trade_reimbursement = {
 	game_data = {
 		category = country

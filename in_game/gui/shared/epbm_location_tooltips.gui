@@ -294,7 +294,7 @@ template location_tax_base_details {
 
 	### EPBM: Estate Building Maintenance Reimbursement
 	TooltipListBase = {
-		visible = "[GreaterThan_CFixedPoint(Add_CFixedPoint(Add_CFixedPoint(Location.MakeScope.GetVariable('epbm_maint_regular').GetValue, Location.MakeScope.GetVariable('epbm_maint_fort').GetValue), Location.MakeScope.GetVariable('epbm_maint_trade').GetValue), '(CFixedPoint)0')]"
+		visible = "[GreaterThan_CFixedPoint(Add_CFixedPoint(Location.MakeScope.GetVariable('epbm_maint_regular').GetValue, Location.MakeScope.GetVariable('epbm_maint_trade').GetValue), '(CFixedPoint)0')]"
 
 		blockoverride "block_title" {
 			raw_text = "#bold Estate Building Maintenance Reimbursement#!"
@@ -433,66 +433,6 @@ template location_tax_base_details {
 
 					text_single = {
 						raw_text = "#G +[Location.MakeScope.GetVariable('epbm_maint_regular').GetValue|2]@income!#!"
-					}
-				}
-			}
-			TooltipManualTableField = {
-				visible = "[GreaterThan_CFixedPoint(Location.MakeScope.GetVariable('epbm_maint_fort').GetValue, '(CFixedPoint)0')]"
-
-				tooltipwidget = {
-					SimpleContextualTooltipType = {
-						blockoverride "title_icon" {
-							icon = {
-								using = tooltip_title_icon_size
-								texture = "[GetConceptTexture('building_maintenance')]"
-							}
-						}
-						blockoverride "title_text" { text = "[epbm_estate_fort_maintenance|E]" }
-						blockoverride "tooltip_content" {
-							TooltipListBase = {
-								TooltipListRowContent = {
-									TooltipManualTableField = {
-										visible = "[GreaterThan_CFixedPoint(Location.MakeScope.GetVariable('epbm_loc_f_nobles').GetValue, '(CFixedPoint)0')]"
-
-										blockoverride "field_content" {
-											text_single = {
-												raw_text = "[Location.GetOwner.GetGovernment.GetEstateFromKey('nobles_estate').GetName]"
-											}
-
-											expand = {  }
-
-											text_single = {
-												raw_text = "#G +[Location.MakeScope.GetVariable('epbm_loc_f_nobles').GetValue|2]@gold!#!"
-											}
-										}
-									}
-									TooltipManualTableField = {
-										visible = "[GreaterThan_CFixedPoint(Location.MakeScope.GetVariable('epbm_loc_f_dhimmi').GetValue, '(CFixedPoint)0')]"
-
-										blockoverride "field_content" {
-											text_single = {
-												raw_text = "[Location.GetOwner.GetGovernment.GetEstateFromKey('dhimmi_estate').GetName]"
-											}
-
-											expand = {  }
-
-											text_single = {
-												raw_text = "#G +[Location.MakeScope.GetVariable('epbm_loc_f_dhimmi').GetValue|2]@gold!#!"
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-				blockoverride "field_content" {
-					text_single = { raw_text = "[epbm_estate_fort_maintenance|E]" }
-					expand = {  }
-
-					text_single = {
-						raw_text = "#G +[Location.MakeScope.GetVariable('epbm_maint_fort').GetValue|2]@income!#!"
 					}
 				}
 			}
@@ -642,7 +582,7 @@ template location_tax_base_details {
 	### EPBM: After Reimbursement summary
 
 	TooltipListBase = {
-		visible = "[GreaterThan_CFixedPoint(Add_CFixedPoint(Add_CFixedPoint(Location.MakeScope.GetVariable('epbm_maint_regular').GetValue, Location.MakeScope.GetVariable('epbm_maint_fort').GetValue), Location.MakeScope.GetVariable('epbm_maint_trade').GetValue), '(CFixedPoint)0')]"
+		visible = "[GreaterThan_CFixedPoint(Add_CFixedPoint(Location.MakeScope.GetVariable('epbm_maint_regular').GetValue, Location.MakeScope.GetVariable('epbm_maint_trade').GetValue), '(CFixedPoint)0')]"
 
 		TooltipListRowContent = {
 			TooltipManualTableField = {
@@ -651,7 +591,7 @@ template location_tax_base_details {
 					expand = {  }
 
 					text_single = {
-						raw_text = "[Add_CFixedPoint(Location.GetNetBalance, Add_CFixedPoint(Add_CFixedPoint(Location.MakeScope.GetVariable('epbm_maint_regular').GetValue, Location.MakeScope.GetVariable('epbm_maint_fort').GetValue), Location.MakeScope.GetVariable('epbm_maint_trade').GetValue))|+=2]@gold_balance!"
+						raw_text = "[Add_CFixedPoint(Location.GetNetBalance, Add_CFixedPoint(Location.MakeScope.GetVariable('epbm_maint_regular').GetValue, Location.MakeScope.GetVariable('epbm_maint_trade').GetValue))|+=2]@gold_balance!"
 					}
 				}
 			}

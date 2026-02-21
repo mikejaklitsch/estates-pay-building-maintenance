@@ -1,0 +1,4 @@
+﻿
+epbm_crown_building = {
+	positive = "gfx/interface/icons/estates/crown_estate.dds"
+}

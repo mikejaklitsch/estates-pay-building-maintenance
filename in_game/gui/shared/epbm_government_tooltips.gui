@@ -107,26 +107,6 @@ template Estate_tooltip {
 					}
 				}
 
-				### EPBM: Fort Maintenance lines (nobles + dhimmi only)
-				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('nobles_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_fort_nobles').GetValue, '(CFixedPoint)0'))]"
-					text_single = { text = "EPBM_FORT_MAINT_LABEL" }
-					expand = {  }
-
-					text_single = {
-						raw_text = "-[Estate.GetCountry.MakeScope.GetVariable('epbm_show_fort_nobles').GetValue|2]@gold!"
-					}
-				}
-				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('dhimmi_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_fort_dhimmi').GetValue, '(CFixedPoint)0'))]"
-					text_single = { text = "EPBM_FORT_MAINT_LABEL" }
-					expand = {  }
-
-					text_single = {
-						raw_text = "-[Estate.GetCountry.MakeScope.GetVariable('epbm_show_fort_dhimmi').GetValue|2]@gold!"
-					}
-				}
-
 				### EPBM: Trade + Foreign Maintenance lines (all estates, split by estate power)
 				TooltipManualTableField = {
 					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('nobles_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_trade_nobles').GetValue, '(CFixedPoint)0'))]"
