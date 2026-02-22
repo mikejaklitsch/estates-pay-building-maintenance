@@ -5,3 +5,5 @@
  EPBM_FOREIGN_MAINT_LABEL: " - @building_maintenance! From [epbm_estate_foreign_maintenance|E]"
  ESTATE_ECO_INFO_building: "Maintenance From Estate [buildings|E]: $VAL|+=2$@gold!"
  ESTATE_ECO_INFO_other: "Other (incl. maintenance): $VAL|+=2$@gold!"
+ epbm_intentional_orphan.1.t: "EPBM Intentional Orphan"
+ epbm_intentional_orphan.1.d: "This event should never fire."

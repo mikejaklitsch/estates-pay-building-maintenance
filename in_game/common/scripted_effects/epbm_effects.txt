@@ -49,11 +49,93 @@ epbm_rebuild_location_lists = {
 	}
 }
 
+# Structural rebuild: clear and repopulate per-location building lists, then rebuild country lists.
+# Does NOT touch globals (IOs), display vars, or calc/charge — those run on their own cycles.
+# Scope: country
+
+epbm_structural_rebuild = {
+	every_owned_location = {
+		clear_variable_list = epbm_building_types
+		clear_variable_list = epbm_trade_types
+		epbm_initialize_location = yes
+	}
+
+	epbm_rebuild_location_lists = yes
+}
+
+# Clean up orphaned variables from pre-2.x versions (fort category removal).
+# Guarded with existence checks so missing vars don't cause errors.
+# Scope: none (called once during version-triggered full rebuild)
+
+epbm_cleanup_legacy_vars = {
+	# Destroy legacy government building PM IOs before stamp_globals recreates current ones
+	epbm_destroy_legacy_ios = yes
+
+	every_location_in_the_world = {
+		limit = {
+			is_ownable = yes
+			OR = {
+				has_variable_list = epbm_fort_types
+				has_variable = epbm_maint_fort
+				has_variable = epbm_loc_f_nobles
+				has_variable = epbm_loc_f_dhimmi
+			}
+		}
+
+		if = {
+			limit = { has_variable_list = epbm_fort_types }
+			clear_variable_list = epbm_fort_types
+		}
+		if = {
+			limit = { has_variable = epbm_maint_fort }
+			remove_variable = epbm_maint_fort
+		}
+		if = {
+			limit = { has_variable = epbm_loc_f_nobles }
+			remove_variable = epbm_loc_f_nobles
+		}
+		if = {
+			limit = { has_variable = epbm_loc_f_dhimmi }
+			remove_variable = epbm_loc_f_dhimmi
+		}
+	}
+
+	every_country = {
+		limit = {
+			is_real_country = yes
+			OR = {
+				has_variable = epbm_fort_pay_nobles
+				has_variable = epbm_fort_pay_dhimmi
+				has_variable = epbm_show_fort_nobles
+				has_variable = epbm_show_fort_dhimmi
+			}
+		}
+
+		if = {
+			limit = { has_variable = epbm_fort_pay_nobles }
+			remove_variable = epbm_fort_pay_nobles
+		}
+		if = {
+			limit = { has_variable = epbm_fort_pay_dhimmi }
+			remove_variable = epbm_fort_pay_dhimmi
+		}
+		if = {
+			limit = { has_variable = epbm_show_fort_nobles }
+			remove_variable = epbm_show_fort_nobles
+		}
+		if = {
+			limit = { has_variable = epbm_show_fort_dhimmi }
+			remove_variable = epbm_show_fort_dhimmi
+		}
+	}
+}
+
 # Full rebuild: stamp globals, clear and rebuild all lists, collect maintenance
 # Called on game start and when mod version changes (via on_actions version check)
 # Scope: none
 
 epbm_full_rebuild = {
+	epbm_cleanup_legacy_vars = yes
 	epbm_stamp_globals = yes
 
 	every_location_in_the_world = {

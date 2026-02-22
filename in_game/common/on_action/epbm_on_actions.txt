@@ -7,7 +7,7 @@
 # ═══════════════════════════════════════════════
 # Rebuild version: major * 100 + minor (patch changes don't trigger rebuild)
 # Updated by deploy.py from .metadata/metadata.json
-@epbm_rebuild_version = 101 # 1.1.x — sync with .metadata/metadata.json
+@epbm_rebuild_version = 120 # 1.2.x — sync with .metadata/metadata.json
 # Bouvet Island (27954): impassable location used as mod state anchor.
 # epbm_active modifier applied here — stripped by engine when mod is removed.
 # epbm_version variable stored here for version-based rebuild detection.
@@ -125,7 +125,14 @@ yearly_country_pulse = {
 
 epbm_ai_yearly_recalc = {
 	trigger = {
-		location:bouvet_island = { has_location_modifier = epbm_active }
+		# Bouvet Island carries mod version state (impassable, never owned).
+		# Skip if stale — IOs may be invalid during version transitions.
+		location:bouvet_island = {
+			has_location_modifier = epbm_active
+			has_variable = epbm_version
+			var:epbm_version >= @epbm_rebuild_version
+		}
+
 		is_ai = yes
 		is_real_country = yes
 		any_estate = { estate_type != estate_type:crown_estate }
@@ -136,7 +143,8 @@ epbm_ai_yearly_recalc = {
 	}
 }
 
-# Safety net: rebuild location lists every 10 years to correct any drift
+# Safety net: full structural rebuild every 10 years to correct any drift.
+# Clears and repopulates per-location building lists + country location lists.
 
 epbm_decade_rebuild = {
 	trigger = {
@@ -148,7 +156,7 @@ epbm_decade_rebuild = {
 	effect = {
 		if = {
 			limit = { has_variable = epbm_rebuild_counter var:epbm_rebuild_counter >= 9 }
-			epbm_rebuild_location_lists = yes
+			epbm_structural_rebuild = yes
 			set_variable = { name = epbm_rebuild_counter value = 0 }
 		}
 		else_if = {

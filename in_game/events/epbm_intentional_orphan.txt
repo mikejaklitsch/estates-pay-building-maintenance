@@ -1,0 +1,71 @@
+﻿# Intentionally orphaned event to satisfy the engine's static variable analyzer.
+# These variables are used in localization or legacy cleanup, but the
+# analyzer can't detect localization refs and flags cleanup-only vars
+# as "never set". This event is never triggered.
+
+namespace = epbm_intentional_orphan
+
+epbm_intentional_orphan.1 = {
+	type = country_event
+	title = "epbm_intentional_orphan.1.t"
+	desc = "epbm_intentional_orphan.1.d"
+
+	trigger = {
+		always = no
+	}
+
+	immediate = {
+		# Legacy fort vars: "used but never set" (only exist in old saves, cleanup refs them)
+		set_variable = { name = epbm_maint_fort value = 0 }
+		set_variable = { name = epbm_loc_f_nobles value = 0 }
+		set_variable = { name = epbm_loc_f_dhimmi value = 0 }
+		set_variable = { name = epbm_fort_pay_nobles value = 0 }
+		set_variable = { name = epbm_fort_pay_dhimmi value = 0 }
+		set_variable = { name = epbm_show_fort_nobles value = 0 }
+		set_variable = { name = epbm_show_fort_dhimmi value = 0 }
+		set_variable = { name = epbm_fort_types value = 0 }
+
+		# Display vars: "set but never used" (consumed by localization)
+		change_variable = { name = epbm_maint_regular multiply = 1 }
+		change_variable = { name = epbm_maint_trade multiply = 1 }
+		change_variable = { name = epbm_show_nobles multiply = 1 }
+		change_variable = { name = epbm_show_clergy multiply = 1 }
+		change_variable = { name = epbm_show_burghers multiply = 1 }
+		change_variable = { name = epbm_show_peasants multiply = 1 }
+		change_variable = { name = epbm_show_dhimmi multiply = 1 }
+		change_variable = { name = epbm_show_tribes multiply = 1 }
+		change_variable = { name = epbm_show_cossacks multiply = 1 }
+		change_variable = { name = epbm_show_trade_nobles multiply = 1 }
+		change_variable = { name = epbm_show_trade_clergy multiply = 1 }
+		change_variable = { name = epbm_show_trade_burghers multiply = 1 }
+		change_variable = { name = epbm_show_trade_peasants multiply = 1 }
+		change_variable = { name = epbm_show_trade_dhimmi multiply = 1 }
+		change_variable = { name = epbm_show_trade_tribes multiply = 1 }
+		change_variable = { name = epbm_show_trade_cossacks multiply = 1 }
+		change_variable = { name = epbm_show_foreign_nobles multiply = 1 }
+		change_variable = { name = epbm_show_foreign_clergy multiply = 1 }
+		change_variable = { name = epbm_show_foreign_burghers multiply = 1 }
+		change_variable = { name = epbm_show_foreign_peasants multiply = 1 }
+		change_variable = { name = epbm_show_foreign_dhimmi multiply = 1 }
+		change_variable = { name = epbm_show_foreign_tribes multiply = 1 }
+		change_variable = { name = epbm_show_foreign_cossacks multiply = 1 }
+		change_variable = { name = epbm_loc_r_nobles multiply = 1 }
+		change_variable = { name = epbm_loc_r_clergy multiply = 1 }
+		change_variable = { name = epbm_loc_r_burghers multiply = 1 }
+		change_variable = { name = epbm_loc_r_peasants multiply = 1 }
+		change_variable = { name = epbm_loc_r_dhimmi multiply = 1 }
+		change_variable = { name = epbm_loc_r_tribes multiply = 1 }
+		change_variable = { name = epbm_loc_r_cossacks multiply = 1 }
+		change_variable = { name = epbm_loc_t_nobles multiply = 1 }
+		change_variable = { name = epbm_loc_t_clergy multiply = 1 }
+		change_variable = { name = epbm_loc_t_burghers multiply = 1 }
+		change_variable = { name = epbm_loc_t_peasants multiply = 1 }
+		change_variable = { name = epbm_loc_t_dhimmi multiply = 1 }
+		change_variable = { name = epbm_loc_t_tribes multiply = 1 }
+		change_variable = { name = epbm_loc_t_cossacks multiply = 1 }
+	}
+
+	option = {
+		name = "OK"
+	}
+}
