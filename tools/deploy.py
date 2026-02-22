@@ -16,11 +16,11 @@ ON_ACTIONS_REL = Path("in_game/common/on_action/epbm_on_actions.txt")
 
 
 def version_to_rebuild(version_str):
-    """Convert 'n.m' or 'n.m.p' version string to rebuild version (major*100 + minor)."""
+    """Convert 'n.m' or 'n.m.p' version string to rebuild version (major*100 + minor*10)."""
     parts = version_str.strip().split(".")
     major = int(parts[0]) if len(parts) > 0 else 0
     minor = int(parts[1]) if len(parts) > 1 else 0
-    return major * 100 + minor
+    return major * 100 + minor * 10
 
 
 def deploy():

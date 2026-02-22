@@ -30,4 +30,4 @@ Government and military buildings (forts, barracks, admiralties, courts, etc.) a
 
 - The player country's maintenance is recalculated monthly; AI countries are recalculated yearly. These values are saved to variables on the country and referenced by silent modifiers that pull gold from the estates and reimburse the crown accordingly.
 
-- Mod state is tracked via a location modifier on an impassable location. When the mod is removed, the engine strips the modifier definition, and its absence triggers a full rebuild on re-add. A version variable on the same location detects mod updates.
+- Mod state is tracked via a location modifier on an impassable location. When the mod is removed, the engine strips the modifier definition, and its absence triggers a full rebuild on re-add. A version variable on the same location detects mod updates and triggers a full rebuild with legacy cleanup — orphaned variables and IO instances from previous versions are safely removed before re-initialization.
