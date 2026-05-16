@@ -2,7 +2,5 @@
 epbm_crown_building = {
 	boolean = yes
 
-	game_data = {
-		category = location
-	}
+	game_data = { category = location }
 }

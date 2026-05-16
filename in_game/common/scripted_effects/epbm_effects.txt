@@ -1,263 +1,233 @@
-﻿# Estates Pay Building Maintenance - Core Scripted Effects
+﻿# EPBM — lifecycle effects, hooks, and estate-fanout macros.
+
 # ═══════════════════════════════════════════════
-# List-based architecture:
-#   international_organization:epbm_pm_{name} → variable map per PM profile (goods_ref → per_level_amount)
-#   global epbm_profiles → variable map (building_type → IO scope ref)
-#   location → epbm_building_types variable list (regular building_type refs)
-#   location → epbm_trade_types variable list (trade capacity building_type refs)
-#   country → epbm_locations variable list (location refs)
-#
-# File layout:
-#   epbm_effects.txt      — system lifecycle: init, rebuild, hooks, orchestration
-#   epbm_calculate.txt    — maintenance calculation engine and all sub-effects
-#   epbm_charge.txt       — estate charging and display snapshot
+# Seed a location's building list from its existing buildings
 # ═══════════════════════════════════════════════
-# Initialization
-# ═══════════════════════════════════════════════
-# Build a location's tracking lists from existing buildings
 # Scope: location
 
 epbm_initialize_location = {
 	every_buildings_in_location = {
-		epbm_init_building = yes
+		save_temporary_scope_as = epbm_bldg
+		ordered_production_method_of_building = {
+			limit = { is_key_in_global_variable_map = { name = epbm_profiles target = this } }
+			order_by = "this.production_method_profit(scope:epbm_bldg)"
+			position = 0
+			check_range_bounds = no
+
+			prev = {
+				location = { add_to_variable_list = { name = epbm_buildings target = scope:epbm_bldg } }
+			}
+		}
 	}
 }
 
-# Build a country's epbm_locations list from owned locations
-# Scope: country
+# ═══════════════════════════════════════════════
+# Estate-fanout macros — callers invoke each 7x (one per estate) via $estate$.
+# ═══════════════════════════════════════════════
+
+# Split pool by estate power. multiply references a per-estate script_value
+# (epbm_estate_power_$estate$) because $estate$ substitution inside a
+# quoted dynamic expression gets mangled by adjacent `:` chars.
+
+epbm_set_pay_from_power = {
+	if = {
+		limit = { country_has_estate = estate_type:$estate$_estate }
+		set_variable = {
+			name = epbm_pay_$estate$
+			value = { value = local_var:epbm_total_cost multiply = epbm_estate_power_$estate$ }
+		}
+	}
+}
+
+# Zero one estate's pay var.
+
+epbm_zero_pay = {
+	if = {
+		limit = { country_has_estate = estate_type:$estate$_estate }
+		set_variable = { name = epbm_pay_$estate$ value = 0 }
+	}
+}
+
+# Fold one estate-assigned bucket's cost into its pay var.
+
+epbm_add_estate_cost = {
+	if = {
+		limit = { local_var:epbm_estate_$estate$ > 0 }
+		change_variable = {
+			name = epbm_pay_$estate$
+			add = {
+				value = local_var:epbm_estate_$estate$
+				multiply = epbm_maint_burden
+				multiply = { value = 1 add = inflation }
+			}
+		}
+	}
+}
+
+# Route one building's cost to one estate bucket.
+# Called 7x; exactly one branch fires (estate_ref holds a single value).
+
+epbm_route_to_estate = {
+	if = {
+		limit = { global_var:epbm_estate_ref = estate_type:$estate$_estate }
+		change_local_variable = { name = epbm_estate_$estate$ add = local_var:epbm_bldg_cost }
+	}
+}
+
+# Charge one estate its saved pay amount. Used by both player and AI passes.
+
+epbm_charge_estate_pay = {
+	if = {
+		limit = {
+			any_estate = { estate_type = estate_type:$estate$_estate }
+			has_variable = epbm_pay_$estate$
+			var:epbm_pay_$estate$ > 0
+		}
+		add_gold_to_estate = {
+			estate_type = estate_type:$estate$_estate
+			value = { value = var:epbm_pay_$estate$ multiply = -1 }
+		}
+	}
+}
+
+# Snapshot one estate's pay var into its show var.
+
+epbm_snapshot_estate = {
+	if = {
+		limit = { country_has_estate = estate_type:$estate$_estate }
+		set_variable = { name = epbm_show_$estate$ value = var:epbm_pay_$estate$ }
+	}
+}
+
+# Add one good entry to the IO currently being created.
+# Called by epbm_register_pm's goods_block (nested metascripting).
+
+epbm_good = {
+	add_to_variable_map = {
+		name = epbm_goods
+		key = goods:$good$
+		value = $amount$
+	}
+}
+
+# Register one PM's IO during stamp_globals: create the IO with its goods
+# map, stamp the profile-map entry, record it in all_ios. Scope: country.
+# $goods_block$ takes nested epbm_good calls (nested metascripting).
+
+epbm_register_pm = {
+	create_international_organization = { type = international_organization_type:epbm_pm_$pm$ $goods_block$ }
+
+	add_to_global_variable_map = {
+		name = epbm_profiles
+		key = production_method:$pm$
+		value = international_organization:epbm_pm_$pm$
+	}
+
+	add_to_global_variable_list = { name = epbm_all_ios target = international_organization:epbm_pm_$pm$ }
+}
+
+# ═══════════════════════════════════════════════
+# Rebuild a country's locations list from its owned locations. Scope: country.
+# ═══════════════════════════════════════════════
 
 epbm_rebuild_location_lists = {
 	clear_variable_list = epbm_locations
 
 	every_owned_location = {
-		limit = {
-			OR = {
-				has_variable_list = epbm_building_types
-				has_variable_list = epbm_trade_types
-			}
-		}
+		limit = { has_variable_list = epbm_buildings }
 
 		save_temporary_scope_as = epbm_loc
 
-		prev = {
-			add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
-		}
+		prev = { add_to_variable_list = { name = epbm_locations target = scope:epbm_loc } }
 	}
 }
 
-# Structural rebuild: clear and repopulate per-location building lists, then rebuild country lists.
-# Does NOT touch globals (IOs), display vars, or calc/charge — those run on their own cycles.
-# Scope: country
+# ═══════════════════════════════════════════════
+# Structural rebuild: drift-correction safety net. Scope: country.
+# Runs every 10 years. Skips globals/display/calc — those run on their own cadence.
+# ═══════════════════════════════════════════════
 
 epbm_structural_rebuild = {
-	every_owned_location = {
-		clear_variable_list = epbm_building_types
-		clear_variable_list = epbm_trade_types
-		epbm_initialize_location = yes
-	}
+	every_owned_location = { clear_variable_list = epbm_buildings epbm_initialize_location = yes }
 
 	epbm_rebuild_location_lists = yes
 }
 
-# Clean up orphaned variables from pre-2.x versions (fort category removal).
-# Guarded with existence checks so missing vars don't cause errors.
-# Scope: none (called once during version-triggered full rebuild)
-
-epbm_cleanup_legacy_vars = {
-	# Destroy legacy government building PM IOs before stamp_globals recreates current ones
-	epbm_destroy_legacy_ios = yes
-
-	every_location_in_the_world = {
-		limit = {
-			is_ownable = yes
-			OR = {
-				has_variable_list = epbm_fort_types
-				has_variable = epbm_maint_fort
-				has_variable = epbm_loc_f_nobles
-				has_variable = epbm_loc_f_dhimmi
-			}
-		}
-
-		if = {
-			limit = { has_variable_list = epbm_fort_types }
-			clear_variable_list = epbm_fort_types
-		}
-		if = {
-			limit = { has_variable = epbm_maint_fort }
-			remove_variable = epbm_maint_fort
-		}
-		if = {
-			limit = { has_variable = epbm_loc_f_nobles }
-			remove_variable = epbm_loc_f_nobles
-		}
-		if = {
-			limit = { has_variable = epbm_loc_f_dhimmi }
-			remove_variable = epbm_loc_f_dhimmi
-		}
-	}
-
-	every_country = {
-		limit = {
-			is_real_country = yes
-			OR = {
-				has_variable = epbm_fort_pay_nobles
-				has_variable = epbm_fort_pay_dhimmi
-				has_variable = epbm_show_fort_nobles
-				has_variable = epbm_show_fort_dhimmi
-			}
-		}
-
-		if = {
-			limit = { has_variable = epbm_fort_pay_nobles }
-			remove_variable = epbm_fort_pay_nobles
-		}
-		if = {
-			limit = { has_variable = epbm_fort_pay_dhimmi }
-			remove_variable = epbm_fort_pay_dhimmi
-		}
-		if = {
-			limit = { has_variable = epbm_show_fort_nobles }
-			remove_variable = epbm_show_fort_nobles
-		}
-		if = {
-			limit = { has_variable = epbm_show_fort_dhimmi }
-			remove_variable = epbm_show_fort_dhimmi
-		}
-	}
-}
-
-# Full rebuild: stamp globals, clear and rebuild all lists, collect maintenance
-# Called on game start and when mod version changes (via on_actions version check)
-# Scope: none
+# ═══════════════════════════════════════════════
+# Full rebuild: stamp globals and index every country. Scope: none.
+# Runs once on game_start from epbm_initialize_all.
+# ═══════════════════════════════════════════════
 
 epbm_full_rebuild = {
-	epbm_cleanup_legacy_vars = yes
 	epbm_stamp_globals = yes
 
 	every_location_in_the_world = {
 		limit = { is_ownable = yes }
-		clear_variable_list = epbm_building_types
-		clear_variable_list = epbm_trade_types
-		set_variable = { name = epbm_maint_regular value = 0 }
-		set_variable = { name = epbm_maint_trade value = 0 }
-		# Per-estate per-location breakdown vars
-		set_variable = { name = epbm_loc_r_nobles value = 0 }
-		set_variable = { name = epbm_loc_r_clergy value = 0 }
-		set_variable = { name = epbm_loc_r_burghers value = 0 }
-		set_variable = { name = epbm_loc_r_peasants value = 0 }
-		set_variable = { name = epbm_loc_r_tribes value = 0 }
-		set_variable = { name = epbm_loc_r_dhimmi value = 0 }
-		set_variable = { name = epbm_loc_r_cossacks value = 0 }
-		set_variable = { name = epbm_loc_t_nobles value = 0 }
-		set_variable = { name = epbm_loc_t_clergy value = 0 }
-		set_variable = { name = epbm_loc_t_burghers value = 0 }
-		set_variable = { name = epbm_loc_t_peasants value = 0 }
-		set_variable = { name = epbm_loc_t_tribes value = 0 }
-		set_variable = { name = epbm_loc_t_dhimmi value = 0 }
-		set_variable = { name = epbm_loc_t_cossacks value = 0 }
+		clear_variable_list = epbm_buildings
 		epbm_initialize_location = yes
 	}
 
 	every_country = {
-		limit = {
-			is_real_country = yes
-			any_estate = { estate_type != estate_type:crown_estate }
-		}
+		limit = { is_real_country = yes any_estate = { estate_type != estate_type:crown_estate } }
 
 		epbm_rebuild_location_lists = yes
 		epbm_calculate_maintenance = yes
 		epbm_charge_estates = yes
-		# Zero display vars for player (engine doesn't show income data until month 1)
+
 		if = {
 			limit = { is_ai = no }
-			set_variable = { name = epbm_pay_nobles value = 0 }
-			set_variable = { name = epbm_pay_clergy value = 0 }
-			set_variable = { name = epbm_pay_burghers value = 0 }
-			set_variable = { name = epbm_pay_peasants value = 0 }
-			set_variable = { name = epbm_pay_tribes value = 0 }
-			set_variable = { name = epbm_trade_pay_nobles value = 0 }
-			set_variable = { name = epbm_trade_pay_clergy value = 0 }
-			set_variable = { name = epbm_trade_pay_burghers value = 0 }
-			set_variable = { name = epbm_trade_pay_peasants value = 0 }
-			set_variable = { name = epbm_trade_pay_tribes value = 0 }
-			set_variable = { name = epbm_foreign_pay_nobles value = 0 }
-			set_variable = { name = epbm_foreign_pay_clergy value = 0 }
-			set_variable = { name = epbm_foreign_pay_burghers value = 0 }
-			set_variable = { name = epbm_foreign_pay_peasants value = 0 }
-			set_variable = { name = epbm_foreign_pay_tribes value = 0 }
-			if = {
-				limit = { country_has_estate = estate_type:dhimmi_estate }
-				set_variable = { name = epbm_pay_dhimmi value = 0 }
-				set_variable = { name = epbm_trade_pay_dhimmi value = 0 }
-				set_variable = { name = epbm_foreign_pay_dhimmi value = 0 }
-			}
-			if = {
-				limit = { country_has_estate = estate_type:cossacks_estate }
-				set_variable = { name = epbm_pay_cossacks value = 0 }
-				set_variable = { name = epbm_trade_pay_cossacks value = 0 }
-				set_variable = { name = epbm_foreign_pay_cossacks value = 0 }
-			}
+			epbm_zero_pay = { estate = nobles }
+			epbm_zero_pay = { estate = clergy }
+			epbm_zero_pay = { estate = burghers }
+			epbm_zero_pay = { estate = peasants }
+			epbm_zero_pay = { estate = tribes }
+			epbm_zero_pay = { estate = dhimmi }
+			epbm_zero_pay = { estate = cossacks }
 		}
+
 		set_variable = { name = epbm_rebuild_counter value = 0 }
 	}
-
-	# Version stamp is set by the calling on_action on Bouvet Island
 }
 
 # ═══════════════════════════════════════════════
-# Building event handlers (called from INJECT hooks)
+# on_built hook: register the location with its owner if it isn't already.
+# The injected on_built already added this building to the location's list.
 # ═══════════════════════════════════════════════
-# on_built handler: register location with owner country
-# Scope: building (INJECT already added building_type to location's list)
 
 epbm_on_building_built = {
-	location = {
-		save_temporary_scope_as = epbm_loc
-	}
+	location = { save_temporary_scope_as = epbm_loc }
 
 	owner ?= {
 		if = {
 			limit = {
-				NOT = {
-					is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
-				}
+				NOT = { is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc } }
 			}
-
 			add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
 		}
 	}
 }
 
-# on_destroyed handler: clean up empty locations from country list
-# Scope: building (INJECT already removed building_type from location's list)
+# ═══════════════════════════════════════════════
+# on_destroyed hook: drop the location from the owner's list if no
+# tracked buildings remain. The injected on_destroyed already removed
+# this building from the location's list.
+# ═══════════════════════════════════════════════
 
 epbm_on_building_destroyed = {
 	location = {
 		if = {
-			limit = {
-				NOT = {
-					OR = {
-						has_variable_list = epbm_building_types
-						has_variable_list = epbm_trade_types
-					}
-				}
-			}
+			limit = { NOT = { has_variable_list = epbm_buildings } }
 
 			save_temporary_scope_as = epbm_loc
 
-			owner ?= {
-				remove_list_variable = { name = epbm_locations target = scope:epbm_loc }
-			}
+			owner ?= { remove_list_variable = { name = epbm_locations target = scope:epbm_loc } }
 		}
 	}
 }
 
 # ═══════════════════════════════════════════════
-# Combined: snapshot + recalculate + charge (player monthly)
-# Scope: country
-# 1. Snapshot epbm_pay_* → epbm_show_* (preserves last month for display)
-# 2. Calculate new epbm_pay_* (overwrites with this month's rates)
-# 3. Charge estates using new rates
+# Player monthly: snapshot → recalc → charge. Order matters — snapshot
+# must capture last month's numbers before the recalc clobbers them.
 # ═══════════════════════════════════════════════
 
 epbm_collect_maintenance = {

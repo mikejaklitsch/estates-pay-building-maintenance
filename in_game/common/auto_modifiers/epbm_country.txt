@@ -1,0 +1,27 @@
+﻿# EPBM country-scoped auto modifiers.
+
+# Offset the non-crown share of vanilla's inflation tax on building upkeep.
+# Vanilla's `inflation_impact` static modifier applies
+# `building_upkeep_costs = +1.0` scaled by inflation, falling on the crown.
+# This auto modifier removes the portion that estates would have borne;
+# estates pay their inflated share separately via the (1 + inflation)
+# factor in epbm_calculate.txt.
+
+epbm_inflation_estate_upkeep_offset = {
+	scales_with = epbm_inflation_times_estate_share
+	building_upkeep_costs = -1.0
+}
+
+# Crown-building offset. The estate `power` block reductions and the
+# inflation offset above both reduce the crown's upkeep on *all*
+# buildings — crown buildings included — but estates only pay back for
+# non-crown buildings. Without this offset, crown buildings end up
+# under-charged. Scales by crown_share × (1 - crown_power) × (1 +
+# inflation), which exactly cancels the over-discount on the crown's
+# own buildings. The scaler is computed in epbm_set_crown_offset_scale
+# (epbm_calculate.txt) once per recalc.
+
+epbm_crown_building_offset = {
+	scales_with = epbm_crown_building_offset_scale
+	building_upkeep_costs = 1.0
+}

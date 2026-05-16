@@ -1,9 +1,61 @@
 ﻿# Fraction of building maintenance borne by the estate system (0.0–1.0).
-# At 1.0 estates cover all maintenance; at 0.2 they cover 20% (vanilla).
-# Submods that change this should also set the global define
-# NDefine::NEconomy::BUILDING_MAINTENANCE_PERCENT to match (1.0 → 0.0, 0.2 → 0.8, etc.)
-# so the crown's direct maintenance share and estate burden sum to 1.0.
+# Must stay in sync with BUILDING_UPKEEP_FACTOR in epbm_defines.txt.
 
 epbm_maint_burden = {
 	value = 1.0
+}
+
+# Per-estate estate_power() wrappers. $estate$ macro substitution is
+# unreliable inside quoted dynamic expressions adjacent to `:` chars, so
+# epbm_set_pay_from_power references these by plain name instead.
+# Scope: country.
+
+epbm_estate_power_nobles = {
+	value = "estate_power(estate_type:nobles_estate)"
+}
+
+epbm_estate_power_clergy = {
+	value = "estate_power(estate_type:clergy_estate)"
+}
+
+epbm_estate_power_burghers = {
+	value = "estate_power(estate_type:burghers_estate)"
+}
+
+epbm_estate_power_peasants = {
+	value = "estate_power(estate_type:peasants_estate)"
+}
+
+epbm_estate_power_tribes = {
+	value = "estate_power(estate_type:tribes_estate)"
+}
+
+epbm_estate_power_dhimmi = {
+	value = "estate_power(estate_type:dhimmi_estate)"
+}
+
+epbm_estate_power_cossacks = {
+	value = "estate_power(estate_type:cossacks_estate)"
+}
+
+# (1 - crown_power) × inflation. Drives the inflation auto_modifier that
+# offsets the non-crown share of vanilla's inflation_impact tax on
+# building upkeep. Estates pay their inflated share separately via the
+# (1 + inflation) factor in epbm_calculate.txt.
+
+epbm_inflation_times_estate_share = {
+	value = 1
+	subtract = "estate_power(estate_type:crown_estate)"
+	multiply = inflation
+}
+
+# Scaler for the crown-building offset auto modifier.
+# Source: epbm_set_crown_offset_scale in epbm_calculate.txt, run monthly
+# for players and yearly for AI. Value is
+#   (crown_upkeep / total_upkeep) × (1 - crown_power) × (1 + inflation)
+# which exactly cancels the over-discount that estate `power` blocks and
+# the inflation offset apply to the crown's own buildings.
+
+epbm_crown_building_offset_scale = {
+	value = var:epbm_crown_offset_scale
 }

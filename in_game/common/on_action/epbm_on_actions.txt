@@ -1,13 +1,8 @@
-﻿# Estates Pay Building Maintenance - On Actions
-# ═══════════════════════════════════════════════
-# Initialization: stamp global PM maps, build location + country indexes
-# Monthly: player recalc+charge, AI charge only
-# Yearly: AI recalc
-# Ownership change: move location between country lists
+# Estates Pay Building Maintenance - On Actions
 # ═══════════════════════════════════════════════
 # Rebuild version: major * 100 + minor (patch changes don't trigger rebuild)
 # Updated by deploy.py from .metadata/metadata.json
-@epbm_rebuild_version = 120 # 1.2.x — sync with .metadata/metadata.json
+@epbm_rebuild_version = 200 # 2.0.x — sync with .metadata/metadata.json
 # Bouvet Island (27954): impassable location used as mod state anchor.
 # epbm_active modifier applied here — stripped by engine when mod is removed.
 # epbm_version variable stored here for version-based rebuild detection.
@@ -21,7 +16,6 @@ on_game_start = {
 epbm_initialize_all = {
 	effect = {
 		epbm_full_rebuild = yes
-		# Stamp version on Bouvet Island
 		location:bouvet_island = {
 			remove_location_modifier = epbm_active
 			add_location_modifier = { modifier = epbm_active days = -1 }
@@ -46,14 +40,12 @@ monthly_country_pulse = {
 epbm_version_check = {
 	trigger = {
 		OR = {
-			# Modifier missing = mod was removed and re-added (or first init on existing save)
 			location:bouvet_island = {
 				NOT = {
 					has_location_modifier = epbm_active
 				}
 			}
 
-			# Modifier present but version outdated = mod was updated
 			location:bouvet_island = {
 				has_location_modifier = epbm_active
 				has_variable = epbm_version
@@ -61,7 +53,6 @@ epbm_version_check = {
 			}
 		}
 
-		# Guard: don't let multiple countries trigger rebuild in the same tick
 		NOT = {
 			has_global_variable = epbm_rebuilding
 		}
@@ -70,7 +61,6 @@ epbm_version_check = {
 	effect = {
 		set_global_variable = { name = epbm_rebuilding value = yes }
 		epbm_full_rebuild = yes
-		# Stamp version on Bouvet Island
 		location:bouvet_island = {
 			remove_location_modifier = epbm_active
 			add_location_modifier = { modifier = epbm_active days = -1 }
@@ -106,6 +96,7 @@ epbm_ai_monthly_charge = {
 	}
 
 	effect = {
+		epbm_snapshot_for_display = yes
 		epbm_charge_estates = yes
 	}
 }
@@ -125,8 +116,6 @@ yearly_country_pulse = {
 
 epbm_ai_yearly_recalc = {
 	trigger = {
-		# Bouvet Island carries mod version state (impassable, never owned).
-		# Skip if stale — IOs may be invalid during version transitions.
 		location:bouvet_island = {
 			has_location_modifier = epbm_active
 			has_variable = epbm_version
@@ -144,7 +133,6 @@ epbm_ai_yearly_recalc = {
 }
 
 # Safety net: full structural rebuild every 10 years to correct any drift.
-# Clears and repopulates per-location building lists + country location lists.
 
 epbm_decade_rebuild = {
 	trigger = {
@@ -184,7 +172,7 @@ epbm_on_location_owner_changed = {
 
 	effect = {
 		save_temporary_scope_as = epbm_loc
-		# Remove from loser's list (if they have one)
+
 		scope:loser ?= {
 			if = {
 				limit = {
@@ -196,18 +184,12 @@ epbm_on_location_owner_changed = {
 			}
 		}
 
-		# Add to winner's list if location has tracked buildings
 		scope:winner ?= {
 			if = {
 				limit = {
 					has_variable_list = epbm_locations
 
-					scope:epbm_loc = {
-						OR = {
-							has_variable_list = epbm_building_types
-							has_variable_list = epbm_trade_types
-						}
-					}
+					scope:epbm_loc = { has_variable_list = epbm_buildings }
 					NOT = {
 						is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
 					}

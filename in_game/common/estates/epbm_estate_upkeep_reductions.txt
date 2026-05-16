@@ -1,0 +1,36 @@
+﻿# EPBM: each non-crown estate reduces the crown's building upkeep
+# proportional to its relative power. The engine handles scaling natively
+# via the estate `power` block (multiplied by relative_power - threshold) —
+# zero per-tick script overhead.
+#
+# Stacks with the script-side estate charging in epbm_charge.txt: estates
+# lose gold matching their share of upkeep, and the crown saves the same
+# amount via this modifier — net total destroyed equals vanilla upkeep.
+
+INJECT:nobles_estate = {
+	power = { building_upkeep_costs = -1.0 }
+}
+
+INJECT:clergy_estate = {
+	power = { building_upkeep_costs = -1.0 }
+}
+
+INJECT:burghers_estate = {
+	power = { building_upkeep_costs = -1.0 }
+}
+
+INJECT:peasants_estate = {
+	power = { building_upkeep_costs = -1.0 }
+}
+
+INJECT:tribes_estate = {
+	power = { building_upkeep_costs = -1.0 }
+}
+
+INJECT:dhimmi_estate = {
+	power = { building_upkeep_costs = -1.0 }
+}
+
+INJECT:cossacks_estate = {
+	power = { building_upkeep_costs = -1.0 }
+}
