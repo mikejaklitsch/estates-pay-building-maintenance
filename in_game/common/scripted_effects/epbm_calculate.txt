@@ -3,7 +3,7 @@
 # everything else goes to a shared pool split by estate_power.
 
 # ═══════════════════════════════════════════════
-# PM cost lookup with lazy per-market cache. Scope: PM IO.
+# PM cost lookup with lazy per-market cache. Scope: PM location.
 # Requires scope:epbm_mkt. Sets local_var:epbm_pm_cost.
 # ═══════════════════════════════════════════════
 

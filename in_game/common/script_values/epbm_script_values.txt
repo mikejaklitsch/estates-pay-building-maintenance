@@ -57,5 +57,5 @@ epbm_inflation_times_estate_share = {
 # the inflation offset apply to the crown's own buildings.
 
 epbm_crown_building_offset_scale = {
-	value = var:epbm_crown_offset_scale
+	if = { limit = { has_variable = epbm_crown_offset_scale } value = var:epbm_crown_offset_scale }
 }

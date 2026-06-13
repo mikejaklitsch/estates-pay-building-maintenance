@@ -1,5 +1,7 @@
-l_english:
+﻿l_english:
  game_concept_epbm_estate_building_maintenance: "Estate Building Maintenance"
  game_concept_epbm_estate_building_maintenance_desc: "[estates|E] pay a share of [building_maintenance|E] split by [estate_power|E]. [buildings|E] assigned to a specific [estate|E] are charged in full to that estate."
  MODIFIER_TYPE_NAME_epbm_crown_building: "Crown Building"
  MODIFIER_TYPE_DESC_epbm_crown_building: "Maintenance for this building is paid by the crown, not split among the estates."
+ AUTO_MODIFIER_NAME_epbm_inflation_estate_upkeep_offset: "Estate Maintenance Inflation Offset"
+ AUTO_MODIFIER_NAME_epbm_crown_building_offset: "Crown Building Maintenance Offset"

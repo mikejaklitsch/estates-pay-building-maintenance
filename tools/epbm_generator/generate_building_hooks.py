@@ -41,22 +41,16 @@ The generator runs in eight stages:
      definition with hooks, used when the building already has hooks
      that need updating or when the PM was renamed to avoid collision).
 
-  6. GENERATE INTERNATIONAL ORGANIZATIONS (IOs)
-     One IO definition per unique PM goods profile. IOs are abused as
-     variable-map containers — each IO holds a goods→quantity map that
-     the runtime prices against the local market. Buildings that share
-     identical goods profiles share a single IO.
-
-  7. GENERATE INIT EFFECTS
+  6. GENERATE INIT EFFECTS
      Writes `epbm_stamp_globals`: called once at game start (and on
-     save-game load). Creates all IOs, populates the global
-     `epbm_profiles` map (PM → IO scope), and registers estate-
-     assigned buildings in `epbm_estate_map` (building_type → estate).
+     save-game load). Allocates one pooled location per unique PM goods
+     profile, populates the global `epbm_profiles` map (PM → location),
+     and registers estate-assigned buildings in `epbm_estate_map`
+     (building_type → estate).
 
-  8. GENERATE BIASES + LOCALIZATION
-     Engine mandates one io_opinion bias entry per IO (even if neutral).
-     Localization provides empty/placeholder strings for IO names and
-     any PMs renamed during the REPLACE step to avoid name collisions.
+  7. GENERATE LOCALIZATION
+     Localization provides display-name aliases for PMs renamed during
+     the REPLACE step to avoid name collisions.
 
 ────────────────────────────────────────────────────────────────────────────
 RUNTIME CONTEXT
@@ -68,9 +62,11 @@ The generated artifacts feed the EPBM runtime (epbm_*.txt scripts):
     maintenance calculation without needing to iterate every building in
     the country each tick.
 
-  - The IO goods maps let the calculator price each building's maintenance
-    against its local market. Goods prices vary by market, so the same
-    building type costs different amounts in different trade nodes.
+  - Pooled locations (one per PM goods profile) store goods quantities in
+    an epbm_goods variable map, letting the calculator price each
+    building's maintenance against its local market. Goods prices vary
+    by market, so the same building type costs different amounts in
+    different trade nodes.
 
   - The estate map routes estate-assigned buildings to their owning
     estate's cost bucket. Non-estate buildings go to a shared pool that
@@ -1345,77 +1341,87 @@ def generate_replaced_pm_localization(building_to_renamed_pms):
 # IO / bias / init-effect / localization generators
 # ═════════════════════════════════════════════════════════════════════════
 
-def generate_io_definitions(all_pm_goods):
-    """One hidden international_organization per distinct PM goods profile.
-    These IOs are used purely as variable-map containers at runtime."""
+def generate_upkeep_script_values(qualifying, all_pm_goods, buildings):
+    """Emit per-PM script values that compute goods-based maintenance cost
+    from building scope, plus a dispatch script value that branches on
+    building_type. Covers estate-assigned buildings (which have exactly
+    one maintenance PM each). Scope: building.
+    """
+    estate_buildings = [(b, e) for b, _, e in qualifying if e is not None]
+    if not estate_buildings:
+        return None
+
+    # Map estate building -> its maintenance PM name(s)
+    bldg_to_pm = OrderedDict()
+    for bname, _estate in sorted(estate_buildings):
+        b = buildings[bname]
+        for pm_name in b['unique_pms']:
+            if pm_name in all_pm_goods:
+                bldg_to_pm[bname] = pm_name
+                break
+        if bname not in bldg_to_pm:
+            for pm_name in b['possible_pms']:
+                if pm_name in all_pm_goods:
+                    bldg_to_pm[bname] = pm_name
+                    break
+
+    if not bldg_to_pm:
+        return None
+
     lines = list(GENERATED_HEADER_LINES)
-    lines.append("# Hidden international organizations used as variable map containers.")
-    lines.append(f"# Each IO hosts a {_p('goods')} variable map for one PM profile.")
+    lines.append("# Per-PM script values: compute goods-based maintenance from building scope.")
+    lines.append("# Each prices its goods against the building's local market and scales by level.")
     lines.append("")
 
-    for pm_name in sorted(all_pm_goods.keys()):
-        io_name = f"{_p('pm')}_{pm_name}"
-        lines.append(f"{io_name} = {{")
-        lines.append("\tunique = yes")
-        lines.append("\thas_target = no")
-        lines.append("\tshow_on_diplomatic_map = no")
-        lines.append("\tcreate_visible_trigger = { always = no }")
-        lines.append("\tauto_disband_trigger = { always = no }")
+    # Per-PM script values
+    emitted_pms = set()
+    for bname, pm_name in bldg_to_pm.items():
+        if pm_name in emitted_pms:
+            continue
+        emitted_pms.add(pm_name)
+        goods = all_pm_goods[pm_name]
+        sv_name = f"{pm_name}_upkeep" if pm_name.startswith(PREFIX + "_") else f"{_p('upkeep')}_{pm_name}"
+        lines.append(f"{sv_name} = {{")
+        lines.append(f"\tvalue = 0")
+        for good, amount in goods.items():
+            lines.append(f'\tadd = {{ value = "location.market.market_price(goods:{good})" multiply = {amount} }}')
+        lines.append(f"\tmultiply = building_level")
         lines.append("}")
         lines.append("")
 
-    return "\n".join(lines)
-
-
-def generate_io_biases(all_pm_goods):
-    """The engine requires an io_opinion bias per IO. These are all zero."""
-    lines = list(GENERATED_HEADER_LINES)
-    lines.append("# Opinion biases for hidden PM IOs (required by engine, value 0).")
+    # Dispatch script value: branches on building_type
+    lines.append("# Dispatch: returns the correct PM upkeep for estate-assigned buildings.")
+    lines.append("# Scope: building.")
     lines.append("")
-
-    for pm_name in sorted(all_pm_goods.keys()):
-        lines.append(f"io_opinion_{_p('pm')}_{pm_name} = {{")
-        lines.append("\tvalue = 0")
-        lines.append("}")
-        lines.append("")
-
-    return "\n".join(lines)
-
-
-def generate_io_localization(all_pm_goods):
-    """Empty loc entries for every IO so the engine doesn't spam warnings."""
-    # YAML file with BOM + l_english header.
-    lines = ["﻿l_english:"]
-    for hdr in GENERATED_LOC_HEADER_LINES:
-        lines.append(" " + hdr)
-
-    for pm_name in sorted(all_pm_goods.keys()):
-        io = f"{_p('pm')}_{pm_name}"
-        lines.append(f' {io}: ""')
-        lines.append(f' {io}_desc: ""')
-        lines.append(f' diplomatic_status_{io}_name: ""')
-        lines.append(f' diplomatic_status_{io}_tooltip: ""')
-        lines.append(f' {io}_list_who_tt: ""')
-        lines.append(f' io_opinion_{io}: ""')
+    lines.append(f"{_p('estate_building_upkeep')} = {{")
+    first = True
+    for bname, pm_name in bldg_to_pm.items():
+        keyword = "if" if first else "else_if"
+        lines.append(f"\t{keyword} = {{")
+        lines.append(f"\t\tlimit = {{ building_type = building_type:{bname} }}")
+        dispatch_sv = f"{pm_name}_upkeep" if pm_name.startswith(PREFIX + "_") else f"{_p('upkeep')}_{pm_name}"
+        lines.append(f"\t\tvalue = {dispatch_sv}")
+        lines.append(f"\t}}")
+        first = False
+    lines.append("}")
+    lines.append("")
 
     return "\n".join(lines)
 
 
 def generate_init_effects(qualifying, all_pm_goods, crown_buildings):
     """Emit `epbm_stamp_globals`. Called once at game start from the
-    hand-written full_rebuild effect. Destroys any stale IO instances,
-    recreates one per PM profile, populates each IO's goods variable-map,
-    stamps the global production_method → IO lookup map, the
-    building_type → estate_type assignment map, and the building_type →
-    yes crown-routing map. Records a global list of all IOs for monthly
-    cache clearing.
+    hand-written full_rebuild effect. Clears globals, allocates one
+    pooled location per PM profile, populates its epbm_goods map,
+    stamps the global production_method -> location lookup map, the
+    building_type -> estate_type assignment map, and the building_type
+    -> yes crown-routing map.
 
-    The per-building init dispatch that used to live here has been
-    replaced by a hand-written iterator inside epbm_initialize_location
-    — it uses the same profile-map check as the calc path and no longer
-    needs a generated building_type → add-to-list switch.
+    No per-location cleanup is needed: epbm_init_pool (called before
+    this) rebuilt the pool, and epbm_register_pm wipes stale data
+    during allocation.
     """
-    all_ios = _p('all_ios')
+    all_pm_dicts = _p('all_pm_dicts')
     profiles = _p('profiles')
     estate_map = _p('estate_map')
     crown_map = _p('crown_map')
@@ -1423,40 +1429,24 @@ def generate_init_effects(qualifying, all_pm_goods, crown_buildings):
     lines = list(GENERATED_HEADER_LINES)
     lines.append("")
 
-    # ── Part 1: stamp_globals ──
-    lines.append("# Called once at game start: destroy stale IOs, clear globals, then")
-    lines.append(f"# register one IO per maintenance PM via {_p('register_pm')}.")
+    lines.append("# Called once at game start: clear globals, then register one pooled")
+    lines.append(f"# location per maintenance PM via {_p('register_pm')}.")
     lines.append(f"{_p('stamp_globals')} = {{")
-    lines.append("\t# destroy_international_organization requires country scope")
-    lines.append("\trandom_country = {")
-    lines.append("\t\tlimit = { is_real_country = yes }")
-    lines.append("\t\tevery_in_global_list = {")
-    lines.append(f"\t\t\tvariable = {all_ios}")
-    lines.append("\t\t\tsave_temporary_scope_as = io_to_destroy")
-    lines.append("\t\t\tprev = {")
-    lines.append("\t\t\t\tdestroy_international_organization = { target = scope:io_to_destroy }")
-    lines.append("\t\t\t}")
-    lines.append("\t\t}")
-    lines.append("\t}")
-    lines.append(f"\tclear_global_variable_list = {all_ios}")
+    lines.append(f"\tclear_global_variable_list = {all_pm_dicts}")
     lines.append(f"\tclear_global_variable_map = {profiles}")
     lines.append(f"\tclear_global_variable_map = {estate_map}")
     lines.append(f"\tclear_global_variable_map = {crown_map}")
     lines.append("")
-    lines.append("\trandom_country = {")
-    lines.append("\t\tlimit = { is_real_country = yes }")
 
     for pm_name in sorted(all_pm_goods.keys()):
         pm_goods = all_pm_goods[pm_name]
-        lines.append(f"\t\t{_p('register_pm')} = {{")
-        lines.append(f"\t\t\tpm = {pm_name}")
-        lines.append(f"\t\t\tgoods_block = \"")
+        lines.append(f"\t{_p('register_pm')} = {{")
+        lines.append(f"\t\tpm = {pm_name}")
+        lines.append(f"\t\tgoods_block = \"")
         for good, amount in pm_goods.items():
-            lines.append(f"\t\t\t\t{_p('good')} = {{ good = {good} amount = {amount} }}")
-        lines.append("\t\t\t\"")
-        lines.append("\t\t}")
-
-    lines.append("\t}")
+            lines.append(f"\t\t\t{_p('good')} = {{ good = {good} amount = {amount} }}")
+        lines.append("\t\t\"")
+        lines.append("\t}")
 
     # Estate-assignment map: building_type → estate_type. Each entry means
     # "charge the full maintenance cost of this building to this estate".
@@ -1733,32 +1723,35 @@ def main():
                 print(f"  cleaned stale {crown_inject_path.name}")
             _delete_stale(crown_inject_path)
 
-    # ── Stages 6-8: IOs, init effects, biases, localization ──
-    # Generate all runtime artifacts: IO definitions (goods containers),
-    # init effects (game-start setup), biases (engine-required), and
-    # localization (prevent missing-loc warnings).
+    # ── Stage 6: Upkeep script values for estate buildings ──
     print("")
-    print("Writing generated IOs / biases / init effects / loc...")
+    print("Writing upkeep script values...")
 
-    io_defs = generate_io_definitions(all_pm_goods)
-    out_path = out_ios / f"{PREFIX}_generated_ios.txt"
-    _write_output(out_path, io_defs)
-    print(f"  {'would write' if CHECK_MODE else 'wrote'} {out_path.relative_to(output_dir)}")
+    out_sv = output_dir / "in_game" / "common" / "script_values"
+    upkeep_sv = generate_upkeep_script_values(qualifying, all_pm_goods, buildings)
+    upkeep_sv_path = out_sv / f"{PREFIX}_generated_script_values.txt"
+    if upkeep_sv is not None:
+        _write_output(upkeep_sv_path, upkeep_sv)
+        print(f"  {'would write' if CHECK_MODE else 'wrote'} {upkeep_sv_path.relative_to(output_dir)}")
+    else:
+        _delete_stale(upkeep_sv_path)
+
+    # ── Stage 7: Init effects + stale cleanup ──
+    # Generate the init effects file (stamp_globals).
+    print("")
+    print("Writing generated init effects...")
 
     init_effects = generate_init_effects(qualifying, all_pm_goods, crown_buildings)
     out_path = out_effects / f"{PREFIX}_generated_init_effects.txt"
     _write_output(out_path, init_effects)
     print(f"  {'would write' if CHECK_MODE else 'wrote'} {out_path.relative_to(output_dir)}")
 
-    biases = generate_io_biases(all_pm_goods)
-    out_path = out_biases / f"{PREFIX}_generated_biases.txt"
-    _write_output(out_path, biases)
-    print(f"  {'would write' if CHECK_MODE else 'wrote'} {out_path.relative_to(output_dir)}")
-
-    loc = generate_io_localization(all_pm_goods)
-    out_path = out_loc / f"{PREFIX}_ios_l_english.yml"
-    _write_output(out_path, loc, encoding="utf-8")
-    print(f"  {'would write' if CHECK_MODE else 'wrote'} {out_path.relative_to(output_dir)}")
+    for stale_path in (
+        out_ios / f"{PREFIX}_generated_ios.txt",
+        out_biases / f"{PREFIX}_generated_biases.txt",
+        out_loc / f"{PREFIX}_ios_l_english.yml",
+    ):
+        _delete_stale(stale_path)
 
     # Aliases for PMs renamed by the REPLACE generator (see generate_replace).
     # Written only when the REPLACE pass actually renamed something; otherwise

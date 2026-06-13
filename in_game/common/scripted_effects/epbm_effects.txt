@@ -1,5 +1,7 @@
 ﻿# EPBM — lifecycle effects, hooks, and estate-fanout macros.
 
+@epbm_pool_size = 250
+
 # ═══════════════════════════════════════════════
 # Seed a location's building list from its existing buildings
 # ═══════════════════════════════════════════════
@@ -99,31 +101,64 @@ epbm_snapshot_estate = {
 	}
 }
 
-# Add one good entry to the IO currently being created.
+# Add one good entry to the location being built.
 # Called by epbm_register_pm's goods_block (nested metascripting).
 
 epbm_good = {
-	add_to_variable_map = {
-		name = epbm_goods
-		key = goods:$good$
-		value = $amount$
+	scope:epbm_current_dict = {
+		add_to_variable_map = {
+			name = epbm_goods
+			key = goods:$good$
+			value = $amount$
+		}
 	}
 }
 
-# Register one PM's IO during stamp_globals: create the IO with its goods
-# map, stamp the profile-map entry, record it in all_ios. Scope: country.
+# Register one PM's goods profile during stamp_globals.
+# Allocates a location from the pool, populates its epbm_goods map,
+# stamps the global profile map and tracking list.
 # $goods_block$ takes nested epbm_good calls (nested metascripting).
+# Uses save_scope_as (not temporary) because the engine silently breaks
+# variable map writes through temporary scopes on re-entry.
 
 epbm_register_pm = {
-	create_international_organization = { type = international_organization_type:epbm_pm_$pm$ $goods_block$ }
+	random_in_global_list = { variable = epbm_free_pool save_scope_as = epbm_current_dict }
+
+	remove_list_global_variable = { name = epbm_free_pool target = scope:epbm_current_dict }
+
+	scope:epbm_current_dict = {
+		if = { limit = { has_variable_map = epbm_goods } clear_variable_map = epbm_goods }
+		if = { limit = { has_variable_map = epbm_costs } clear_variable_map = epbm_costs }
+	}
+
+	$goods_block$
 
 	add_to_global_variable_map = {
 		name = epbm_profiles
 		key = production_method:$pm$
-		value = international_organization:epbm_pm_$pm$
+		value = scope:epbm_current_dict
 	}
 
-	add_to_global_variable_list = { name = epbm_all_ios target = international_organization:epbm_pm_$pm$ }
+	add_to_global_variable_list = { name = epbm_all_pm_dicts target = scope:epbm_current_dict }
+}
+
+# ═══════════════════════════════════════════════
+# Location pool: collects @epbm_pool_size locations as variable map containers.
+# Called once at game start before epbm_stamp_globals.
+# ═══════════════════════════════════════════════
+
+epbm_init_pool = {
+	clear_global_variable_list = epbm_free_pool
+
+	set_global_variable = { name = epbm_pool_idx value = 0 }
+
+	every_location_in_the_world = {
+		limit = { global_var:epbm_pool_idx < @epbm_pool_size }
+		add_to_global_variable_list = { name = epbm_free_pool target = this }
+		change_global_variable = { name = epbm_pool_idx add = 1 }
+	}
+
+	remove_global_variable = epbm_pool_idx
 }
 
 # ═══════════════════════════════════════════════
@@ -166,6 +201,8 @@ epbm_full_rebuild = {
 		clear_variable_list = epbm_buildings
 		epbm_initialize_location = yes
 	}
+
+	every_country = { limit = { is_real_country = yes } set_variable = { name = epbm_crown_offset_scale value = 0 } }
 
 	every_country = {
 		limit = { is_real_country = yes any_estate = { estate_type != estate_type:crown_estate } }

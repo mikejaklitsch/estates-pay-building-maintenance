@@ -2,6 +2,7 @@
 # tools/epbm_generator/. After adding a building or a maintenance
 # production method, commit your changes and re-run:
 #   python3 tools/epbm_generator/generate_building_hooks.py
+
 REPLACE:toll_castle = {
 	is_foreign = no
 	max_levels = estate_building_single_level
@@ -20,12 +21,8 @@ REPLACE:toll_castle = {
 
 	build_time = estate_build_time
 
-
-
-
-
 	unique_production_methods = {
-		toll_castle_maintenance = {
+		epbm_toll_castle_maintenance = {
 			stone = 0.05
 			tools = 0.05
 			weaponry = 0.05
@@ -34,9 +31,7 @@ REPLACE:toll_castle = {
 		}
 	}
 
-
 	construction_demand = estate_construct_building
-
 
 	modifier = {
 		local_nobles_estate_power = 0.5
@@ -45,6 +40,8 @@ REPLACE:toll_castle = {
 	}
 
 	graphical_tags = { small_military }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -77,11 +74,8 @@ REPLACE:nobility_fortifications = {
 
 	build_time = estate_build_time
 
-
-
-
 	unique_production_methods = {
-		nobility_fortifications_maintenance = {
+		epbm_nobility_fortifications_maintenance = {
 			stone = 0.05
 			tools = 0.05
 			weaponry = 0.05
@@ -92,13 +86,14 @@ REPLACE:nobility_fortifications = {
 
 	construction_demand = estate_construct_building
 
-
 	modifier = {
 		local_nobles_estate_power = 0.5
 		local_crown_estate_power = -0.1
 		local_defensive = 0.25
 	}
+
 	graphical_tags = { small_military }
+
 
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
@@ -124,27 +119,23 @@ REPLACE:rotten_borough = {
 	city = no
 	megalopolis = no
 
-
 	location_potential = {
 		integration_level = core
 	}
+
 	country_potential = {
 		modifier:has_a_parliamentary_system = yes
 		has_parliament = yes
 	}
+
 	allow = {
-		owner = {
-			estate_satisfaction:nobles_estate < 0.5
-			stability < 0
-		}
+		owner = { estate_satisfaction:nobles_estate < 0.5 stability < 0 }
 		modifier:has_parliament_seat = no
 	}
+
 	remove_if = {
 		location = {
-			OR = {
-				NOT = { integration_level = core }
-				owner = { has_parliament = no }
-			}
+			OR = { NOT = { integration_level = core } owner = { has_parliament = no } }
 		}
 	}
 
@@ -152,22 +143,16 @@ REPLACE:rotten_borough = {
 
 	build_time = estate_build_time
 
-
-
-
 	unique_production_methods = {
-		rotten_borough_maintenance = {
+		epbm_rotten_borough_maintenance = {
 			paper = 0.05
 			cloth = 0.02
 			category = building_maintenance
 		}
 	}
 
+	modifier = { local_nobles_estate_power = 0.5 has_parliament_seat = yes }
 
-	modifier = {
-		local_nobles_estate_power = 0.5
-		has_parliament_seat = yes
-	}
 
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
@@ -201,10 +186,8 @@ REPLACE:noble_villa = {
 
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		noble_villa_maintenance = {
+		epbm_noble_villa_maintenance = {
 			lumber = 0.05
 			cloth = 0.05
 			furniture = 0.02
@@ -214,10 +197,9 @@ REPLACE:noble_villa = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_nobles_estate_power = 0.2
-		local_peasant_enfranchisment = -0.02
-	}
+	modifier = { local_nobles_estate_power = 0.2 local_peasant_enfranchisment = -0.02 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -253,10 +235,8 @@ REPLACE:local_noble_delegation = {
 
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		local_noble_delegation_maintenance = {
+		epbm_local_noble_delegation_maintenance = {
 			paper = 0.15
 			fine_cloth = 0.1
 			furniture = 0.05
@@ -266,9 +246,9 @@ REPLACE:local_noble_delegation = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_nobles_estate_power = 1.0
-	}
+	modifier = { local_nobles_estate_power = 1.0 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -301,10 +281,8 @@ REPLACE:nobles_recruitment_center = {
 
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		nobles_recruitment_center_maintenance = {
+		epbm_nobles_recruitment_center_maintenance = {
 			leather = 0.5
 			cloth = 0.1
 			paper = 0.2
@@ -315,10 +293,9 @@ REPLACE:nobles_recruitment_center = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_nobles_estate_power = 0.50
-		local_levy_size_modifier = 0.1
-	}
+	modifier = { local_nobles_estate_power = 0.50 local_levy_size_modifier = 0.1 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -339,21 +316,17 @@ REPLACE:local_estates = {
 
 	employment_size = tiny_estate_noble_employment
 
-
 	rural_settlement = yes
 	town = no
 	city = no
 	megalopolis = no
 
-
 	estate = nobles_estate
 
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		local_estates_maintenance = {
+		epbm_local_estates_maintenance = {
 			lumber = 0.05
 			tools = 0.02
 			category = building_maintenance
@@ -362,10 +335,9 @@ REPLACE:local_estates = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_nobles_estate_power = 0.1
-		local_peasant_enfranchisment = -0.01
-	}
+	modifier = { local_nobles_estate_power = 0.1 local_peasant_enfranchisment = -0.01 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -394,11 +366,8 @@ REPLACE:noble_courts = {
 
 	build_time = estate_build_time
 
-
-
-
 	unique_production_methods = {
-		noble_courts_maintenance = {
+		epbm_noble_courts_maintenance = {
 			paper = 0.1
 			fine_cloth = 0.05
 			furniture = 0.05
@@ -406,11 +375,9 @@ REPLACE:noble_courts = {
 		}
 	}
 
+	modifier = { local_nobles_estate_power = 0.5 local_max_control = -0.025 }
 
-	modifier = {
-		local_nobles_estate_power = 0.5
-		local_max_control = -0.025
-	}
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -441,9 +408,8 @@ REPLACE:nobles_mansion = {
 
 	construction_demand = estate_construct_building
 
-
 	unique_production_methods = {
-		nobles_mansion_maintenance = {
+		epbm_nobles_mansion_maintenance = {
 			cloth = 0.1
 			fine_cloth = 0.05
 			furniture = 0.05
@@ -452,13 +418,11 @@ REPLACE:nobles_mansion = {
 		}
 	}
 
-
 	destroyable_building = yes
 
-	modifier = {
-		local_nobles_estate_power = 0.5
-		local_nobles_food_consumption = 0.25
-	}
+	modifier = { local_nobles_estate_power = 0.5 local_nobles_food_consumption = 0.25 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -487,12 +451,10 @@ REPLACE:nobled_sponsored_temple = {
 
 	graphical_tags = { small_religious }
 
-
 	estate = nobles_estate
 
-
 	unique_production_methods = {
-		nobled_sponsored_temple_maintenance = {
+		epbm_nobled_sponsored_temple_maintenance = {
 			glass = 0.025
 			cloth = 0.05
 			paper = 0.025
@@ -501,16 +463,11 @@ REPLACE:nobled_sponsored_temple = {
 		}
 	}
 
-
-
 	construction_demand = estate_construct_building
 
+	modifier = { local_nobles_estate_power = 0.5 local_unrest = -0.025 }
 
 
-	modifier = {
-		local_nobles_estate_power = 0.5
-		local_unrest = -0.025
-	}
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -525,7 +482,6 @@ REPLACE:cathedral = {
 	is_foreign = no
 	max_levels = 1
 	pop_type = clergy
-
 
 	category = estate_category
 
@@ -547,7 +503,7 @@ REPLACE:cathedral = {
 	price = expensive_estate_building
 
 	unique_production_methods = {
-		cathedral_maintenance = {
+		epbm_cathedral_maintenance = {
 			glass = 0.05
 			cloth = 0.05
 			fine_cloth = 0.025
@@ -558,7 +514,6 @@ REPLACE:cathedral = {
 		}
 	}
 
-
 	# construction_demand = cathedral_construction
 	construction_demand = estate_construct_building
 
@@ -567,6 +522,7 @@ REPLACE:cathedral = {
 		local_clergy_max_literacy = 10
 		local_pop_conversion_speed_modifier = 0.2
 	}
+
 
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
@@ -596,12 +552,10 @@ REPLACE:parish_church = {
 
 	graphical_tags = { small_religious }
 
-
 	estate = clergy_estate
 
-
 	unique_production_methods = {
-		parish_church_maintenance = {
+		epbm_parish_church_maintenance = {
 			glass = 0.025
 			paper = 0.025
 			cloth = 0.025
@@ -611,19 +565,15 @@ REPLACE:parish_church = {
 		}
 	}
 
-
 	construction_demand = estate_construct_building
-
 
 	country_potential = {
 		religion.group = religion_group:christian
 	}
 
+	modifier = { local_clergy_estate_power = 0.25 local_peasants_estate_power = 0.75 }
 
-	modifier = {
-		local_clergy_estate_power = 0.25
-		local_peasants_estate_power = 0.75
-	}
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -650,13 +600,12 @@ REPLACE:local_shrine = {
 
 	build_time = estate_build_time
 
-
 	graphical_tags = { small_religious }
 
 	estate = clergy_estate
 
 	unique_production_methods = {
-		local_shrine_maintenance = {
+		epbm_local_shrine_maintenance = {
 			cloth = 0.025
 			beeswax = 0.025
 			category = building_maintenance
@@ -668,10 +617,9 @@ REPLACE:local_shrine = {
 	country_potential = {
 	}
 
-	modifier = {
-		local_clergy_estate_power = 0.1
-		local_clergy_conversion_blocked = yes
-	}
+	modifier = { local_clergy_estate_power = 0.1 local_clergy_conversion_blocked = yes }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -697,14 +645,13 @@ REPLACE:clerical_archives = {
 	megalopolis = yes
 
 	build_time = estate_build_time
+
 	graphical_tags = { small_religious }
-
-
 
 	estate = clergy_estate
 
 	unique_production_methods = {
-		clerical_archives_maintenance = {
+		epbm_clerical_archives_maintenance = {
 			paper = 0.1
 			books = 0.25
 			category = building_maintenance
@@ -717,10 +664,9 @@ REPLACE:clerical_archives = {
 		has_estate_privilege = estate_privilege:clergy_literacy_rights
 	}
 
-	modifier = {
-		local_clergy_estate_power = 0.5
-		local_clergy_max_literacy = 1
-	}
+	modifier = { local_clergy_estate_power = 0.5 local_clergy_max_literacy = 1 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -749,11 +695,10 @@ REPLACE:spiritual_retreat = {
 
 	graphical_tags = { small_religious }
 
-
 	estate = clergy_estate
 
 	unique_production_methods = {
-		spiritual_retreat_maintenance = {
+		epbm_spiritual_retreat_maintenance = {
 			cloth = 0.025
 			lumber = 0.05
 			category = building_maintenance
@@ -775,10 +720,9 @@ REPLACE:spiritual_retreat = {
 		}
 	}
 
-	modifier = {
-		local_clergy_estate_power = 0.1
-		local_clergy_food_consumption = 0.1
-	}
+	modifier = { local_clergy_estate_power = 0.1 local_clergy_food_consumption = 0.1 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -797,6 +741,7 @@ REPLACE:warrior_monks_training_grounds = {
 	employment_size = manpower_employment
 
 	category = estate_category
+
 	graphical_tags = { medium_religious }
 
 	rural_settlement = yes
@@ -806,12 +751,10 @@ REPLACE:warrior_monks_training_grounds = {
 
 	build_time = estate_build_time
 
-
-
 	estate = clergy_estate
 
 	unique_production_methods = {
-		warrior_monks_training_grounds_maintenance = {
+		epbm_warrior_monks_training_grounds_maintenance = {
 			cloth = 0.01
 			paper = 0.05
 			weaponry = 0.05
@@ -830,13 +773,11 @@ REPLACE:warrior_monks_training_grounds = {
 		}
 	}
 
-	modifier = {
-		local_clergy_estate_power = 0.5
-		local_manpower = 0.01
-	}
-	raw_modifier = {
-		local_clergy_desired_pop = 0.05
-	}
+	modifier = { local_clergy_estate_power = 0.5 local_manpower = 0.01 }
+
+	raw_modifier = { local_clergy_desired_pop = 0.05 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -869,10 +810,8 @@ REPLACE:guild_hall = {
 		has_estate_privilege = estate_privilege:formal_guilds
 	}
 
-
-
 	unique_production_methods = {
-		guild_hall_maintenance = {
+		epbm_guild_hall_maintenance = {
 			paper = 0.1
 			tools = 0.05
 			cloth = 0.05
@@ -880,15 +819,17 @@ REPLACE:guild_hall = {
 		}
 	}
 
-
 	construction_demand = estate_construct_building
 
 	modifier = {
-		local_burghers_estate_power = 0.5		#100% higher here.
+		local_burghers_estate_power = 0.5		# 100% higher here.
 		local_pop_promotion_speed_modifier = -0.1
 		local_production_efficiency = small_production_efficiency_bonus
 	}
+
 	custom_tags = { guild }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -921,11 +862,8 @@ REPLACE:merchants_guild = {
 
 	estate = burghers_estate
 
-
-
-
 	unique_production_methods = {
-		merchants_guild_maintenance = {
+		epbm_merchants_guild_maintenance = {
 			paper = 0.1
 			lumber = 0.05
 			tools = 0.05
@@ -941,7 +879,10 @@ REPLACE:merchants_guild = {
 		local_merchant_power = 1
 		local_trades_per_burgher = 0.1
 	}
+
 	custom_tags = { guild }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -970,11 +911,8 @@ REPLACE:local_markets = {
 
 	estate = burghers_estate
 
-
-
-
 	unique_production_methods = {
-		local_markets_maintenance = {
+		epbm_local_markets_maintenance = {
 			lumber = 0.05
 			tools = 0.02
 			category = building_maintenance
@@ -988,6 +926,8 @@ REPLACE:local_markets = {
 		local_merchant_power = 0.05
 		local_market_access = 0.01
 	}
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1016,10 +956,8 @@ REPLACE:burgher_mansion = {
 
 	estate = burghers_estate
 
-
-
 	unique_production_methods = {
-		burgher_mansion_maintenance = {
+		epbm_burgher_mansion_maintenance = {
 			cloth = 0.1
 			furniture = 0.05
 			glass = 0.025
@@ -1029,10 +967,9 @@ REPLACE:burgher_mansion = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_burghers_estate_power = 0.5
-		local_burghers_food_consumption = 0.25
-	}
+	modifier = { local_burghers_estate_power = 0.5 local_burghers_food_consumption = 0.25 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1060,10 +997,8 @@ REPLACE:artisan_guilds = {
 
 	estate = burghers_estate
 
-
-
 	unique_production_methods = {
-		artisan_guilds_maintenance = {
+		epbm_artisan_guilds_maintenance = {
 			tools = 0.05
 			leather = 0.05
 			lumber = 0.05
@@ -1078,6 +1013,8 @@ REPLACE:artisan_guilds = {
 		local_production_efficiency = tiny_production_efficiency_bonus
 		local_pop_promotion_speed_modifier = -0.05
 	}
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1093,7 +1030,6 @@ REPLACE:local_assembly = {
 	max_levels = estate_building_single_level
 	pop_type = peasants
 
-
 	category = estate_category
 	employment_size = estate_peasants_employment
 
@@ -1105,24 +1041,21 @@ REPLACE:local_assembly = {
 	estate = peasants_estate
 	build_time = estate_build_time
 
-
-
-
 	unique_production_methods = {
-		local_assembly_maintenance = {
+		epbm_local_assembly_maintenance = {
 			lumber = 0.1
 			paper = 0.05
 			category = building_maintenance
 		}
 	}
 
-
-
 	construction_demand = estate_construct_building
 
 	modifier = {
-		local_peasants_estate_power = 1		#100% higher here.
+		local_peasants_estate_power = 1		# 100% higher here.
 	}
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1138,7 +1071,6 @@ REPLACE:pirate_haven = {
 	max_levels = estate_building_single_level
 	pop_type = peasants
 
-
 	category = estate_category
 	employment_size = estate_peasants_employment
 
@@ -1150,18 +1082,14 @@ REPLACE:pirate_haven = {
 	estate = peasants_estate
 	build_time = estate_build_time
 
-
-
-
 	unique_production_methods = {
-		pirate_haven_maintenance = {
+		epbm_pirate_haven_maintenance = {
 			naval_supplies = 0.1
 			weaponry = 0.1
 			lumber = 0.1
 			category = building_maintenance
 		}
 	}
-
 
 	construction_demand = estate_construct_building
 
@@ -1178,6 +1106,7 @@ REPLACE:pirate_haven = {
 			owner = { has_reform = government_reform:pirate_brethren_reform }
 		}
 	}
+
 	remove_if = {
 		location = {
 			integration_level = core
@@ -1188,8 +1117,10 @@ REPLACE:pirate_haven = {
 	}
 
 	modifier = {
-		local_pirate_spawn_chance = 1		#1% chance each month
+		local_pirate_spawn_chance = 1		# 1% chance each month
 	}
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1216,10 +1147,8 @@ REPLACE:peasants_training_grounds = {
 	estate = peasants_estate
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		peasants_training_grounds_maintenance = {
+		epbm_peasants_training_grounds_maintenance = {
 			weaponry = 0.05
 			leather = 0.05
 			cloth = 0.025
@@ -1233,10 +1162,9 @@ REPLACE:peasants_training_grounds = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_peasants_estate_power = 1
-		local_manpower = 0.001
-	}
+	modifier = { local_peasants_estate_power = 1 local_manpower = 0.001 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1263,13 +1191,10 @@ REPLACE:festival_grounds = {
 	estate = peasants_estate
 	build_time = estate_build_time
 
-
 	destroyable_building = yes
 
-
-
 	unique_production_methods = {
-		festival_grounds_maintenance = {
+		epbm_festival_grounds_maintenance = {
 			lumber = 0.05
 			cloth = 0.025
 			beer = 0.05
@@ -1282,10 +1207,9 @@ REPLACE:festival_grounds = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_peasants_estate_power = 0.2
-		local_peasants_food_consumption = 0.05
-	}
+	modifier = { local_peasants_estate_power = 0.2 local_peasants_food_consumption = 0.05 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1312,10 +1236,8 @@ REPLACE:peasants_hunting_grounds = {
 	estate = peasants_estate
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		peasants_hunting_grounds_maintenance = {
+		epbm_peasants_hunting_grounds_maintenance = {
 			leather = 0.05
 			weaponry = 0.02
 			category = building_maintenance
@@ -1341,6 +1263,7 @@ REPLACE:peasants_hunting_grounds = {
 		local_peasants_food_consumption = -0.1
 		local_peasant_enfranchisment = 0.01
 	}
+
 
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
@@ -1368,10 +1291,8 @@ REPLACE:local_schools = {
 	estate = peasants_estate
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		local_schools_maintenance = {
+		epbm_local_schools_maintenance = {
 			paper = 0.1
 			cloth = 0.2
 			category = building_maintenance
@@ -1385,10 +1306,8 @@ REPLACE:local_schools = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_peasants_estate_power = 0.5
-		local_peasants_max_literacy = 1
-	}
+	modifier = { local_peasants_estate_power = 0.5 local_peasants_max_literacy = 1 }
+
 
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
@@ -1416,27 +1335,19 @@ REPLACE:local_newspaper = {
 	estate = burghers_estate
 	build_time = estate_build_time
 
-	unique_production_methods = {
-		local_newspaper_maintenance = {
-			paper = 0.1
-			category = building_maintenance
-		}
-	}
+	unique_production_methods = { local_newspaper_maintenance = { paper = 0.1 category = building_maintenance } }
 
 	country_potential = {
 		has_policy = free_press
 	}
 
-	remove_if = {
-		owner = { NOT = { has_policy = free_press } }
-	}
+	remove_if = { owner = { NOT = { has_policy = free_press } } }
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_burghers_estate_power = 0.5
-		local_max_literacy = 10
-	}
+	modifier = { local_burghers_estate_power = 0.5 local_max_literacy = 10 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1463,10 +1374,8 @@ REPLACE:free_village = {
 	estate = peasants_estate
 	build_time = estate_build_time
 
-
-
 	unique_production_methods = {
-		free_village_maintenance = {
+		epbm_free_village_maintenance = {
 			lumber = 0.05
 			tools = 0.02
 			category = building_maintenance
@@ -1475,13 +1384,10 @@ REPLACE:free_village = {
 
 	destroyable_building = yes
 
-
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_peasant_enfranchisment = 0.02
-		local_peasants_estate_power = 0.2
-	}
+	modifier = { local_peasant_enfranchisment = 0.02 local_peasants_estate_power = 0.2 }
+
 
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
@@ -1513,6 +1419,7 @@ REPLACE:cinque_port = {
 	country_potential = {
 		tag = ENG
 	}
+
 	location_potential = {
 		is_port = yes
 	}
@@ -1524,7 +1431,7 @@ REPLACE:cinque_port = {
 	build_time = medium_port_building_time
 
 	unique_production_methods = {
-		cinque_port_maintenance = {
+		epbm_cinque_port_maintenance = {
 			tar = 0.2
 			naval_supplies = 0.4
 			tools = 0.1
@@ -1533,6 +1440,7 @@ REPLACE:cinque_port = {
 			category = building_maintenance
 		}
 	}
+
 	construction_demand = port_building_construction
 
 	modifier = {
@@ -1540,6 +1448,8 @@ REPLACE:cinque_port = {
 		local_sailors = 0.002
 		local_burghers_estate_power = 1.0
 	}
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1576,11 +1486,11 @@ REPLACE:gallowglass_sept = {
 			}
 		}
 	}
+
 	country_potential = {
 	}
 
-	can_destroy = {
-	}
+	can_destroy = {  }
 
 	build_time = soldier_building
 
@@ -1589,20 +1499,23 @@ REPLACE:gallowglass_sept = {
 		local_defensive = 0.1
 		local_mercenaries_modifier = 0.25
 	}
-	raw_modifier = {
-		local_nobles_desired_pop = 0.005
-	}
+
+	raw_modifier = { local_nobles_desired_pop = 0.005 }
 
 	unique_production_methods = {
-		gallowglass_sept_maintenance = {
+		epbm_gallowglass_sept_maintenance = {
 			weaponry = 0.05
 			leather = 0.05
 			cloth = 0.02
 			category = building_maintenance
 		}
 	}
+
 	graphical_tags = { small_military }
+
 	construction_demand = early_soldier_building_construction
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1618,7 +1531,6 @@ REPLACE:pirate_stronghold = {
 	max_levels = 1
 	pop_type = peasants
 
-
 	category = infrastructure_category
 	employment_size = capital_peasant_employment
 
@@ -1633,7 +1545,7 @@ REPLACE:pirate_stronghold = {
 	expensive = yes
 
 	unique_production_methods = {
-		pirate_stronghold_maintenance = {
+		epbm_pirate_stronghold_maintenance = {
 			naval_supplies = 0.1
 			weaponry = 0.05
 			liquor = 0.1
@@ -1655,17 +1567,14 @@ REPLACE:pirate_stronghold = {
 	}
 
 	remove_if = {
-		owner ?= {
-			NOT = { has_reform = government_reform:pirate_brethren_reform }
-		}
+		owner ?= { NOT = { has_reform = government_reform:pirate_brethren_reform } }
 	}
 
-	modifier = {
-		local_sailors = 0.02
-		local_maritime_presence = 1
-	}
+	modifier = { local_sailors = 0.02 local_maritime_presence = 1 }
 
 	capital_country_modifier = { monthly_gold_income = 20 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1697,17 +1606,15 @@ REPLACE:corporation_of_london = {
 	country_potential = {
 		always = no
 	}
+
 	allow = {
 		always = no
 	}
 
-
-	modifier = {
-		local_burghers_estate_power = 1.0
-	}
+	modifier = { local_burghers_estate_power = 1.0 }
 
 	unique_production_methods = {
-		corporation_of_london_maintenance = {
+		epbm_corporation_of_london_maintenance = {
 			tools = 0.1
 			fine_cloth = 0.25
 			paper = 0.5
@@ -1716,7 +1623,10 @@ REPLACE:corporation_of_london = {
 			category = building_maintenance
 		}
 	}
+
 	construction_demand = early_capital_building_construction
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1751,12 +1661,13 @@ REPLACE:maniot_toll_guards = {
 	country_potential = {
 		always = no
 	}
+
 	allow = {
 		always = no
 	}
 
 	unique_production_methods = {
-		maniot_toll_guards_maintenance = {
+		epbm_maniot_toll_guards_maintenance = {
 			stone = 0.05
 			tools = 0.05
 			weaponry = 0.05
@@ -1767,10 +1678,9 @@ REPLACE:maniot_toll_guards = {
 
 	construction_demand = estate_construct_building
 
-	modifier = {
-		local_peasants_estate_power = 1
-		local_max_control = -0.25
-	}
+	modifier = { local_peasants_estate_power = 1 local_max_control = -0.25 }
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes
@@ -1803,16 +1713,15 @@ REPLACE:bulgarian_administration_center = {
 	country_potential = {
 		always = no
 	}
+
 	allow = {
 		always = no
 	}
 
-	remove_if = {
-		location = { "culture_percentage(culture:bulgarian)" = 0 }
-	}
+	remove_if = { location = { "culture_percentage(culture:bulgarian)" = 0 } }
 
 	unique_production_methods = {
-		bulgarian_administration_center_maintenance = {
+		epbm_bulgarian_administration_center_maintenance = {
 			paper = 0.2
 			masonry = 0.2
 			lumber = 0.2
@@ -1827,6 +1736,8 @@ REPLACE:bulgarian_administration_center = {
 		local_proximity_source = 15
 		local_unrest = -0.2
 	}
+
+
 	on_built = {
 		location = { add_to_variable_list = { name = epbm_buildings target = prev } }
 		epbm_on_building_built = yes

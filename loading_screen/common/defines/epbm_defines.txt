@@ -4,5 +4,5 @@ NEconomy = {
 }
 
 NEstate = {
-	UPKEEP_PER_BUILDING = -5.0
+	UPKEEP_PER_BUILDING = 0
 }

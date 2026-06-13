@@ -1,25 +1,26 @@
-# Estates Pay Building Maintenance - On Actions
+﻿# Estates Pay Building Maintenance - On Actions
 # ═══════════════════════════════════════════════
 # Rebuild version: major * 100 + minor (patch changes don't trigger rebuild)
 # Updated by deploy.py from .metadata/metadata.json
-@epbm_rebuild_version = 200 # 2.0.x — sync with .metadata/metadata.json
-# Bouvet Island (27954): impassable location used as mod state anchor.
-# epbm_active modifier applied here — stripped by engine when mod is removed.
-# epbm_version variable stored here for version-based rebuild detection.
+@epbm_rebuild_version = 301 # 3.1.x — sync with .metadata/metadata.json
+# State tracked via global_var:epbm_version (timed, 32 day TTL).
+# Refreshed monthly by the cache clear pulse. If the mod is removed,
+# the event stops firing and the variable expires, triggering a full
+# rebuild when the mod is re-added.
 
 on_game_start = {
-	on_actions = {
-		epbm_initialize_all
-	}
+	on_actions = { epbm_initialize_all }
 }
 
 epbm_initialize_all = {
 	effect = {
+		epbm_init_pool = yes
 		epbm_full_rebuild = yes
-		location:bouvet_island = {
-			remove_location_modifier = epbm_active
-			add_location_modifier = { modifier = epbm_active days = -1 }
-			set_variable = { name = epbm_version value = @epbm_rebuild_version }
+
+		set_global_variable = {
+			name = epbm_version
+			value = @epbm_rebuild_version
+			days = 32
 		}
 	}
 }
@@ -39,32 +40,19 @@ monthly_country_pulse = {
 
 epbm_version_check = {
 	trigger = {
-		OR = {
-			location:bouvet_island = {
-				NOT = {
-					has_location_modifier = epbm_active
-				}
-			}
-
-			location:bouvet_island = {
-				has_location_modifier = epbm_active
-				has_variable = epbm_version
-				var:epbm_version < @epbm_rebuild_version
-			}
-		}
-
-		NOT = {
-			has_global_variable = epbm_rebuilding
-		}
+		OR = { NOT = { has_global_variable = epbm_version } global_var:epbm_version < @epbm_rebuild_version }
+		NOT = { has_global_variable = epbm_rebuilding }
 	}
 
 	effect = {
 		set_global_variable = { name = epbm_rebuilding value = yes }
+		epbm_init_pool = yes
 		epbm_full_rebuild = yes
-		location:bouvet_island = {
-			remove_location_modifier = epbm_active
-			add_location_modifier = { modifier = epbm_active days = -1 }
-			set_variable = { name = epbm_version value = @epbm_rebuild_version }
+
+		set_global_variable = {
+			name = epbm_version
+			value = @epbm_rebuild_version
+			days = 32
 		}
 
 		remove_global_variable = epbm_rebuilding
@@ -75,7 +63,7 @@ epbm_version_check = {
 
 epbm_player_monthly = {
 	trigger = {
-		location:bouvet_island = { has_location_modifier = epbm_active }
+		has_global_variable = epbm_version
 		is_ai = no
 		any_estate = { estate_type != estate_type:crown_estate }
 	}
@@ -89,7 +77,7 @@ epbm_player_monthly = {
 
 epbm_ai_monthly_charge = {
 	trigger = {
-		location:bouvet_island = { has_location_modifier = epbm_active }
+		has_global_variable = epbm_version
 		is_ai = yes
 		is_real_country = yes
 		any_estate = { estate_type != estate_type:crown_estate }
@@ -106,22 +94,15 @@ epbm_ai_monthly_charge = {
 # ═══════════════════════════════════════════════
 
 yearly_country_pulse = {
-	on_actions = {
-		epbm_ai_yearly_recalc
-		epbm_decade_rebuild
-	}
+	on_actions = { epbm_ai_yearly_recalc epbm_decade_rebuild }
 }
 
 # AI: recalculate maintenance rates yearly (expensive iteration)
 
 epbm_ai_yearly_recalc = {
 	trigger = {
-		location:bouvet_island = {
-			has_location_modifier = epbm_active
-			has_variable = epbm_version
-			var:epbm_version >= @epbm_rebuild_version
-		}
-
+		has_global_variable = epbm_version
+		global_var:epbm_version >= @epbm_rebuild_version
 		is_ai = yes
 		is_real_country = yes
 		any_estate = { estate_type != estate_type:crown_estate }
@@ -136,7 +117,7 @@ epbm_ai_yearly_recalc = {
 
 epbm_decade_rebuild = {
 	trigger = {
-		location:bouvet_island = { has_location_modifier = epbm_active }
+		has_global_variable = epbm_version
 		is_real_country = yes
 		any_estate = { estate_type != estate_type:crown_estate }
 	}
@@ -147,10 +128,7 @@ epbm_decade_rebuild = {
 			epbm_structural_rebuild = yes
 			set_variable = { name = epbm_rebuild_counter value = 0 }
 		}
-		else_if = {
-			limit = { has_variable = epbm_rebuild_counter }
-			change_variable = { name = epbm_rebuild_counter add = 1 }
-		}
+		else_if = { limit = { has_variable = epbm_rebuild_counter } change_variable = { name = epbm_rebuild_counter add = 1 } }
 	}
 }
 
@@ -160,15 +138,11 @@ epbm_decade_rebuild = {
 # ═══════════════════════════════════════════════
 
 on_location_changed_owner = {
-	on_actions = {
-		epbm_on_location_owner_changed
-	}
+	on_actions = { epbm_on_location_owner_changed }
 }
 
 epbm_on_location_owner_changed = {
-	trigger = {
-		location:bouvet_island = { has_location_modifier = epbm_active }
-	}
+	trigger = { has_global_variable = epbm_version }
 
 	effect = {
 		save_temporary_scope_as = epbm_loc
@@ -179,7 +153,6 @@ epbm_on_location_owner_changed = {
 					has_variable_list = epbm_locations
 					is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
 				}
-
 				remove_list_variable = { name = epbm_locations target = scope:epbm_loc }
 			}
 		}
@@ -190,11 +163,8 @@ epbm_on_location_owner_changed = {
 					has_variable_list = epbm_locations
 
 					scope:epbm_loc = { has_variable_list = epbm_buildings }
-					NOT = {
-						is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
-					}
+					NOT = { is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc } }
 				}
-
 				add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
 			}
 		}
@@ -206,20 +176,21 @@ epbm_on_location_owner_changed = {
 # ═══════════════════════════════════════════════
 
 weather_monthly_pulse = {
-	on_actions = {
-		epbm_monthly_cache_clear
-	}
+	on_actions = { epbm_monthly_cache_clear }
 }
 
 epbm_monthly_cache_clear = {
-	trigger = {
-		location:bouvet_island = { has_location_modifier = epbm_active }
-	}
+	trigger = { has_global_variable = epbm_version }
 
 	effect = {
+		set_global_variable = {
+			name = epbm_version
+			value = @epbm_rebuild_version
+			days = 32
+		}
 		every_in_global_list = {
-			variable = epbm_all_ios
-			clear_variable_map = epbm_costs
+			variable = epbm_all_pm_dicts
+			if = { limit = { has_variable_map = epbm_costs } clear_variable_map = epbm_costs }
 		}
 	}
 }

@@ -1,7 +1,0 @@
-﻿# Mod state marker: applied to Bouvet Island (27954) during rebuild.
-# Stripped by the engine when mod is removed (definition disappears).
-# Absence triggers full rebuild on re-add.
-
-epbm_active = {
-	game_data = { category = location }
-}
