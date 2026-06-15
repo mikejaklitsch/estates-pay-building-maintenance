@@ -22,19 +22,20 @@ epbm_initialize_all = {
 			value = @epbm_rebuild_version
 			days = 32
 		}
+
+		set_global_variable = epbm_compat_buildings_done
 	}
 }
 
 # ═══════════════════════════════════════════════
-# Version check: runs monthly, triggers rebuild if marker is missing or outdated
-# Handles first-time init, version upgrades, and mod remove/re-add
+# Global monthly pulse: version check, compat rebuild, cache clear
 # ═══════════════════════════════════════════════
 
-monthly_country_pulse = {
+weather_monthly_pulse = {
 	on_actions = {
 		epbm_version_check
-		epbm_player_monthly
-		epbm_ai_monthly_charge
+		epbm_compat_buildings
+		epbm_monthly_cache_clear
 	}
 }
 
@@ -59,7 +60,44 @@ epbm_version_check = {
 	}
 }
 
-# Player: full recalculation + charge every month
+epbm_compat_buildings = {
+	trigger = { NOT = { has_global_variable = epbm_compat_buildings_done } }
+
+	effect = {
+		epbm_compat_rebuild_buildings = yes
+	}
+}
+
+epbm_monthly_cache_clear = {
+	trigger = { has_global_variable = epbm_version }
+
+	effect = {
+		set_global_variable = {
+			name = epbm_version
+			value = @epbm_rebuild_version
+			days = 32
+		}
+
+		every_in_global_list = {
+			variable = epbm_all_pm_dicts
+			if = { limit = { has_variable_map = epbm_costs } clear_variable_map = epbm_costs }
+		}
+
+		every_market_in_world = {
+			location = {
+				if = { limit = { has_variable_map = epbm_bt_costs } clear_variable_map = epbm_bt_costs }
+			}
+		}
+	}
+}
+
+# ═══════════════════════════════════════════════
+# Country monthly pulse: player recalc + charge, AI charge
+# ═══════════════════════════════════════════════
+
+monthly_country_pulse = {
+	on_actions = { epbm_player_monthly epbm_ai_monthly_charge }
+}
 
 epbm_player_monthly = {
 	trigger = {
@@ -72,8 +110,6 @@ epbm_player_monthly = {
 		epbm_collect_maintenance = yes
 	}
 }
-
-# AI: charge estates monthly using saved rates from last yearly calculation
 
 epbm_ai_monthly_charge = {
 	trigger = {
@@ -97,8 +133,6 @@ yearly_country_pulse = {
 	on_actions = { epbm_ai_yearly_recalc }
 }
 
-# AI: recalculate maintenance rates yearly (expensive iteration)
-
 epbm_ai_yearly_recalc = {
 	trigger = {
 		has_global_variable = epbm_version
@@ -110,36 +144,5 @@ epbm_ai_yearly_recalc = {
 
 	effect = {
 		epbm_calculate_maintenance = yes
-	}
-}
-
-# ═══════════════════════════════════════════════
-# Global monthly pulse: clear cached PM costs so prices refresh
-# ═══════════════════════════════════════════════
-
-weather_monthly_pulse = {
-	on_actions = { epbm_monthly_cache_clear }
-}
-
-epbm_monthly_cache_clear = {
-	trigger = { has_global_variable = epbm_version }
-
-	effect = {
-		set_global_variable = {
-			name = epbm_version
-			value = @epbm_rebuild_version
-			days = 32
-		}
-
-		every_in_global_list = {
-			variable = epbm_all_pm_dicts
-			if = { limit = { has_variable_map = epbm_costs } clear_variable_map = epbm_costs }
-		}
-
-		every_market_in_world = {
-			location = {
-				if = { limit = { has_variable_map = epbm_bt_costs } clear_variable_map = epbm_bt_costs }
-			}
-		}
 	}
 }

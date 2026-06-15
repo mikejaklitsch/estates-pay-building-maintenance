@@ -6,8 +6,9 @@ namespace = epbm_suppress
 
 epbm_suppress.1 = {
 	type = country_event
-	title = "epbm_suppress.1"
-	desc = "epbm_suppress.1"
+	title = epbm_suppress_title
+	desc = epbm_suppress_desc
+	outcome = neutral
 
 	orphan = yes
 

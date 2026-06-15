@@ -181,3 +181,285 @@ epbm_collect_maintenance = {
 	epbm_calculate_maintenance = yes
 	epbm_charge_estates = yes
 }
+
+# ═══════════════════════════════════════════════
+# Save compat: rebuild modified buildings to reset PMs. Scope: none.
+# Buildings that had production methods added or changed in prior versions
+# must be destroyed and rebuilt so the engine re-evaluates their PM list.
+# ═══════════════════════════════════════════════
+
+epbm_compat_rebuild_buildings = {
+	every_ownable_location = {
+		if = {
+			limit = { has_building = building_type:artisan_guilds }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:artisan_guilds)" }
+			destroy_all_buildings_of_type = building_type:artisan_guilds
+			change_building_level_in_location = { building = building_type:artisan_guilds value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:bey_fortress }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:bey_fortress)" }
+			destroy_all_buildings_of_type = building_type:bey_fortress
+			change_building_level_in_location = { building = building_type:bey_fortress value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:bulgarian_administration_center }
+
+			set_local_variable = {
+				name = epbm_lvl
+				value = "location_building_level(building_type:bulgarian_administration_center)"
+			}
+
+			destroy_all_buildings_of_type = building_type:bulgarian_administration_center
+
+			change_building_level_in_location = {
+				building = building_type:bulgarian_administration_center
+				value = local_var:epbm_lvl
+			}
+		}
+
+		if = {
+			limit = { has_building = building_type:burgher_mansion }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:burgher_mansion)" }
+			destroy_all_buildings_of_type = building_type:burgher_mansion
+			change_building_level_in_location = { building = building_type:burgher_mansion value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:cathedral }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:cathedral)" }
+			destroy_all_buildings_of_type = building_type:cathedral
+			change_building_level_in_location = { building = building_type:cathedral value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:cinque_port }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:cinque_port)" }
+			destroy_all_buildings_of_type = building_type:cinque_port
+			change_building_level_in_location = { building = building_type:cinque_port value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:clerical_archives }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:clerical_archives)" }
+			destroy_all_buildings_of_type = building_type:clerical_archives
+			change_building_level_in_location = { building = building_type:clerical_archives value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:corporation_of_london }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:corporation_of_london)" }
+			destroy_all_buildings_of_type = building_type:corporation_of_london
+			change_building_level_in_location = { building = building_type:corporation_of_london value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:festival_grounds }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:festival_grounds)" }
+			destroy_all_buildings_of_type = building_type:festival_grounds
+			change_building_level_in_location = { building = building_type:festival_grounds value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:free_village }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:free_village)" }
+			destroy_all_buildings_of_type = building_type:free_village
+			change_building_level_in_location = { building = building_type:free_village value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:gallowglass_sept }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:gallowglass_sept)" }
+			destroy_all_buildings_of_type = building_type:gallowglass_sept
+			change_building_level_in_location = { building = building_type:gallowglass_sept value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:guild_hall }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:guild_hall)" }
+			destroy_all_buildings_of_type = building_type:guild_hall
+			change_building_level_in_location = { building = building_type:guild_hall value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:local_assembly }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:local_assembly)" }
+			destroy_all_buildings_of_type = building_type:local_assembly
+			change_building_level_in_location = { building = building_type:local_assembly value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:local_estates }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:local_estates)" }
+			destroy_all_buildings_of_type = building_type:local_estates
+			change_building_level_in_location = { building = building_type:local_estates value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:local_markets }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:local_markets)" }
+			destroy_all_buildings_of_type = building_type:local_markets
+			change_building_level_in_location = { building = building_type:local_markets value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:local_newspaper }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:local_newspaper)" }
+			destroy_all_buildings_of_type = building_type:local_newspaper
+			change_building_level_in_location = { building = building_type:local_newspaper value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:local_noble_delegation }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:local_noble_delegation)" }
+			destroy_all_buildings_of_type = building_type:local_noble_delegation
+			change_building_level_in_location = { building = building_type:local_noble_delegation value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:local_schools }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:local_schools)" }
+			destroy_all_buildings_of_type = building_type:local_schools
+			change_building_level_in_location = { building = building_type:local_schools value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:local_shrine }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:local_shrine)" }
+			destroy_all_buildings_of_type = building_type:local_shrine
+			change_building_level_in_location = { building = building_type:local_shrine value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:maniot_toll_guards }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:maniot_toll_guards)" }
+			destroy_all_buildings_of_type = building_type:maniot_toll_guards
+			change_building_level_in_location = { building = building_type:maniot_toll_guards value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:merchants_guild }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:merchants_guild)" }
+			destroy_all_buildings_of_type = building_type:merchants_guild
+			change_building_level_in_location = { building = building_type:merchants_guild value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:nobility_fortifications }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:nobility_fortifications)" }
+			destroy_all_buildings_of_type = building_type:nobility_fortifications
+			change_building_level_in_location = { building = building_type:nobility_fortifications value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:noble_courts }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:noble_courts)" }
+			destroy_all_buildings_of_type = building_type:noble_courts
+			change_building_level_in_location = { building = building_type:noble_courts value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:noble_villa }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:noble_villa)" }
+			destroy_all_buildings_of_type = building_type:noble_villa
+			change_building_level_in_location = { building = building_type:noble_villa value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:nobled_sponsored_temple }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:nobled_sponsored_temple)" }
+			destroy_all_buildings_of_type = building_type:nobled_sponsored_temple
+			change_building_level_in_location = { building = building_type:nobled_sponsored_temple value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:nobles_mansion }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:nobles_mansion)" }
+			destroy_all_buildings_of_type = building_type:nobles_mansion
+			change_building_level_in_location = { building = building_type:nobles_mansion value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:nobles_recruitment_center }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:nobles_recruitment_center)" }
+			destroy_all_buildings_of_type = building_type:nobles_recruitment_center
+			change_building_level_in_location = { building = building_type:nobles_recruitment_center value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:parish_church }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:parish_church)" }
+			destroy_all_buildings_of_type = building_type:parish_church
+			change_building_level_in_location = { building = building_type:parish_church value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:peasants_hunting_grounds }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:peasants_hunting_grounds)" }
+			destroy_all_buildings_of_type = building_type:peasants_hunting_grounds
+			change_building_level_in_location = { building = building_type:peasants_hunting_grounds value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:peasants_training_grounds }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:peasants_training_grounds)" }
+			destroy_all_buildings_of_type = building_type:peasants_training_grounds
+			change_building_level_in_location = { building = building_type:peasants_training_grounds value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:pirate_haven }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:pirate_haven)" }
+			destroy_all_buildings_of_type = building_type:pirate_haven
+			change_building_level_in_location = { building = building_type:pirate_haven value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:pirate_stronghold }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:pirate_stronghold)" }
+			destroy_all_buildings_of_type = building_type:pirate_stronghold
+			change_building_level_in_location = { building = building_type:pirate_stronghold value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:rotten_borough }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:rotten_borough)" }
+			destroy_all_buildings_of_type = building_type:rotten_borough
+			change_building_level_in_location = { building = building_type:rotten_borough value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:spiritual_retreat }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:spiritual_retreat)" }
+			destroy_all_buildings_of_type = building_type:spiritual_retreat
+			change_building_level_in_location = { building = building_type:spiritual_retreat value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:toll_castle }
+			set_local_variable = { name = epbm_lvl value = "location_building_level(building_type:toll_castle)" }
+			destroy_all_buildings_of_type = building_type:toll_castle
+			change_building_level_in_location = { building = building_type:toll_castle value = local_var:epbm_lvl }
+		}
+
+		if = {
+			limit = { has_building = building_type:warrior_monks_training_grounds }
+
+			set_local_variable = {
+				name = epbm_lvl
+				value = "location_building_level(building_type:warrior_monks_training_grounds)"
+			}
+
+			destroy_all_buildings_of_type = building_type:warrior_monks_training_grounds
+
+			change_building_level_in_location = {
+				building = building_type:warrior_monks_training_grounds
+				value = local_var:epbm_lvl
+			}
+		}
+	}
+
+	set_global_variable = epbm_compat_buildings_done
+}
