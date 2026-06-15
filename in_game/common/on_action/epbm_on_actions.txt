@@ -2,7 +2,7 @@
 # ═══════════════════════════════════════════════
 # Rebuild version: major * 100 + minor (patch changes don't trigger rebuild)
 # Updated by deploy.py from .metadata/metadata.json
-@epbm_rebuild_version = 301 # 3.1.x — sync with .metadata/metadata.json
+@epbm_rebuild_version = 400 # 4.0.x — every_owned_building, possible PMs
 # State tracked via global_var:epbm_version (timed, 32 day TTL).
 # Refreshed monthly by the cache clear pulse. If the mod is removed,
 # the event stops firing and the variable expires, triggering a full
@@ -94,7 +94,7 @@ epbm_ai_monthly_charge = {
 # ═══════════════════════════════════════════════
 
 yearly_country_pulse = {
-	on_actions = { epbm_ai_yearly_recalc epbm_decade_rebuild }
+	on_actions = { epbm_ai_yearly_recalc }
 }
 
 # AI: recalculate maintenance rates yearly (expensive iteration)
@@ -110,64 +110,6 @@ epbm_ai_yearly_recalc = {
 
 	effect = {
 		epbm_calculate_maintenance = yes
-	}
-}
-
-# Safety net: full structural rebuild every 10 years to correct any drift.
-
-epbm_decade_rebuild = {
-	trigger = {
-		has_global_variable = epbm_version
-		is_real_country = yes
-		any_estate = { estate_type != estate_type:crown_estate }
-	}
-
-	effect = {
-		if = {
-			limit = { has_variable = epbm_rebuild_counter var:epbm_rebuild_counter >= 9 }
-			epbm_structural_rebuild = yes
-			set_variable = { name = epbm_rebuild_counter value = 0 }
-		}
-		else_if = { limit = { has_variable = epbm_rebuild_counter } change_variable = { name = epbm_rebuild_counter add = 1 } }
-	}
-}
-
-# ═══════════════════════════════════════════════
-# Location ownership change: move location between country lists
-# root = location, scope:loser = previous owner, scope:winner = new owner
-# ═══════════════════════════════════════════════
-
-on_location_changed_owner = {
-	on_actions = { epbm_on_location_owner_changed }
-}
-
-epbm_on_location_owner_changed = {
-	trigger = { has_global_variable = epbm_version }
-
-	effect = {
-		save_temporary_scope_as = epbm_loc
-
-		scope:loser ?= {
-			if = {
-				limit = {
-					has_variable_list = epbm_locations
-					is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc }
-				}
-				remove_list_variable = { name = epbm_locations target = scope:epbm_loc }
-			}
-		}
-
-		scope:winner ?= {
-			if = {
-				limit = {
-					has_variable_list = epbm_locations
-
-					scope:epbm_loc = { has_variable_list = epbm_buildings }
-					NOT = { is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc } }
-				}
-				add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
-			}
-		}
 	}
 }
 
@@ -188,9 +130,16 @@ epbm_monthly_cache_clear = {
 			value = @epbm_rebuild_version
 			days = 32
 		}
+
 		every_in_global_list = {
 			variable = epbm_all_pm_dicts
 			if = { limit = { has_variable_map = epbm_costs } clear_variable_map = epbm_costs }
+		}
+
+		every_market_in_world = {
+			location = {
+				if = { limit = { has_variable_map = epbm_bt_costs } clear_variable_map = epbm_bt_costs }
+			}
 		}
 	}
 }

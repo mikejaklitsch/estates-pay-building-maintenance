@@ -116,7 +116,7 @@ epbm_local_markets_maintenance_upkeep = {
 	multiply = building_level
 }
 
-epbm_upkeep_local_newspaper_maintenance = {
+epbm_local_newspaper_maintenance_upkeep = {
 	value = 0
 	add = { value = "location.market.market_price(goods:paper)" multiply = 0.1 }
 	multiply = building_level
@@ -349,7 +349,7 @@ epbm_estate_building_upkeep = {
 	}
 	else_if = {
 		limit = { building_type = building_type:local_newspaper }
-		value = epbm_upkeep_local_newspaper_maintenance
+		value = epbm_local_newspaper_maintenance_upkeep
 	}
 	else_if = {
 		limit = { building_type = building_type:local_noble_delegation }

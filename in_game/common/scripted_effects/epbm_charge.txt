@@ -7,13 +7,7 @@
 # ═══════════════════════════════════════════════
 
 epbm_charge_estates = {
-	epbm_charge_estate_pay = { estate = nobles }
-	epbm_charge_estate_pay = { estate = clergy }
-	epbm_charge_estate_pay = { estate = burghers }
-	epbm_charge_estate_pay = { estate = peasants }
-	epbm_charge_estate_pay = { estate = tribes }
-	epbm_charge_estate_pay = { estate = dhimmi }
-	epbm_charge_estate_pay = { estate = cossacks }
+	epbm_for_each_estate = { effect = epbm_charge_estate_pay }
 }
 
 # ═══════════════════════════════════════════════
@@ -23,11 +17,5 @@ epbm_charge_estates = {
 # ═══════════════════════════════════════════════
 
 epbm_snapshot_for_display = {
-	epbm_snapshot_estate = { estate = nobles }
-	epbm_snapshot_estate = { estate = clergy }
-	epbm_snapshot_estate = { estate = burghers }
-	epbm_snapshot_estate = { estate = peasants }
-	epbm_snapshot_estate = { estate = tribes }
-	epbm_snapshot_estate = { estate = dhimmi }
-	epbm_snapshot_estate = { estate = cossacks }
+	epbm_for_each_estate = { effect = epbm_snapshot_estate }
 }

@@ -1,47 +1,40 @@
-﻿# EPBM — lifecycle effects, hooks, and estate-fanout macros.
+﻿# EPBM — lifecycle effects and estate-fanout macros.
 
 @epbm_pool_size = 250
 
 # ═══════════════════════════════════════════════
-# Seed a location's building list from its existing buildings
+# Estate iterator: expands $effect$ once per estate.
 # ═══════════════════════════════════════════════
-# Scope: location
 
-epbm_initialize_location = {
-	every_buildings_in_location = {
-		save_temporary_scope_as = epbm_bldg
-		ordered_production_method_of_building = {
-			limit = { is_key_in_global_variable_map = { name = epbm_profiles target = this } }
-			order_by = "this.production_method_profit(scope:epbm_bldg)"
-			position = 0
-			check_range_bounds = no
-
-			prev = {
-				location = { add_to_variable_list = { name = epbm_buildings target = scope:epbm_bldg } }
-			}
-		}
-	}
+epbm_for_each_estate = {
+	$effect$ = { estate = nobles }
+	$effect$ = { estate = clergy }
+	$effect$ = { estate = burghers }
+	$effect$ = { estate = peasants }
+	$effect$ = { estate = tribes }
+	$effect$ = { estate = dhimmi }
+	$effect$ = { estate = cossacks }
 }
 
 # ═══════════════════════════════════════════════
-# Estate-fanout macros — callers invoke each 7x (one per estate) via $estate$.
+# Per-estate macros invoked via epbm_for_each_estate.
 # ═══════════════════════════════════════════════
 
-# Split pool by estate power. multiply references a per-estate script_value
-# (epbm_estate_power_$estate$) because $estate$ substitution inside a
-# quoted dynamic expression gets mangled by adjacent `:` chars.
+epbm_init_estate_var = {
+	set_local_variable = { name = epbm_estate_$estate$ value = 0 }
+}
 
 epbm_set_pay_from_power = {
+	set_local_variable = { name = est value = estate_type:$estate$_estate }
+
 	if = {
-		limit = { country_has_estate = estate_type:$estate$_estate }
+		limit = { country_has_estate = local_var:est }
 		set_variable = {
 			name = epbm_pay_$estate$
-			value = { value = local_var:epbm_total_cost multiply = epbm_estate_power_$estate$ }
+			value = { value = local_var:epbm_total_cost multiply = "estate_power(local_var:est)" }
 		}
 	}
 }
-
-# Zero one estate's pay var.
 
 epbm_zero_pay = {
 	if = {
@@ -50,11 +43,15 @@ epbm_zero_pay = {
 	}
 }
 
-# Fold one estate-assigned bucket's cost into its pay var.
-
 epbm_add_estate_cost = {
 	if = {
 		limit = { local_var:epbm_estate_$estate$ > 0 }
+
+		if = {
+			limit = { NOT = { has_variable = epbm_pay_$estate$ } }
+			set_variable = { name = epbm_pay_$estate$ value = 0 }
+		}
+
 		change_variable = {
 			name = epbm_pay_$estate$
 			add = {
@@ -66,17 +63,12 @@ epbm_add_estate_cost = {
 	}
 }
 
-# Route one building's cost to one estate bucket.
-# Called 7x; exactly one branch fires (estate_ref holds a single value).
-
 epbm_route_to_estate = {
 	if = {
 		limit = { global_var:epbm_estate_ref = estate_type:$estate$_estate }
 		change_local_variable = { name = epbm_estate_$estate$ add = local_var:epbm_bldg_cost }
 	}
 }
-
-# Charge one estate its saved pay amount. Used by both player and AI passes.
 
 epbm_charge_estate_pay = {
 	if = {
@@ -92,8 +84,6 @@ epbm_charge_estate_pay = {
 	}
 }
 
-# Snapshot one estate's pay var into its show var.
-
 epbm_snapshot_estate = {
 	if = {
 		limit = { country_has_estate = estate_type:$estate$_estate }
@@ -101,8 +91,10 @@ epbm_snapshot_estate = {
 	}
 }
 
-# Add one good entry to the location being built.
+# ═══════════════════════════════════════════════
+# Goods registration: add one good to the current PM profile node.
 # Called by epbm_register_pm's goods_block (nested metascripting).
+# ═══════════════════════════════════════════════
 
 epbm_good = {
 	scope:epbm_current_dict = {
@@ -117,9 +109,7 @@ epbm_good = {
 # Register one PM's goods profile during stamp_globals.
 # Allocates a location from the pool, populates its epbm_goods map,
 # stamps the global profile map and tracking list.
-# $goods_block$ takes nested epbm_good calls (nested metascripting).
-# Uses save_scope_as (not temporary) because the engine silently breaks
-# variable map writes through temporary scopes on re-entry.
+# Uses save_scope_as (not temporary) for variable map writes.
 
 epbm_register_pm = {
 	random_in_global_list = { variable = epbm_free_pool save_scope_as = epbm_current_dict }
@@ -162,103 +152,22 @@ epbm_init_pool = {
 }
 
 # ═══════════════════════════════════════════════
-# Rebuild a country's locations list from its owned locations. Scope: country.
-# ═══════════════════════════════════════════════
-
-epbm_rebuild_location_lists = {
-	clear_variable_list = epbm_locations
-
-	every_owned_location = {
-		limit = { has_variable_list = epbm_buildings }
-
-		save_temporary_scope_as = epbm_loc
-
-		prev = { add_to_variable_list = { name = epbm_locations target = scope:epbm_loc } }
-	}
-}
-
-# ═══════════════════════════════════════════════
-# Structural rebuild: drift-correction safety net. Scope: country.
-# Runs every 10 years. Skips globals/display/calc — those run on their own cadence.
-# ═══════════════════════════════════════════════
-
-epbm_structural_rebuild = {
-	every_owned_location = { clear_variable_list = epbm_buildings epbm_initialize_location = yes }
-
-	epbm_rebuild_location_lists = yes
-}
-
-# ═══════════════════════════════════════════════
-# Full rebuild: stamp globals and index every country. Scope: none.
-# Runs once on game_start from epbm_initialize_all.
+# Full rebuild: stamp globals and run initial calc for every country.
+# Scope: none. Runs once on game_start from epbm_initialize_all.
 # ═══════════════════════════════════════════════
 
 epbm_full_rebuild = {
 	epbm_stamp_globals = yes
-
-	every_location_in_the_world = {
-		limit = { is_ownable = yes }
-		clear_variable_list = epbm_buildings
-		epbm_initialize_location = yes
-	}
 
 	every_country = { limit = { is_real_country = yes } set_variable = { name = epbm_crown_offset_scale value = 0 } }
 
 	every_country = {
 		limit = { is_real_country = yes any_estate = { estate_type != estate_type:crown_estate } }
 
-		epbm_rebuild_location_lists = yes
 		epbm_calculate_maintenance = yes
 		epbm_charge_estates = yes
 
-		if = {
-			limit = { is_ai = no }
-			epbm_zero_pay = { estate = nobles }
-			epbm_zero_pay = { estate = clergy }
-			epbm_zero_pay = { estate = burghers }
-			epbm_zero_pay = { estate = peasants }
-			epbm_zero_pay = { estate = tribes }
-			epbm_zero_pay = { estate = dhimmi }
-			epbm_zero_pay = { estate = cossacks }
-		}
-
-		set_variable = { name = epbm_rebuild_counter value = 0 }
-	}
-}
-
-# ═══════════════════════════════════════════════
-# on_built hook: register the location with its owner if it isn't already.
-# The injected on_built already added this building to the location's list.
-# ═══════════════════════════════════════════════
-
-epbm_on_building_built = {
-	location = { save_temporary_scope_as = epbm_loc }
-
-	owner ?= {
-		if = {
-			limit = {
-				NOT = { is_target_in_variable_list = { name = epbm_locations target = scope:epbm_loc } }
-			}
-			add_to_variable_list = { name = epbm_locations target = scope:epbm_loc }
-		}
-	}
-}
-
-# ═══════════════════════════════════════════════
-# on_destroyed hook: drop the location from the owner's list if no
-# tracked buildings remain. The injected on_destroyed already removed
-# this building from the location's list.
-# ═══════════════════════════════════════════════
-
-epbm_on_building_destroyed = {
-	location = {
-		if = {
-			limit = { NOT = { has_variable_list = epbm_buildings } }
-
-			save_temporary_scope_as = epbm_loc
-
-			owner ?= { remove_list_variable = { name = epbm_locations target = scope:epbm_loc } }
-		}
+		if = { limit = { is_ai = no } epbm_for_each_estate = { effect = epbm_zero_pay } }
 	}
 }
 

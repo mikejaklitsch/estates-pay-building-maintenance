@@ -1,11 +1,17 @@
-﻿namespace = epbm_suppress
+﻿
+namespace = epbm_suppress
 
 # Silence "set but never used" warnings for variables read only via GUI.
 # This event is never triggered; orphan = yes tells the engine it's intentional.
 
 epbm_suppress.1 = {
 	type = country_event
+	title = "epbm_suppress.1"
+	desc = "epbm_suppress.1"
+
 	orphan = yes
+
+	trigger = { always = no }
 
 	immediate = {
 		set_global_variable = { name = epbm_estate_ref value = estate_type:nobles_estate }
@@ -18,4 +24,6 @@ epbm_suppress.1 = {
 		change_variable = { name = epbm_show_tribes multiply = 1 }
 		change_variable = { name = epbm_show_cossacks multiply = 1 }
 	}
+
+	option = { name = "OK" }
 }

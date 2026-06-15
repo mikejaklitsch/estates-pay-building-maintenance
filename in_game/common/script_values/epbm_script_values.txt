@@ -5,39 +5,6 @@ epbm_maint_burden = {
 	value = 1.0
 }
 
-# Per-estate estate_power() wrappers. $estate$ macro substitution is
-# unreliable inside quoted dynamic expressions adjacent to `:` chars, so
-# epbm_set_pay_from_power references these by plain name instead.
-# Scope: country.
-
-epbm_estate_power_nobles = {
-	value = "estate_power(estate_type:nobles_estate)"
-}
-
-epbm_estate_power_clergy = {
-	value = "estate_power(estate_type:clergy_estate)"
-}
-
-epbm_estate_power_burghers = {
-	value = "estate_power(estate_type:burghers_estate)"
-}
-
-epbm_estate_power_peasants = {
-	value = "estate_power(estate_type:peasants_estate)"
-}
-
-epbm_estate_power_tribes = {
-	value = "estate_power(estate_type:tribes_estate)"
-}
-
-epbm_estate_power_dhimmi = {
-	value = "estate_power(estate_type:dhimmi_estate)"
-}
-
-epbm_estate_power_cossacks = {
-	value = "estate_power(estate_type:cossacks_estate)"
-}
-
 # (1 - crown_power) × inflation. Drives the inflation auto_modifier that
 # offsets the non-crown share of vanilla's inflation_impact tax on
 # building upkeep. Estates pay their inflated share separately via the

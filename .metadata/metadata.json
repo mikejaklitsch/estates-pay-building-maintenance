@@ -1,7 +1,7 @@
 {
     "name": "Estates Pay Building Maintenance (Dev)",
     "id": "EstatesPayBuildingMaintenance",
-    "version": "3.1.0",
+    "version": "4.0.0",
     "supported_game_version": "1.2.*",
     "short_description": "Estates pay their share of building maintenance, split by estate power. Estate-assigned buildings are charged in full to their owning estate.",
     "tags": [
