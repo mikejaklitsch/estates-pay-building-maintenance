@@ -57,7 +57,12 @@ epbm_add_estate_cost = {
 			add = {
 				value = local_var:epbm_estate_$estate$
 				multiply = epbm_maint_burden
-				multiply = { value = 1 add = inflation }
+
+				divide = {
+					value = 1
+					add = "modifier:building_upkeep_efficiency"
+					min = 0.5
+				}
 			}
 		}
 	}

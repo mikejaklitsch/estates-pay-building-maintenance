@@ -1,8 +1,4 @@
 ﻿
-NEconomy = {
-	BUILDING_UPKEEP_FACTOR = 1.0
-}
-
 NEstate = {
 	UPKEEP_PER_BUILDING = 0
 }

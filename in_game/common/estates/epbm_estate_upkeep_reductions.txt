@@ -8,29 +8,29 @@
 # amount via this modifier — net total destroyed equals vanilla upkeep.
 
 INJECT:nobles_estate = {
-	power = { building_upkeep_costs = -1.0 }
+	power = { building_upkeep_multiplier = -1.0 }
 }
 
 INJECT:clergy_estate = {
-	power = { building_upkeep_costs = -1.0 }
+	power = { building_upkeep_multiplier = -1.0 }
 }
 
 INJECT:burghers_estate = {
-	power = { building_upkeep_costs = -1.0 }
+	power = { building_upkeep_multiplier = -1.0 }
 }
 
 INJECT:peasants_estate = {
-	power = { building_upkeep_costs = -1.0 }
+	power = { building_upkeep_multiplier = -1.0 }
 }
 
 INJECT:tribes_estate = {
-	power = { building_upkeep_costs = -1.0 }
+	power = { building_upkeep_multiplier = -1.0 }
 }
 
 INJECT:dhimmi_estate = {
-	power = { building_upkeep_costs = -1.0 }
+	power = { building_upkeep_multiplier = -1.0 }
 }
 
 INJECT:cossacks_estate = {
-	power = { building_upkeep_costs = -1.0 }
+	power = { building_upkeep_multiplier = -1.0 }
 }

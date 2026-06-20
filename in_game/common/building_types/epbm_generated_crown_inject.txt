@@ -80,6 +80,12 @@ INJECT:castle = {
 	}
 }
 
+INJECT:central_bank = {
+	modifier = {
+		epbm_crown_building = yes
+	}
+}
+
 INJECT:chancery = {
 	modifier = {
 		epbm_crown_building = yes
@@ -212,6 +218,12 @@ INJECT:house_of_parliament = {
 	}
 }
 
+INJECT:italian_administration_center = {
+	modifier = {
+		epbm_crown_building = yes
+	}
+}
+
 INJECT:kings_manor = {
 	modifier = {
 		epbm_crown_building = yes
@@ -291,6 +303,12 @@ INJECT:panaqa_building = {
 }
 
 INJECT:papal_archives = {
+	modifier = {
+		epbm_crown_building = yes
+	}
+}
+
+INJECT:provincial_chancery = {
 	modifier = {
 		epbm_crown_building = yes
 	}
@@ -428,6 +446,12 @@ INJECT:theodosian_walls = {
 	}
 }
 
+INJECT:trade_company_foreign_influence = {
+	modifier = {
+		epbm_crown_building = yes
+	}
+}
+
 INJECT:tur_kodjabashi_office = {
 	modifier = {
 		epbm_crown_building = yes
@@ -459,6 +483,12 @@ INJECT:versailles = {
 }
 
 INJECT:viceroyalty = {
+	modifier = {
+		epbm_crown_building = yes
+	}
+}
+
+INJECT:walls_of_lucca = {
 	modifier = {
 		epbm_crown_building = yes
 	}

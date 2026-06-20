@@ -2,7 +2,7 @@
 # ═══════════════════════════════════════════════
 # Rebuild version: major * 100 + minor (patch changes don't trigger rebuild)
 # Updated by deploy.py from .metadata/metadata.json
-@epbm_rebuild_version = 400 # 4.0.x — every_owned_building, possible PMs
+@epbm_rebuild_version = 401 # bumped to force rebuild on saves from prior versions
 # State tracked via global_var:epbm_version (timed, 32 day TTL).
 # Refreshed monthly by the cache clear pulse. If the mod is removed,
 # the event stops firing and the variable expires, triggering a full
