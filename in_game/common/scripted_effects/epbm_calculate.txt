@@ -23,10 +23,7 @@ epbm_lookup_pm_cost = {
 
 			set_local_variable = { name = epbm_price value = "price_in_market(scope:epbm_mkt)" }
 			round_local_variable = { name = epbm_price nearest = 0.01 }
-			change_local_variable = {
-				name = epbm_pm_cost
-				add = { value = local_var:epbm_price multiply = local_var:epbm_qty }
-			}
+			change_local_variable = { name = epbm_pm_cost add = { value = local_var:epbm_price multiply = local_var:epbm_qty } }
 		}
 
 		add_to_variable_map = {
@@ -59,7 +56,6 @@ epbm_calculate_maintenance = {
 		location ?= { market ?= { save_temporary_scope_as = epbm_mkt } }
 
 		epbm_price_building = yes
-
 	}
 
 	if = {
@@ -76,7 +72,17 @@ epbm_calculate_maintenance = {
 		error_log = "EPBM DIAG assigned: peasants=[SCOPE.GetLocalVariable('epbm_estate_peasants').GetValue|2] tribes=[SCOPE.GetLocalVariable('epbm_estate_tribes').GetValue|2] dhimmi=[SCOPE.GetLocalVariable('epbm_estate_dhimmi').GetValue|2] cossacks=[SCOPE.GetLocalVariable('epbm_estate_cossacks').GetValue|2]"
 	}
 
-	epbm_set_crown_offset_scale = yes
+	if = {
+		limit = { local_var:epbm_total_cost > 0 }
+		set_local_variable = {
+			name = epbm_shared_fraction
+			value = {
+				value = local_var:epbm_total_cost
+				divide = { value = local_var:epbm_total_cost add = local_var:epbm_crown_total_cost }
+			}
+		}
+	}
+	else = { set_local_variable = { name = epbm_shared_fraction value = 0 } }
 
 	epbm_for_each_estate = { effect = epbm_compute_modifier_scale }
 
@@ -88,8 +94,8 @@ epbm_calculate_maintenance = {
 		set_local_variable = { name = d_eff_div value = epbm_efficiency_divisor }
 
 		error_log = "EPBM DIAG inflation=[SCOPE.GetLocalVariable('d_inflation').GetValue|4] inf_factor=[SCOPE.GetLocalVariable('d_inf_factor').GetValue|4] burden=[SCOPE.GetLocalVariable('d_burden').GetValue|4] eff_div=[SCOPE.GetLocalVariable('d_eff_div').GetValue|4]"
-		set_local_variable = { name = d_crown_offset value = var:epbm_crown_offset_scale }
-		error_log = "EPBM DIAG crown_offset=[SCOPE.GetLocalVariable('d_crown_offset').GetValue|4]"
+		set_local_variable = { name = d_shared_frac value = local_var:epbm_shared_fraction }
+		error_log = "EPBM DIAG shared_fraction=[SCOPE.GetLocalVariable('d_shared_frac').GetValue|4]"
 
 		set_local_variable = { name = d_crown_power value = "estate_power(estate_type:crown_estate)" }
 		set_local_variable = { name = d_nobles_power value = "estate_power(estate_type:nobles_estate)" }
@@ -108,10 +114,7 @@ epbm_calculate_maintenance = {
 
 		set_local_variable = {
 			name = d_raw_pool
-			value = {
-				value = local_var:epbm_total_cost
-				add = local_var:epbm_crown_total_cost
-			}
+			value = { value = local_var:epbm_total_cost add = local_var:epbm_crown_total_cost }
 		}
 		set_local_variable = {
 			name = d_engine_expected
@@ -148,37 +151,34 @@ epbm_calculate_maintenance = {
 			value = {
 				value = local_var:d_inf_factor
 				subtract = local_var:d_sum_reductions
-				add = local_var:d_crown_offset
 			}
 		}
 
-		error_log = "EPBM DIAG multiplier: base+inf=[SCOPE.GetLocalVariable('d_inf_factor').GetValue|4] -reductions=[SCOPE.GetLocalVariable('d_sum_reductions').GetValue|4] +crown=[SCOPE.GetLocalVariable('d_crown_offset').GetValue|4] =remaining=[SCOPE.GetLocalVariable('d_remaining').GetValue|4]"
+		error_log = "EPBM DIAG multiplier: base+inf=[SCOPE.GetLocalVariable('d_inf_factor').GetValue|4] -reductions=[SCOPE.GetLocalVariable('d_sum_reductions').GetValue|4] =remaining=[SCOPE.GetLocalVariable('d_remaining').GetValue|4]"
 	}
 
 	set_variable = {
 		name = epbm_raw_pool
-		value = {
-			value = local_var:epbm_total_cost
-			add = local_var:epbm_crown_total_cost
-		}
-	}
-	set_variable = {
-		name = epbm_engine_expected
-		value = {
-			value = var:epbm_raw_pool
-			multiply = epbm_inflation_factor
-			divide = epbm_efficiency_divisor
-		}
+		value = { value = local_var:epbm_total_cost add = local_var:epbm_crown_total_cost }
 	}
 
 	if = {
 		limit = { has_variable = epbm_diag }
-		set_local_variable = { name = d_final_raw value = { value = local_var:epbm_total_cost multiply = epbm_inflation_factor divide = epbm_efficiency_divisor } }
+		set_local_variable = {
+			name = d_final_raw
+			value = {
+				value = local_var:epbm_total_cost
+				multiply = epbm_inflation_factor
+				divide = epbm_efficiency_divisor
+			}
+		}
 	}
 
 	change_local_variable = { name = epbm_total_cost multiply = epbm_maint_burden }
 	change_local_variable = { name = epbm_total_cost multiply = epbm_inflation_factor }
 	change_local_variable = { name = epbm_total_cost divide = epbm_efficiency_divisor }
+
+	set_variable = { name = epbm_engine_expected value = local_var:epbm_total_cost }
 
 	if = {
 		limit = { has_variable = epbm_diag }
@@ -204,9 +204,55 @@ epbm_calculate_maintenance = {
 }
 
 # ═══════════════════════════════════════════════
+# Full-capacity path: cached PM cost × level. Scope: building.
+# ═══════════════════════════════════════════════
+
+epbm_price_building_cached = {
+	global_var:epbm_pm_ref = { epbm_lookup_pm_cost = yes }
+
+	set_local_variable = { name = epbm_bldg_cost value = { value = local_var:epbm_pm_cost multiply = building_level } }
+
+	scope:epbm_mkt = {
+		location = {
+			add_to_variable_map = {
+				name = epbm_bt_costs
+				key = scope:epbm_bt
+				value = local_var:epbm_pm_cost
+			}
+		}
+	}
+}
+
+# ═══════════════════════════════════════════════
+# Lacking-goods path: per-good actual consumption pricing. Scope: building.
+# ═══════════════════════════════════════════════
+
+epbm_price_building_actual = {
+	set_local_variable = { name = epbm_bldg_cost value = 0 }
+
+	global_var:epbm_pm_ref = {
+		every_key_in_variable_map = {
+			variable = epbm_goods
+			save_temporary_scope_as = epbm_cur_good
+			set_local_variable = { name = epbm_price value = "price_in_market(scope:epbm_mkt)" }
+			round_local_variable = { name = epbm_price nearest = 0.01 }
+
+			scope:epbm_bldg = {
+				set_local_variable = { name = epbm_actual_qty value = "building_goods_input(scope:epbm_cur_good)" }
+			}
+
+			change_local_variable = {
+				name = epbm_bldg_cost
+				add = { value = local_var:epbm_price multiply = local_var:epbm_actual_qty }
+			}
+		}
+	}
+}
+
+# ═══════════════════════════════════════════════
 # Price one building and route its cost.
 # Scope: building. Requires scope:epbm_bldg, scope:epbm_bt, scope:epbm_mkt.
-# Finds the cheapest tracked PM, looks up cached price, routes cost.
+# Finds the cheapest tracked PM, dispatches to cached or actual pricing.
 # ═══════════════════════════════════════════════
 
 epbm_price_building = {
@@ -222,19 +268,8 @@ epbm_price_building = {
 		prev = {
 			set_global_variable = { name = epbm_pm_ref value = "global_variable_map(epbm_profiles|scope:epbm_pm)" }
 
-			global_var:epbm_pm_ref = { epbm_lookup_pm_cost = yes }
-
-			scope:epbm_mkt = {
-				location = {
-					add_to_variable_map = {
-						name = epbm_bt_costs
-						key = scope:epbm_bt
-						value = local_var:epbm_pm_cost
-					}
-				}
-			}
-
-			set_local_variable = { name = epbm_bldg_cost value = { value = local_var:epbm_pm_cost multiply = building_level } }
+			if = { limit = { is_lacking_goods = yes } epbm_price_building_actual = yes }
+			else = { epbm_price_building_cached = yes }
 
 			epbm_route_building_cost = yes
 		}
@@ -258,9 +293,7 @@ epbm_route_building_cost = {
 
 		epbm_for_each_estate = { effect = epbm_route_to_estate }
 	}
-	else = {
-		change_local_variable = { name = epbm_total_cost add = local_var:epbm_bldg_cost }
-	}
+	else = { change_local_variable = { name = epbm_total_cost add = local_var:epbm_bldg_cost } }
 }
 
 # ═══════════════════════════════════════════════
@@ -278,29 +311,6 @@ epbm_calc_foreign_building_costs = {
 	}
 }
 
-# ═══════════════════════════════════════════════
-# Crown-building offset. Estate power reductions apply to all buildings
-# in the game's upkeep pool, including crown buildings. This offset adds
-# back the over-discount on crown buildings so the crown pays their full
-# cost. Formula: C/(S+C) × (1-crown_power) × burden × inflation_factor.
-# ═══════════════════════════════════════════════
-
-epbm_set_crown_offset_scale = {
-	if = {
-		limit = { local_var:epbm_crown_total_cost > 0 }
-		set_variable = {
-			name = epbm_crown_offset_scale
-			value = {
-				value = local_var:epbm_crown_total_cost
-				divide = { value = local_var:epbm_crown_total_cost add = local_var:epbm_total_cost }
-				multiply = { value = 1 subtract = "estate_power(estate_type:crown_estate)" }
-				multiply = epbm_maint_burden
-				multiply = epbm_inflation_factor
-			}
-		}
-	}
-	else = { set_variable = { name = epbm_crown_offset_scale value = 0 } }
-}
 
 # ═══════════════════════════════════════════════
 # Country: split the shared pool across estates by estate power

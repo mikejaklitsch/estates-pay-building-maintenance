@@ -68,6 +68,48 @@ epbm_suppress.1 = {
 		change_variable = { name = epbm_mod_tribes multiply = 1 }
 		change_variable = { name = epbm_mod_dhimmi multiply = 1 }
 		change_variable = { name = epbm_mod_cossacks multiply = 1 }
+
+		change_variable = { name = epbm_show_raw_pool multiply = 1 }
+		change_variable = { name = epbm_show_engine_expected multiply = 1 }
+		change_variable = { name = epbm_raw_pool multiply = 1 }
+		change_variable = { name = epbm_engine_expected multiply = 1 }
+
+		change_variable = { name = epbm_show_mod_nobles multiply = 1 }
+		change_variable = { name = epbm_show_mod_clergy multiply = 1 }
+		change_variable = { name = epbm_show_mod_burghers multiply = 1 }
+		change_variable = { name = epbm_show_mod_peasants multiply = 1 }
+		change_variable = { name = epbm_show_mod_tribes multiply = 1 }
+		change_variable = { name = epbm_show_mod_dhimmi multiply = 1 }
+		change_variable = { name = epbm_show_mod_cossacks multiply = 1 }
+
+		change_variable = { name = epbm_prev_nobles multiply = 1 }
+		change_variable = { name = epbm_prev_clergy multiply = 1 }
+		change_variable = { name = epbm_prev_burghers multiply = 1 }
+		change_variable = { name = epbm_prev_peasants multiply = 1 }
+		change_variable = { name = epbm_prev_tribes multiply = 1 }
+		change_variable = { name = epbm_prev_dhimmi multiply = 1 }
+		change_variable = { name = epbm_prev_cossacks multiply = 1 }
+		change_variable = { name = epbm_prev_pool_nobles multiply = 1 }
+		change_variable = { name = epbm_prev_pool_clergy multiply = 1 }
+		change_variable = { name = epbm_prev_pool_burghers multiply = 1 }
+		change_variable = { name = epbm_prev_pool_peasants multiply = 1 }
+		change_variable = { name = epbm_prev_pool_tribes multiply = 1 }
+		change_variable = { name = epbm_prev_pool_dhimmi multiply = 1 }
+		change_variable = { name = epbm_prev_pool_cossacks multiply = 1 }
+		change_variable = { name = epbm_prev_assigned_nobles multiply = 1 }
+		change_variable = { name = epbm_prev_assigned_clergy multiply = 1 }
+		change_variable = { name = epbm_prev_assigned_burghers multiply = 1 }
+		change_variable = { name = epbm_prev_assigned_peasants multiply = 1 }
+		change_variable = { name = epbm_prev_assigned_tribes multiply = 1 }
+		change_variable = { name = epbm_prev_assigned_dhimmi multiply = 1 }
+		change_variable = { name = epbm_prev_assigned_cossacks multiply = 1 }
+		change_variable = { name = epbm_prev_crown_pool multiply = 1 }
+		change_variable = { name = epbm_prev_crown_bldg multiply = 1 }
+		change_variable = { name = epbm_prev_raw_pool multiply = 1 }
+		change_variable = { name = epbm_prev_engine_expected multiply = 1 }
+
+		add_country_modifier = { modifier = epbm_baseline_50_offset days = 1 }
+		add_country_modifier = { modifier = epbm_baseline_20_offset days = 1 }
 	}
 
 	option = { name = "OK" }

@@ -57,73 +57,73 @@ template Estate_tooltip {
 				### Visible only when the estate being tooltipped matches the estate
 				### whose epbm_show_* country variable is populated and > 0.
 				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('nobles_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_nobles').GetValue, '(CFixedPoint)0'))]"
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('nobles_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_prev_nobles').GetValue, '(CFixedPoint)0'))]"
 					text_single = {
 						text = "EPBM_ESTATE_MAINT_LABEL"
 					}
 					expand = {}
 					text_single = {
-						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_show_nobles').GetValue|2]@gold!#!"
+						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_prev_nobles').GetValue|2]@gold!#!"
 					}
 				}
 				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('clergy_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_clergy').GetValue, '(CFixedPoint)0'))]"
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('clergy_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_prev_clergy').GetValue, '(CFixedPoint)0'))]"
 					text_single = {
 						text = "EPBM_ESTATE_MAINT_LABEL"
 					}
 					expand = {}
 					text_single = {
-						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_show_clergy').GetValue|2]@gold!#!"
+						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_prev_clergy').GetValue|2]@gold!#!"
 					}
 				}
 				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('burghers_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_burghers').GetValue, '(CFixedPoint)0'))]"
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('burghers_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_prev_burghers').GetValue, '(CFixedPoint)0'))]"
 					text_single = {
 						text = "EPBM_ESTATE_MAINT_LABEL"
 					}
 					expand = {}
 					text_single = {
-						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_show_burghers').GetValue|2]@gold!#!"
+						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_prev_burghers').GetValue|2]@gold!#!"
 					}
 				}
 				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('peasants_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_peasants').GetValue, '(CFixedPoint)0'))]"
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('peasants_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_prev_peasants').GetValue, '(CFixedPoint)0'))]"
 					text_single = {
 						text = "EPBM_ESTATE_MAINT_LABEL"
 					}
 					expand = {}
 					text_single = {
-						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_show_peasants').GetValue|2]@gold!#!"
+						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_prev_peasants').GetValue|2]@gold!#!"
 					}
 				}
 				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('dhimmi_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_dhimmi').GetValue, '(CFixedPoint)0'))]"
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('dhimmi_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_prev_dhimmi').GetValue, '(CFixedPoint)0'))]"
 					text_single = {
 						text = "EPBM_ESTATE_MAINT_LABEL"
 					}
 					expand = {}
 					text_single = {
-						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_show_dhimmi').GetValue|2]@gold!#!"
+						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_prev_dhimmi').GetValue|2]@gold!#!"
 					}
 				}
 				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('tribes_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_tribes').GetValue, '(CFixedPoint)0'))]"
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('tribes_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_prev_tribes').GetValue, '(CFixedPoint)0'))]"
 					text_single = {
 						text = "EPBM_ESTATE_MAINT_LABEL"
 					}
 					expand = {}
 					text_single = {
-						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_show_tribes').GetValue|2]@gold!#!"
+						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_prev_tribes').GetValue|2]@gold!#!"
 					}
 				}
 				TooltipManualTableField = {
-					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('cossacks_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_show_cossacks').GetValue, '(CFixedPoint)0'))]"
+					visible = "[And(ObjectsEqual(Estate.GetType, Estate.GetCountry.GetGovernment.GetEstateFromKey('cossacks_estate').GetType), GreaterThan_CFixedPoint(Estate.GetCountry.MakeScope.GetVariable('epbm_prev_cossacks').GetValue, '(CFixedPoint)0'))]"
 					text_single = {
 						text = "EPBM_ESTATE_MAINT_LABEL"
 					}
 					expand = {}
 					text_single = {
-						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_show_cossacks').GetValue|2]@gold!#!"
+						raw_text = "#R -[Estate.GetCountry.MakeScope.GetVariable('epbm_prev_cossacks').GetValue|2]@gold!#!"
 					}
 				}
 				### End EPBM

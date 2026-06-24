@@ -64,7 +64,3 @@ epbm_cossacks_upkeep = {
 	building_upkeep_multiplier = -1.0
 }
 
-epbm_crown_building_offset = {
-	scales_with = epbm_crown_building_offset_scale
-	building_upkeep_multiplier = 1.0
-}

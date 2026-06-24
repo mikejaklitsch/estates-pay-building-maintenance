@@ -1,3 +1,0 @@
-# EPBM: estate upkeep reductions moved to auto_modifiers/epbm_country.txt
-# as game-rule-gated auto modifiers that scale with estate_power.
-# This file kept to avoid orphan references; no active content.

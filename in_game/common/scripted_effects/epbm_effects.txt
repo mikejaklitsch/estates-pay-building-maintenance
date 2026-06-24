@@ -95,6 +95,13 @@ epbm_init_modifier_scale = {
 	set_variable = { name = epbm_mod_$estate$ value = 0 }
 }
 
+epbm_snapshot_mod = {
+	if = {
+		limit = { has_variable = epbm_mod_$estate$ }
+		set_variable = { name = epbm_show_mod_$estate$ value = var:epbm_mod_$estate$ }
+	}
+}
+
 epbm_compute_modifier_scale = {
 	set_local_variable = { name = est value = estate_type:$estate$_estate }
 
@@ -104,6 +111,7 @@ epbm_compute_modifier_scale = {
 			name = epbm_mod_$estate$
 			value = {
 				value = "estate_power(local_var:est)"
+				multiply = local_var:epbm_shared_fraction
 				multiply = epbm_maint_burden
 				multiply = epbm_inflation_factor
 			}
@@ -129,6 +137,20 @@ epbm_charge_estate_pay = {
 epbm_snapshot_estate = {
 	if = {
 		limit = { country_has_estate = estate_type:$estate$_estate }
+
+		if = {
+			limit = { has_variable = epbm_show_$estate$ }
+			set_variable = { name = epbm_prev_$estate$ value = var:epbm_show_$estate$ }
+		}
+		if = {
+			limit = { has_variable = epbm_show_pool_$estate$ }
+			set_variable = { name = epbm_prev_pool_$estate$ value = var:epbm_show_pool_$estate$ }
+		}
+		if = {
+			limit = { has_variable = epbm_show_assigned_$estate$ }
+			set_variable = { name = epbm_prev_assigned_$estate$ value = var:epbm_show_assigned_$estate$ }
+		}
+
 		set_variable = { name = epbm_show_$estate$ value = var:epbm_pay_$estate$ }
 
 		if = {

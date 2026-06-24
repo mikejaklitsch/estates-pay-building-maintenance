@@ -644,52 +644,6 @@ def generate_crown_inject(crown_buildings):
     return "\n".join(lines)
 
 
-def generate_script_values(qualifying, all_pm_goods, buildings):
-    lines = list(GENERATED_HEADER_LINES)
-    lines.append("# Per-PM script values: compute goods-based maintenance from building scope.")
-    lines.append("# Each prices its goods against the building's local market and scales by level.")
-    lines.append("")
-
-    estate_buildings = [(bname, estate) for bname, _is_foreign, estate in qualifying if estate is not None]
-
-    sv_name_map = {}
-    for bname, _estate in sorted(estate_buildings):
-        b = buildings[bname]
-        matched_pms = [pm for pm in b['possible_pms'] if pm in all_pm_goods]
-        matched_pms += [pm for pm in b['unique_pms'] if pm in all_pm_goods]
-        if not matched_pms:
-            continue
-        pm_name = matched_pms[0]
-        goods = all_pm_goods[pm_name]
-
-        sv_name = f"{_p(pm_name)}_upkeep" if not pm_name.startswith(PREFIX) else f"{pm_name}_upkeep"
-        sv_name_map[bname] = sv_name
-
-        lines.append(f"{sv_name} = {{")
-        lines.append("\tvalue = 0")
-        for good, amount in goods.items():
-            lines.append(f'\tadd = {{ value = "location.market.market_price(goods:{good})" multiply = {amount} }}')
-        lines.append("\tmultiply = building_level")
-        lines.append("}")
-        lines.append("")
-
-    lines.append("# Dispatch: returns the correct PM upkeep for estate-assigned buildings.")
-    lines.append("# Scope: building.")
-    lines.append("")
-    lines.append(f"{_p('estate_building_upkeep')} = {{")
-    first = True
-    for bname, sv_name in sorted(sv_name_map.items()):
-        keyword = "if" if first else "else_if"
-        lines.append(f"\t{keyword} = {{")
-        lines.append(f"\t\tlimit = {{ building_type = building_type:{bname} }}")
-        lines.append(f"\t\tvalue = {sv_name}")
-        lines.append("\t}")
-        first = False
-    lines.append("}")
-    lines.append("")
-
-    return "\n".join(lines)
-
 
 def generate_init_effects(qualifying, all_pm_goods, crown_buildings):
     all_pm_dicts = _p('all_pm_dicts')
@@ -809,7 +763,6 @@ def main():
     # ── Output subdirectories ──
     out_effects = output_dir / "in_game" / "common" / "scripted_effects"
     out_buildings = output_dir / "in_game" / "common" / "building_types"
-    out_sv = output_dir / "in_game" / "common" / "script_values"
 
     # ── Stage 4: Init effects ──
     print("")
@@ -832,14 +785,6 @@ def main():
     else:
         _delete_stale(crown_inject_path)
 
-    # ── Stage 5b: Per-PM script values + dispatcher ──
-    print("")
-    print("Generating script values...")
-    sv_code = generate_script_values(qualifying, all_pm_goods, buildings)
-    sv_path = out_sv / f"{PREFIX}_generated_script_values.txt"
-    _write_output(sv_path, sv_code)
-    print(f"  {'would write' if CHECK_MODE else 'wrote'} {sv_path.relative_to(output_dir)}")
-
     # ── Clean up stale files from previous generator versions ──
     for stale_path in (
         out_buildings / f"{PREFIX}_generated_inject.txt",
@@ -848,6 +793,7 @@ def main():
         output_dir / "in_game" / "common" / "biases" / f"{PREFIX}_generated_biases.txt",
         output_dir / "main_menu" / "localization" / "english" / f"{PREFIX}_ios_l_english.yml",
         output_dir / "main_menu" / "localization" / "english" / f"{PREFIX}_generated_replaced_pms_l_english.yml",
+        output_dir / "in_game" / "common" / "script_values" / f"{PREFIX}_generated_script_values.txt",
     ):
         _delete_stale(stale_path)
 
