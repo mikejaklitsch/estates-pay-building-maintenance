@@ -1,0 +1,26 @@
+﻿
+epbm_baseline_maintenance = {
+	default = epbm_baseline_100
+
+	epbm_baseline_100 = { flag = general_rule }
+
+	epbm_baseline_50 = {
+		apply_modifier = player:epbm_baseline_50_offset
+		apply_modifier = ai:epbm_baseline_50_offset
+		flag = general_rule
+	}
+
+	epbm_baseline_20 = {
+		apply_modifier = player:epbm_baseline_20_offset
+		apply_modifier = ai:epbm_baseline_20_offset
+		flag = general_rule
+	}
+}
+
+epbm_yearly_creep = {
+	default = epbm_yearly_creep_enabled
+
+	epbm_yearly_creep_enabled = { flag = general_rule }
+
+	epbm_yearly_creep_disabled = { flag = general_rule }
+}

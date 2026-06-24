@@ -2,18 +2,67 @@
 
 # Raise the building upkeep multiplier from vanilla's 0.2 to 1.0 so the
 # goods-cost fraction matches the estate charging calculation.
+# Game rule apply_modifier offsets bring this back to 0.5 or 0.2 when chosen.
 
 INJECT:country_base_values = {
 	building_upkeep_multiplier = 0.8
 }
 
-# Crown-building offset. The estate `power` block reductions above
-# reduce the crown's upkeep on *all* buildings, crown buildings
-# included, but estates only pay back for non-crown buildings.
-# Without this offset, crown buildings end up under-charged.
-# Scales by crown_share x (1 - crown_power), which exactly cancels the
-# over-discount on the crown's own buildings. The scaler is computed in
-# epbm_set_crown_offset_scale (epbm_calculate.txt) once per recalc.
+# ═══════════════════════════════════════════════
+# Yearly creep cancellation.
+# The engine's years_since_game_start static modifier adds
+# building_upkeep_multiplier = 0.001 per year. When the game rule
+# disables it, this auto modifier subtracts the same amount.
+# ═══════════════════════════════════════════════
+
+epbm_cancel_yearly_creep = {
+	potential_trigger = { has_game_rule = epbm_yearly_creep_disabled }
+
+	scales_with = { value = current_year subtract = 1337 }
+
+	building_upkeep_multiplier = -0.001
+}
+
+# ═══════════════════════════════════════════════
+# Estate upkeep reductions. Each estate's scale is its fraction of total
+# building cost (shared pool power share + assigned buildings), computed
+# during epbm_calculate_maintenance. Scaled by maint_burden and inflation.
+# ═══════════════════════════════════════════════
+
+epbm_nobles_upkeep = {
+	scales_with = epbm_nobles_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}
+
+epbm_clergy_upkeep = {
+	scales_with = epbm_clergy_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}
+
+epbm_burghers_upkeep = {
+	scales_with = epbm_burghers_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}
+
+epbm_peasants_upkeep = {
+	scales_with = epbm_peasants_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}
+
+epbm_tribes_upkeep = {
+	scales_with = epbm_tribes_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}
+
+epbm_dhimmi_upkeep = {
+	scales_with = epbm_dhimmi_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}
+
+epbm_cossacks_upkeep = {
+	scales_with = epbm_cossacks_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}
 
 epbm_crown_building_offset = {
 	scales_with = epbm_crown_building_offset_scale

@@ -21,9 +21,11 @@ epbm_lookup_pm_cost = {
 
 			global_var:epbm_pm_ref = { set_local_variable = { name = epbm_qty value = "variable_map(epbm_goods|prev)" } }
 
+			set_local_variable = { name = epbm_price value = "price_in_market(scope:epbm_mkt)" }
+			round_local_variable = { name = epbm_price nearest = 0.01 }
 			change_local_variable = {
 				name = epbm_pm_cost
-				add = { value = "price_in_market(scope:epbm_mkt)" multiply = local_var:epbm_qty }
+				add = { value = local_var:epbm_price multiply = local_var:epbm_qty }
 			}
 		}
 
@@ -57,24 +59,148 @@ epbm_calculate_maintenance = {
 		location ?= { market ?= { save_temporary_scope_as = epbm_mkt } }
 
 		epbm_price_building = yes
+
+	}
+
+	if = {
+		limit = { has_variable = epbm_diag }
+		error_log = "EPBM DIAG domestic: shared=[SCOPE.GetLocalVariable('epbm_total_cost').GetValue|2] crown=[SCOPE.GetLocalVariable('epbm_crown_total_cost').GetValue|2]"
 	}
 
 	epbm_calc_foreign_building_costs = yes
 
+	if = {
+		limit = { has_variable = epbm_diag }
+		error_log = "EPBM DIAG +foreign: shared=[SCOPE.GetLocalVariable('epbm_total_cost').GetValue|2] crown=[SCOPE.GetLocalVariable('epbm_crown_total_cost').GetValue|2]"
+		error_log = "EPBM DIAG assigned: nobles=[SCOPE.GetLocalVariable('epbm_estate_nobles').GetValue|2] clergy=[SCOPE.GetLocalVariable('epbm_estate_clergy').GetValue|2] burghers=[SCOPE.GetLocalVariable('epbm_estate_burghers').GetValue|2]"
+		error_log = "EPBM DIAG assigned: peasants=[SCOPE.GetLocalVariable('epbm_estate_peasants').GetValue|2] tribes=[SCOPE.GetLocalVariable('epbm_estate_tribes').GetValue|2] dhimmi=[SCOPE.GetLocalVariable('epbm_estate_dhimmi').GetValue|2] cossacks=[SCOPE.GetLocalVariable('epbm_estate_cossacks').GetValue|2]"
+	}
+
 	epbm_set_crown_offset_scale = yes
 
-	change_local_variable = { name = epbm_total_cost multiply = epbm_maint_burden }
-	change_local_variable = {
-		name = epbm_total_cost
-		divide = {
-			value = 1
-			add = "modifier:building_upkeep_efficiency"
-			min = 0.5
+	epbm_for_each_estate = { effect = epbm_compute_modifier_scale }
+
+	if = {
+		limit = { has_variable = epbm_diag }
+		set_local_variable = { name = d_inflation value = inflation }
+		set_local_variable = { name = d_inf_factor value = epbm_inflation_factor }
+		set_local_variable = { name = d_burden value = epbm_maint_burden }
+		set_local_variable = { name = d_eff_div value = epbm_efficiency_divisor }
+
+		error_log = "EPBM DIAG inflation=[SCOPE.GetLocalVariable('d_inflation').GetValue|4] inf_factor=[SCOPE.GetLocalVariable('d_inf_factor').GetValue|4] burden=[SCOPE.GetLocalVariable('d_burden').GetValue|4] eff_div=[SCOPE.GetLocalVariable('d_eff_div').GetValue|4]"
+		set_local_variable = { name = d_crown_offset value = var:epbm_crown_offset_scale }
+		error_log = "EPBM DIAG crown_offset=[SCOPE.GetLocalVariable('d_crown_offset').GetValue|4]"
+
+		set_local_variable = { name = d_crown_power value = "estate_power(estate_type:crown_estate)" }
+		set_local_variable = { name = d_nobles_power value = "estate_power(estate_type:nobles_estate)" }
+		set_local_variable = { name = d_clergy_power value = "estate_power(estate_type:clergy_estate)" }
+		set_local_variable = { name = d_burghers_power value = "estate_power(estate_type:burghers_estate)" }
+		set_local_variable = { name = d_peasants_power value = "estate_power(estate_type:peasants_estate)" }
+		set_local_variable = { name = d_tribes_power value = "estate_power(estate_type:tribes_estate)" }
+		set_local_variable = { name = d_dhimmi_power value = "estate_power(estate_type:dhimmi_estate)" }
+		set_local_variable = { name = d_cossacks_power value = "estate_power(estate_type:cossacks_estate)" }
+
+		error_log = "EPBM DIAG power: crown=[SCOPE.GetLocalVariable('d_crown_power').GetValue|4] nobles=[SCOPE.GetLocalVariable('d_nobles_power').GetValue|4] clergy=[SCOPE.GetLocalVariable('d_clergy_power').GetValue|4] burghers=[SCOPE.GetLocalVariable('d_burghers_power').GetValue|4]"
+		error_log = "EPBM DIAG power: peasants=[SCOPE.GetLocalVariable('d_peasants_power').GetValue|4] tribes=[SCOPE.GetLocalVariable('d_tribes_power').GetValue|4] dhimmi=[SCOPE.GetLocalVariable('d_dhimmi_power').GetValue|4] cossacks=[SCOPE.GetLocalVariable('d_cossacks_power').GetValue|4]"
+
+		error_log = "EPBM DIAG pools: shared=[SCOPE.GetLocalVariable('epbm_total_cost').GetValue|2] crown=[SCOPE.GetLocalVariable('epbm_crown_total_cost').GetValue|2]"
+		error_log = "EPBM DIAG assigned: nobles=[SCOPE.GetLocalVariable('epbm_estate_nobles').GetValue|2] clergy=[SCOPE.GetLocalVariable('epbm_estate_clergy').GetValue|2] burghers=[SCOPE.GetLocalVariable('epbm_estate_burghers').GetValue|2] peasants=[SCOPE.GetLocalVariable('epbm_estate_peasants').GetValue|2] tribes=[SCOPE.GetLocalVariable('epbm_estate_tribes').GetValue|2] dhimmi=[SCOPE.GetLocalVariable('epbm_estate_dhimmi').GetValue|2] cossacks=[SCOPE.GetLocalVariable('epbm_estate_cossacks').GetValue|2]"
+
+		set_local_variable = {
+			name = d_raw_pool
+			value = {
+				value = local_var:epbm_total_cost
+				add = local_var:epbm_crown_total_cost
+			}
 		}
+		set_local_variable = {
+			name = d_engine_expected
+			value = {
+				value = local_var:d_raw_pool
+				multiply = local_var:d_inf_factor
+				divide = local_var:d_eff_div
+			}
+		}
+
+		error_log = "EPBM DIAG raw_pool=[SCOPE.GetLocalVariable('d_raw_pool').GetValue|2] engine_expected=[SCOPE.GetLocalVariable('d_engine_expected').GetValue|2]"
+
+		set_local_variable = { name = d_m_nobles value = var:epbm_mod_nobles }
+		set_local_variable = { name = d_m_clergy value = var:epbm_mod_clergy }
+		set_local_variable = { name = d_m_burghers value = var:epbm_mod_burghers }
+		set_local_variable = { name = d_m_peasants value = var:epbm_mod_peasants }
+		set_local_variable = { name = d_m_tribes value = var:epbm_mod_tribes }
+		set_local_variable = { name = d_m_dhimmi value = var:epbm_mod_dhimmi }
+		set_local_variable = { name = d_m_cossacks value = var:epbm_mod_cossacks }
+
+		error_log = "EPBM DIAG mod: nobles=[SCOPE.GetLocalVariable('d_m_nobles').GetValue|4] clergy=[SCOPE.GetLocalVariable('d_m_clergy').GetValue|4] burghers=[SCOPE.GetLocalVariable('d_m_burghers').GetValue|4] peasants=[SCOPE.GetLocalVariable('d_m_peasants').GetValue|4] tribes=[SCOPE.GetLocalVariable('d_m_tribes').GetValue|4] dhimmi=[SCOPE.GetLocalVariable('d_m_dhimmi').GetValue|4] cossacks=[SCOPE.GetLocalVariable('d_m_cossacks').GetValue|4]"
+
+		set_local_variable = { name = d_sum_reductions value = 0 }
+		change_local_variable = { name = d_sum_reductions add = local_var:d_m_nobles }
+		change_local_variable = { name = d_sum_reductions add = local_var:d_m_clergy }
+		change_local_variable = { name = d_sum_reductions add = local_var:d_m_burghers }
+		change_local_variable = { name = d_sum_reductions add = local_var:d_m_peasants }
+		change_local_variable = { name = d_sum_reductions add = local_var:d_m_tribes }
+		change_local_variable = { name = d_sum_reductions add = local_var:d_m_dhimmi }
+		change_local_variable = { name = d_sum_reductions add = local_var:d_m_cossacks }
+
+		set_local_variable = {
+			name = d_remaining
+			value = {
+				value = local_var:d_inf_factor
+				subtract = local_var:d_sum_reductions
+				add = local_var:d_crown_offset
+			}
+		}
+
+		error_log = "EPBM DIAG multiplier: base+inf=[SCOPE.GetLocalVariable('d_inf_factor').GetValue|4] -reductions=[SCOPE.GetLocalVariable('d_sum_reductions').GetValue|4] +crown=[SCOPE.GetLocalVariable('d_crown_offset').GetValue|4] =remaining=[SCOPE.GetLocalVariable('d_remaining').GetValue|4]"
+	}
+
+	set_variable = {
+		name = epbm_raw_pool
+		value = {
+			value = local_var:epbm_total_cost
+			add = local_var:epbm_crown_total_cost
+		}
+	}
+	set_variable = {
+		name = epbm_engine_expected
+		value = {
+			value = var:epbm_raw_pool
+			multiply = epbm_inflation_factor
+			divide = epbm_efficiency_divisor
+		}
+	}
+
+	if = {
+		limit = { has_variable = epbm_diag }
+		set_local_variable = { name = d_final_raw value = { value = local_var:epbm_total_cost multiply = epbm_inflation_factor divide = epbm_efficiency_divisor } }
+	}
+
+	change_local_variable = { name = epbm_total_cost multiply = epbm_maint_burden }
+	change_local_variable = { name = epbm_total_cost multiply = epbm_inflation_factor }
+	change_local_variable = { name = epbm_total_cost divide = epbm_efficiency_divisor }
+
+	if = {
+		limit = { has_variable = epbm_diag }
+		error_log = "EPBM DIAG scaled_shared=[SCOPE.GetLocalVariable('epbm_total_cost').GetValue|2]"
 	}
 
 	epbm_split_by_estate_power = yes
 	epbm_add_estate_building_costs = yes
+
+	set_variable = {
+		name = epbm_crown_pool_cost
+		value = { value = local_var:epbm_total_cost multiply = "estate_power(estate_type:crown_estate)" }
+	}
+	set_variable = {
+		name = epbm_crown_bldg_cost
+		value = {
+			value = local_var:epbm_crown_total_cost
+			multiply = epbm_maint_burden
+			multiply = epbm_inflation_factor
+			divide = epbm_efficiency_divisor
+		}
+	}
 }
 
 # ═══════════════════════════════════════════════
@@ -115,23 +241,6 @@ epbm_price_building = {
 	}
 }
 
-# Compute the crown-building offset scaler and store it on the country.
-
-epbm_set_crown_offset_scale = {
-	if = {
-		limit = { local_var:epbm_crown_total_cost > 0 }
-		set_variable = {
-			name = epbm_crown_offset_scale
-			value = {
-				value = local_var:epbm_crown_total_cost
-				divide = { value = local_var:epbm_crown_total_cost add = local_var:epbm_total_cost }
-				multiply = { value = 1 subtract = "estate_power(estate_type:crown_estate)" }
-			}
-		}
-	}
-	else = { set_variable = { name = epbm_crown_offset_scale value = 0 } }
-}
-
 # ═══════════════════════════════════════════════
 # Route one building's cost. Scope: building.
 # Requires scope:epbm_bt and local_var:epbm_bldg_cost.
@@ -149,7 +258,9 @@ epbm_route_building_cost = {
 
 		epbm_for_each_estate = { effect = epbm_route_to_estate }
 	}
-	else = { change_local_variable = { name = epbm_total_cost add = local_var:epbm_bldg_cost } }
+	else = {
+		change_local_variable = { name = epbm_total_cost add = local_var:epbm_bldg_cost }
+	}
 }
 
 # ═══════════════════════════════════════════════
@@ -165,6 +276,30 @@ epbm_calc_foreign_building_costs = {
 
 		epbm_price_building = yes
 	}
+}
+
+# ═══════════════════════════════════════════════
+# Crown-building offset. Estate power reductions apply to all buildings
+# in the game's upkeep pool, including crown buildings. This offset adds
+# back the over-discount on crown buildings so the crown pays their full
+# cost. Formula: C/(S+C) × (1-crown_power) × burden × inflation_factor.
+# ═══════════════════════════════════════════════
+
+epbm_set_crown_offset_scale = {
+	if = {
+		limit = { local_var:epbm_crown_total_cost > 0 }
+		set_variable = {
+			name = epbm_crown_offset_scale
+			value = {
+				value = local_var:epbm_crown_total_cost
+				divide = { value = local_var:epbm_crown_total_cost add = local_var:epbm_total_cost }
+				multiply = { value = 1 subtract = "estate_power(estate_type:crown_estate)" }
+				multiply = epbm_maint_burden
+				multiply = epbm_inflation_factor
+			}
+		}
+	}
+	else = { set_variable = { name = epbm_crown_offset_scale value = 0 } }
 }
 
 # ═══════════════════════════════════════════════

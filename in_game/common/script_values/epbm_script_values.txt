@@ -1,15 +1,71 @@
 ﻿# Fraction of building maintenance borne by the estate system (0.0-1.0).
 
-epbm_maint_burden = {
-	value = 1.0
+epbm_efficiency_divisor = {
+	value = 1
+	add = "modifier:building_upkeep_efficiency"
+	min = 0.5
 }
 
-# Scaler for the crown-building offset auto modifier.
-# Source: epbm_set_crown_offset_scale in epbm_calculate.txt, run monthly
-# for players and yearly for AI. Value is
-#   (crown_upkeep / total_upkeep) x (1 - crown_power)
-# which exactly cancels the over-discount that estate `power` blocks
-# apply to the crown's own buildings.
+epbm_maint_burden = {
+	if = { limit = { has_game_rule = epbm_baseline_50 } value = 0.5 }
+	else_if = { limit = { has_game_rule = epbm_baseline_20 } value = 0.2 }
+	else = { value = 1.0 }
+}
+
+epbm_crown_total_display = {
+	value = 0
+
+	if = { limit = { has_variable = epbm_show_crown_pool } add = var:epbm_show_crown_pool }
+
+	if = { limit = { has_variable = epbm_show_crown_bldg } add = var:epbm_show_crown_bldg }
+}
+
+# Inflation correction: building_upkeep_multiplier is additive, so
+# inflation sits in the same pool as our reductions. Scale our
+# contributions by (1 + inflation) so they cover the inflated base.
+
+epbm_inflation_factor = {
+	value = 1
+	add = inflation
+
+	if = {
+		limit = { NOT = { has_game_rule = epbm_yearly_creep_disabled } }
+		add = { value = years_since_game_start multiply = 0.001 }
+	}
+}
+
+# Estate upkeep reduction scalers for auto modifiers.
+# Each reads a pre-computed variable set during epbm_calculate_maintenance.
+# Value = estate_power × S/(S+C) × maint_burden × inflation_factor,
+# all computed at the same moment so no live/stale mixing.
+
+epbm_nobles_upkeep_scale = {
+	if = { limit = { has_variable = epbm_mod_nobles } value = var:epbm_mod_nobles }
+}
+
+epbm_clergy_upkeep_scale = {
+	if = { limit = { has_variable = epbm_mod_clergy } value = var:epbm_mod_clergy }
+}
+
+epbm_burghers_upkeep_scale = {
+	if = { limit = { has_variable = epbm_mod_burghers } value = var:epbm_mod_burghers }
+}
+
+epbm_peasants_upkeep_scale = {
+	if = { limit = { has_variable = epbm_mod_peasants } value = var:epbm_mod_peasants }
+}
+
+epbm_tribes_upkeep_scale = {
+	if = { limit = { has_variable = epbm_mod_tribes } value = var:epbm_mod_tribes }
+}
+
+epbm_dhimmi_upkeep_scale = {
+	if = { limit = { has_variable = epbm_mod_dhimmi } value = var:epbm_mod_dhimmi }
+}
+
+epbm_cossacks_upkeep_scale = {
+	if = { limit = { has_variable = epbm_mod_cossacks } value = var:epbm_mod_cossacks }
+}
 
 epbm_crown_building_offset_scale = {
 	if = { limit = { has_variable = epbm_crown_offset_scale } value = var:epbm_crown_offset_scale }

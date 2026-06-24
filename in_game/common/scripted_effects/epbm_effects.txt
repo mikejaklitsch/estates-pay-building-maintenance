@@ -29,9 +29,18 @@ epbm_set_pay_from_power = {
 
 	if = {
 		limit = { country_has_estate = local_var:est }
+
 		set_variable = {
 			name = epbm_pay_$estate$
 			value = { value = local_var:epbm_total_cost multiply = "estate_power(local_var:est)" }
+		}
+		set_variable = { name = epbm_pool_$estate$ value = var:epbm_pay_$estate$ }
+
+		if = {
+			limit = { has_variable = epbm_diag }
+			set_local_variable = { name = d_power value = "estate_power(local_var:est)" }
+			set_local_variable = { name = d_pay value = var:epbm_pay_$estate$ }
+			error_log = "EPBM DIAG split $estate$: power=[SCOPE.GetLocalVariable('d_power').GetValue|4] pay=[SCOPE.GetLocalVariable('d_pay').GetValue|2]"
 		}
 	}
 }
@@ -40,6 +49,8 @@ epbm_zero_pay = {
 	if = {
 		limit = { country_has_estate = estate_type:$estate$_estate }
 		set_variable = { name = epbm_pay_$estate$ value = 0 }
+		set_variable = { name = epbm_pool_$estate$ value = 0 }
+		set_variable = { name = epbm_assigned_$estate$ value = 0 }
 	}
 }
 
@@ -52,18 +63,23 @@ epbm_add_estate_cost = {
 			set_variable = { name = epbm_pay_$estate$ value = 0 }
 		}
 
-		change_variable = {
-			name = epbm_pay_$estate$
-			add = {
+		set_variable = {
+			name = epbm_assigned_$estate$
+			value = {
 				value = local_var:epbm_estate_$estate$
 				multiply = epbm_maint_burden
-
-				divide = {
-					value = 1
-					add = "modifier:building_upkeep_efficiency"
-					min = 0.5
-				}
+				multiply = epbm_inflation_factor
+				divide = epbm_efficiency_divisor
 			}
+		}
+
+		change_variable = { name = epbm_pay_$estate$ add = var:epbm_assigned_$estate$ }
+
+		if = {
+			limit = { has_variable = epbm_diag }
+			set_local_variable = { name = d_raw value = local_var:epbm_estate_$estate$ }
+			set_local_variable = { name = d_final value = var:epbm_pay_$estate$ }
+			error_log = "EPBM DIAG +assigned $estate$: raw=[SCOPE.GetLocalVariable('d_raw').GetValue|2] final_pay=[SCOPE.GetLocalVariable('d_final').GetValue|2]"
 		}
 	}
 }
@@ -73,6 +89,27 @@ epbm_route_to_estate = {
 		limit = { global_var:epbm_estate_ref = estate_type:$estate$_estate }
 		change_local_variable = { name = epbm_estate_$estate$ add = local_var:epbm_bldg_cost }
 	}
+}
+
+epbm_init_modifier_scale = {
+	set_variable = { name = epbm_mod_$estate$ value = 0 }
+}
+
+epbm_compute_modifier_scale = {
+	set_local_variable = { name = est value = estate_type:$estate$_estate }
+
+	if = {
+		limit = { country_has_estate = local_var:est }
+		set_variable = {
+			name = epbm_mod_$estate$
+			value = {
+				value = "estate_power(local_var:est)"
+				multiply = epbm_maint_burden
+				multiply = epbm_inflation_factor
+			}
+		}
+	}
+	else = { set_variable = { name = epbm_mod_$estate$ value = 0 } }
 }
 
 epbm_charge_estate_pay = {
@@ -93,6 +130,16 @@ epbm_snapshot_estate = {
 	if = {
 		limit = { country_has_estate = estate_type:$estate$_estate }
 		set_variable = { name = epbm_show_$estate$ value = var:epbm_pay_$estate$ }
+
+		if = {
+			limit = { has_variable = epbm_pool_$estate$ }
+			set_variable = { name = epbm_show_pool_$estate$ value = var:epbm_pool_$estate$ }
+		}
+
+		if = {
+			limit = { has_variable = epbm_assigned_$estate$ }
+			set_variable = { name = epbm_show_assigned_$estate$ value = var:epbm_assigned_$estate$ }
+		}
 	}
 }
 
@@ -164,7 +211,7 @@ epbm_init_pool = {
 epbm_full_rebuild = {
 	epbm_stamp_globals = yes
 
-	every_country = { limit = { is_real_country = yes } set_variable = { name = epbm_crown_offset_scale value = 0 } }
+	every_country = { limit = { is_real_country = yes } epbm_for_each_estate = { effect = epbm_init_modifier_scale } }
 
 	every_country = {
 		limit = { is_real_country = yes any_estate = { estate_type != estate_type:crown_estate } }
@@ -177,14 +224,17 @@ epbm_full_rebuild = {
 }
 
 # ═══════════════════════════════════════════════
-# Player monthly: snapshot → recalc → charge. Order matters — snapshot
-# must capture last month's numbers before the recalc clobbers them.
+# Player monthly: snapshot → charge → recalc. Mirrors the engine's timing:
+# the engine calculates upkeep this month and deducts it next month.
+# Snapshot captures last month's calc for tooltip display, charge deducts
+# last month's calc from estates, then recalc sets new values and modifier
+# scales for next month's charge and engine display.
 # ═══════════════════════════════════════════════
 
 epbm_collect_maintenance = {
 	epbm_snapshot_for_display = yes
-	epbm_calculate_maintenance = yes
 	epbm_charge_estates = yes
+	epbm_calculate_maintenance = yes
 }
 
 # ═══════════════════════════════════════════════

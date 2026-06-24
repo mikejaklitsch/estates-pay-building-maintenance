@@ -114,16 +114,6 @@ epbm_stamp_globals = {
 		"
 	}
 	epbm_register_pm = {
-		pm = bastion_maintenance
-		goods_block = "
-			epbm_good = { good = stone amount = 0.5 }
-			epbm_good = { good = firearms amount = 0.5 }
-			epbm_good = { good = cannons amount = 0.5 }
-			epbm_good = { good = tools amount = 0.2 }
-			epbm_good = { good = weaponry amount = 0.5 }
-		"
-	}
-	epbm_register_pm = {
 		pm = bey_fortress_maintenance
 		goods_block = "
 			epbm_good = { good = stone amount = 0.1 }
@@ -252,15 +242,6 @@ epbm_stamp_globals = {
 		"
 	}
 	epbm_register_pm = {
-		pm = castle_maintenance
-		goods_block = "
-			epbm_good = { good = stone amount = 0.1 }
-			epbm_good = { good = tools amount = 0.05 }
-			epbm_good = { good = weaponry amount = 0.1 }
-			epbm_good = { good = tar amount = 0.025 }
-		"
-	}
-	epbm_register_pm = {
 		pm = cawa_barracks_maintenance
 		goods_block = "
 			epbm_good = { good = leather amount = 0.5 }
@@ -284,15 +265,6 @@ epbm_stamp_globals = {
 			epbm_good = { good = books amount = 0.1 }
 			epbm_good = { good = paper amount = 0.5 }
 			epbm_good = { good = goods_gold amount = 0.05 }
-		"
-	}
-	epbm_register_pm = {
-		pm = city_walls_maintenance
-		goods_block = "
-			epbm_good = { good = stone amount = 0.1 }
-			epbm_good = { good = tools amount = 0.05 }
-			epbm_good = { good = weaponry amount = 0.1 }
-			epbm_good = { good = tar amount = 0.025 }
 		"
 	}
 	epbm_register_pm = {
@@ -798,16 +770,6 @@ epbm_stamp_globals = {
 		"
 	}
 	epbm_register_pm = {
-		pm = expensive_capital_administration_maintenance
-		goods_block = "
-			epbm_good = { good = tools amount = 0.1 }
-			epbm_good = { good = fine_cloth amount = 0.5 }
-			epbm_good = { good = paper amount = 2.0 }
-			epbm_good = { good = furniture amount = 0.25 }
-			epbm_good = { good = goods_gold amount = 0.1 }
-		"
-	}
-	epbm_register_pm = {
 		pm = feitoria_maintenance
 		goods_block = "
 			epbm_good = { good = masonry amount = 0.5 }
@@ -841,16 +803,6 @@ epbm_stamp_globals = {
 			epbm_good = { good = cloth amount = 0.05 }
 			epbm_good = { good = copper amount = 0.025 }
 			epbm_good = { good = tin amount = 0.01 }
-		"
-	}
-	epbm_register_pm = {
-		pm = fortress_maintenance
-		goods_block = "
-			epbm_good = { good = stone amount = 2.0 }
-			epbm_good = { good = firearms amount = 4.0 }
-			epbm_good = { good = cannons amount = 4.0 }
-			epbm_good = { good = tools amount = 2.0 }
-			epbm_good = { good = weaponry amount = 2.0 }
 		"
 	}
 	epbm_register_pm = {
@@ -1222,12 +1174,38 @@ epbm_stamp_globals = {
 		"
 	}
 	epbm_register_pm = {
+		pm = lieutenancy_maintenance
+		goods_block = "
+			epbm_good = { good = tools amount = 1.0 }
+			epbm_good = { good = masonry amount = 1.0 }
+			epbm_good = { good = weaponry amount = 0.5 }
+			epbm_good = { good = paper amount = 2.0 }
+			epbm_good = { good = books amount = 0.5 }
+			epbm_good = { good = goods_gold amount = 1.0 }
+			epbm_good = { good = furniture amount = 1.0 }
+			epbm_good = { good = fine_cloth amount = 0.5 }
+		"
+	}
+	epbm_register_pm = {
 		pm = lighthouse_of_alexandria_maintenance
 		goods_block = "
 			epbm_good = { good = masonry amount = 0.5 }
 			epbm_good = { good = weaponry amount = 0.2 }
 			epbm_good = { good = naval_supplies amount = 0.5 }
 			epbm_good = { good = tar amount = 0.1 }
+		"
+	}
+	epbm_register_pm = {
+		pm = local_governor_maintenance
+		goods_block = "
+			epbm_good = { good = tools amount = 1.0 }
+			epbm_good = { good = masonry amount = 1.0 }
+			epbm_good = { good = weaponry amount = 0.5 }
+			epbm_good = { good = paper amount = 3.0 }
+			epbm_good = { good = books amount = 1.0 }
+			epbm_good = { good = goods_gold amount = 1.0 }
+			epbm_good = { good = furniture amount = 2.0 }
+			epbm_good = { good = fine_cloth amount = 1.0 }
 		"
 	}
 	epbm_register_pm = {
@@ -1311,14 +1289,6 @@ epbm_stamp_globals = {
 			epbm_good = { good = silver amount = 0.1 }
 			epbm_good = { good = copper amount = 0.25 }
 			epbm_good = { good = tin amount = 0.1 }
-		"
-	}
-	epbm_register_pm = {
-		pm = missionary_maintenance
-		goods_block = "
-			epbm_good = { good = glass amount = 0.07 }
-			epbm_good = { good = paper amount = 0.1 }
-			epbm_good = { good = cloth amount = 0.1 }
 		"
 	}
 	epbm_register_pm = {
@@ -1455,13 +1425,6 @@ epbm_stamp_globals = {
 		"
 	}
 	epbm_register_pm = {
-		pm = overseas_trading_post_maintenance
-		goods_block = "
-			epbm_good = { good = liquor amount = 0.05 }
-			epbm_good = { good = weaponry amount = 0.05 }
-		"
-	}
-	epbm_register_pm = {
 		pm = peel_towers_maintenance
 		goods_block = "
 			epbm_good = { good = stone amount = 0.2 }
@@ -1482,24 +1445,6 @@ epbm_stamp_globals = {
 			epbm_good = { good = masonry amount = 0.2 }
 			epbm_good = { good = lumber amount = 0.2 }
 			epbm_good = { good = sand amount = 0.2 }
-		"
-	}
-	epbm_register_pm = {
-		pm = pirate_haven_maintenance
-		goods_block = "
-			epbm_good = { good = naval_supplies amount = 0.1 }
-			epbm_good = { good = weaponry amount = 0.1 }
-			epbm_good = { good = lumber amount = 0.1 }
-		"
-	}
-	epbm_register_pm = {
-		pm = pirate_stronghold_maintenance
-		goods_block = "
-			epbm_good = { good = naval_supplies amount = 0.1 }
-			epbm_good = { good = weaponry amount = 0.05 }
-			epbm_good = { good = liquor amount = 0.1 }
-			epbm_good = { good = firearms amount = 0.1 }
-			epbm_good = { good = lumber amount = 0.1 }
 		"
 	}
 	epbm_register_pm = {
@@ -1559,19 +1504,6 @@ epbm_stamp_globals = {
 		"
 	}
 	epbm_register_pm = {
-		pm = prestige_building_maintenance
-		goods_block = "
-			epbm_good = { good = masonry amount = 0.25 }
-			epbm_good = { good = tools amount = 0.1 }
-			epbm_good = { good = glass amount = 0.33 }
-			epbm_good = { good = goods_gold amount = 0.1 }
-			epbm_good = { good = copper amount = 0.1 }
-			epbm_good = { good = tin amount = 0.1 }
-			epbm_good = { good = marble amount = 0.5 }
-			epbm_good = { good = furniture amount = 0.1 }
-		"
-	}
-	epbm_register_pm = {
 		pm = protected_harbor_maintenance
 		goods_block = "
 			epbm_good = { good = tar amount = 0.1 }
@@ -1612,16 +1544,6 @@ epbm_stamp_globals = {
 			epbm_good = { good = cloth amount = 0.2 }
 			epbm_good = { good = paper amount = 0.4 }
 			epbm_good = { good = weaponry amount = 1.0 }
-		"
-	}
-	epbm_register_pm = {
-		pm = repaired_great_wall_of_china_maintenance
-		goods_block = "
-			epbm_good = { good = lumber amount = 0.1 }
-			epbm_good = { good = weaponry amount = 0.05 }
-			epbm_good = { good = tools amount = 0.05 }
-			epbm_good = { good = stone amount = 0.05 }
-			epbm_good = { good = tar amount = 0.01 }
 		"
 	}
 	epbm_register_pm = {
@@ -1705,14 +1627,6 @@ epbm_stamp_globals = {
 			epbm_good = { good = goods_gold amount = 0.1 }
 			epbm_good = { good = fine_cloth amount = 0.2 }
 			epbm_good = { good = furniture amount = 0.2 }
-		"
-	}
-	epbm_register_pm = {
-		pm = ruined_great_wall_of_china_maintenance
-		goods_block = "
-			epbm_good = { good = lumber amount = 0.1 }
-			epbm_good = { good = weaponry amount = 0.02 }
-			epbm_good = { good = clay amount = 0.02 }
 		"
 	}
 	epbm_register_pm = {
@@ -1800,24 +1714,6 @@ epbm_stamp_globals = {
 			epbm_good = { good = cloth amount = 0.1 }
 			epbm_good = { good = paper amount = 0.2 }
 			epbm_good = { good = weaponry amount = 0.5 }
-		"
-	}
-	epbm_register_pm = {
-		pm = star_fort_maintenance
-		goods_block = "
-			epbm_good = { good = stone amount = 1.0 }
-			epbm_good = { good = firearms amount = 1.0 }
-			epbm_good = { good = cannons amount = 1.0 }
-			epbm_good = { good = tools amount = 0.5 }
-			epbm_good = { good = weaponry amount = 1.0 }
-		"
-	}
-	epbm_register_pm = {
-		pm = stockade_maintenance
-		goods_block = "
-			epbm_good = { good = lumber amount = 0.1 }
-			epbm_good = { good = weaponry amount = 0.02 }
-			epbm_good = { good = tar amount = 0.02 }
 		"
 	}
 	epbm_register_pm = {
@@ -2030,14 +1926,6 @@ epbm_stamp_globals = {
 		"
 	}
 	epbm_register_pm = {
-		pm = warrior_monks_training_grounds_maintenance
-		goods_block = "
-			epbm_good = { good = cloth amount = 0.01 }
-			epbm_good = { good = paper amount = 0.05 }
-			epbm_good = { good = weaponry amount = 0.05 }
-		"
-	}
-	epbm_register_pm = {
 		pm = wharf_maintenance
 		goods_block = "
 			epbm_good = { good = tar amount = 0.1 }
@@ -2091,7 +1979,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:barcelona_royal_shipyard value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:bardic_school value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:barracks value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:bastion value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:bavarian_academy_of_sciences value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:belvedere_palace value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:berlin_palace value = 1 }
@@ -2113,7 +2000,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:caravan_stop value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:caravanserai value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:castel_sant_angelo value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:castle value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:cathedral value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:cawa_barracks value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:central_bank value = 1 }
@@ -2124,7 +2010,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:cinque_port value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:city_guard value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:city_of_victory value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:city_walls value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:clearing_house value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:clerical_archives value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:coastal_fort value = 1 }
@@ -2161,7 +2046,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:fondaco value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:forbidden_city value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:fortezza_di_sant_andrea value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:fortress value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:fortress_church value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:fortress_granary value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:fra_louvre_museum value = 1 }
@@ -2196,7 +2080,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:hanseatic_shipwright_guild value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:hanseatic_town_hall value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:herrenchiemsee_abbey value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:hexamilion_wall value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:hippodrome value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:hospital value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:house_of_parliament value = 1 }
@@ -2229,9 +2112,11 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:lazaretto value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:library value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:library_of_vijayanagar value = 1 }
+	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:lieutenancy value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:lighthouse_of_alexandria value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:local_assembly value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:local_estates value = 1 }
+	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:local_governor value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:local_markets value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:local_newspaper value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:local_noble_delegation value = 1 }
@@ -2307,7 +2192,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:ranganathaswamy_temple_building value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:red_fort value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:regimental_camp value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:repaired_great_wall_of_china value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:republican_assembly value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:ribat value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:ribeira_das_naus value = 1 }
@@ -2321,7 +2205,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:royal_court value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:royal_garden value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:royal_society value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:ruined_great_wall_of_china value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:safaviyya_order_hall value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:sanssouci value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:sawmill value = 1 }
@@ -2338,9 +2221,7 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:smuggler_cove value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:sofa_barracks value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:spiritual_retreat value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:star_fort value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:stock_exchange value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:stockade value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:sufi_lodge value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:sufi_mosque value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:supreme_court value = 1 }
@@ -2355,7 +2236,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:the_cipher_secretary value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:theater value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:thema_headquarters value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:theodosian_walls value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:tibetan_great_monastery value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:toll_castle value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:tower_of_belem value = 1 }
@@ -2385,7 +2265,6 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:viceroyalty value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:wali_songo_shrine value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:walls_of_benin value = 1 }
-	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:walls_of_lucca value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:walls_of_ston value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:war_college value = 1 }
 	add_to_global_variable_map = { name = epbm_tracked_types key = building_type:warrior_lodge value = 1 }
@@ -2446,15 +2325,12 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:amsterdam_admiralty value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:bailiff value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:bajang_ratu value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:bastion value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:berlin_palace value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:bey_fortress value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:calmecac value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:camara_comptos value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:castle value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:central_bank value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:chancery value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:city_walls value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:coastal_settlements value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:council_hall value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:counting_house value = yes }
@@ -2464,16 +2340,16 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:eghabho_nore_mansion value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:el_escorial_palace value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:embassy value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:fortress value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:friesland_admiralty value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:general_archive_of_simancas value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:grand_apartment value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:great_enclosure value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:hexamilion_wall value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:hippodrome value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:house_of_parliament value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:italian_administration_center value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:kings_manor value = yes }
+	add_to_global_variable_map = { name = epbm_crown_map key = building_type:lieutenancy value = yes }
+	add_to_global_variable_map = { name = epbm_crown_map key = building_type:local_governor value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:minting_office value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:modern_council_hall value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:munich_residenz_founding value = yes }
@@ -2485,31 +2361,25 @@ epbm_stamp_globals = {
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:provincial_chancery value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:quirinal_palace value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:red_fort value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:repaired_great_wall_of_china value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:republican_assembly value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:rotterdam_admiralty value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:royal_academy_of_arts value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:royal_court value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:royal_garden value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:royal_society value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:ruined_great_wall_of_china value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:sanssouci value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:sco_palace_of_holyroodhouse value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:seljuk_mint value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:sergeantry value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:star_fort value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:stockade value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:supreme_court value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:tambo value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:tax_assessor value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:theodosian_walls value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:trade_company_foreign_influence value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:tur_kodjabashi_office value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:uffizi value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:venetian_palaces value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:versailles value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:viceroyalty value = yes }
-	add_to_global_variable_map = { name = epbm_crown_map key = building_type:walls_of_lucca value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:war_college value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:west_friesland_admiralty value = yes }
 	add_to_global_variable_map = { name = epbm_crown_map key = building_type:zeeland_admiralty value = yes }

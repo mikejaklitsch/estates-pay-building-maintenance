@@ -1,0 +1,17 @@
+﻿
+epbm_baseline_50_offset = {
+	game_data = { category = country }
+
+	building_upkeep_multiplier = -0.5
+}
+
+epbm_baseline_20_offset = {
+	game_data = { category = country }
+
+	building_upkeep_multiplier = -0.8
+}
+
+INJECT:inflation_impact = {
+	building_upkeep_efficiency = 1.0
+	building_upkeep_multiplier = 1.0
+}

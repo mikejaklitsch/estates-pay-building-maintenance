@@ -177,9 +177,16 @@ def tokenize(text):
             yield text[i + 1:j]
             i = j + 1
             continue
-        if text[i] in '{}=':
+        if text[i] in '{}':
             yield text[i]
             i += 1
+            continue
+        if text[i] in '=!<>':
+            j = i + 1
+            while j < n and text[j] in '=!<>':
+                j += 1
+            yield text[i:j]
+            i = j
             continue
         j = i
         while j < n and text[j] not in " \t\r\n{}=\"":
@@ -195,6 +202,9 @@ def parse_block(tokens, idx):
     while idx < len(tokens) and tokens[idx] != '}':
         key = tokens[idx]
         idx += 1
+        if key == '{':
+            _, idx = parse_block(tokens, idx - 1)
+            continue
         if idx < len(tokens) and tokens[idx] == '=':
             idx += 1
             if idx < len(tokens) and tokens[idx] == '{':
@@ -202,6 +212,8 @@ def parse_block(tokens, idx):
             else:
                 val = tokens[idx]
                 idx += 1
+        elif idx < len(tokens) and tokens[idx] == '{':
+            val, idx = parse_block(tokens, idx)
         else:
             val = True
             if key in result:
@@ -464,6 +476,8 @@ CROWN_MODIFIER_KEYS = {
 
 CROWN_TRIGGER_KEYS = {'fort_level', 'minimum_fort_level'}
 
+FORT_KEYS = {'fort_level', 'minimum_fort_level'}
+
 TRIGGER_BLOCK_KEYS = {
     'country_potential',
     'location_potential',
@@ -496,6 +510,27 @@ def _scan_for_crown(obj):
     return False
 
 
+def _is_fort_building(building):
+    raw = building['raw']
+    return _scan_for_fort(raw)
+
+
+def _scan_for_fort(obj):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k in TRIGGER_BLOCK_KEYS:
+                continue
+            if k in FORT_KEYS:
+                return True
+            if _scan_for_fort(v):
+                return True
+    elif isinstance(obj, list):
+        for item in obj:
+            if _scan_for_fort(item):
+                return True
+    return False
+
+
 def _is_crown_building(building):
     if building.get('estate') is not None:
         return False
@@ -515,7 +550,15 @@ def classify(buildings, pms):
             continue
         all_pm_goods[pm_name] = pm['goods']
 
+    qualifying = []
+    crown_buildings = []
+    crown_with_pm = 0
+    fort_excluded = []
     for bname, b in buildings.items():
+        if _is_fort_building(b):
+            fort_excluded.append(bname)
+            continue
+
         for pm_name, pm_data in b['unique_pms'].items():
             if not pm_data.get('is_maintenance', False):
                 continue
@@ -525,10 +568,6 @@ def classify(buildings, pms):
                 continue
             all_pm_goods[pm_name] = pm_data['goods']
 
-    qualifying = []
-    crown_buildings = []
-    crown_with_pm = 0
-    for bname, b in buildings.items():
         has_tracked = False
         for pm_name in b['possible_pms']:
             if pm_name in all_pm_goods:
@@ -547,6 +586,24 @@ def classify(buildings, pms):
 
         if has_tracked:
             qualifying.append((bname, b['is_foreign'], b['estate']))
+
+    used_pms = set()
+    for bname, _is_foreign, _estate in qualifying:
+        b = buildings[bname]
+        for pm_name in b['possible_pms']:
+            if pm_name in all_pm_goods:
+                used_pms.add(pm_name)
+        for pm_name in b['unique_pms']:
+            if pm_name in all_pm_goods:
+                used_pms.add(pm_name)
+    orphaned_pms = set(all_pm_goods.keys()) - used_pms
+    if orphaned_pms:
+        for pm_name in orphaned_pms:
+            del all_pm_goods[pm_name]
+        print(f"  pruned {len(orphaned_pms)} unreferenced PM profile(s)")
+
+    if fort_excluded:
+        print(f"  excluded {len(fort_excluded)} fort building(s): {', '.join(sorted(fort_excluded))}")
 
     if crown_buildings:
         print(f"  classified {len(crown_buildings)} crown building(s)")
@@ -764,10 +821,12 @@ def main():
 
     # ── Stage 5a: Crown building cosmetic flag ──
     crown_inject_path = out_buildings / f"{PREFIX}_generated_crown_inject.txt"
-    if crown_buildings:
+    qualifying_names = {q[0] for q in qualifying}
+    qualifying_crown = sorted(b for b in crown_buildings if b in qualifying_names)
+    if qualifying_crown:
         print("")
-        print(f"Generating crown-building flag for {len(crown_buildings)} building(s)...")
-        crown_code = generate_crown_inject(crown_buildings)
+        print(f"Generating crown-building flag for {len(qualifying_crown)} building(s)...")
+        crown_code = generate_crown_inject(qualifying_crown)
         _write_output(crown_inject_path, crown_code)
         print(f"  {'would write' if CHECK_MODE else 'wrote'} {crown_inject_path.relative_to(output_dir)}")
     else:
