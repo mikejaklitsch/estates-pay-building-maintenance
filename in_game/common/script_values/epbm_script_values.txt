@@ -20,17 +20,20 @@ epbm_crown_total_display = {
 	if = { limit = { has_variable = epbm_crown_bldg_cost } add = var:epbm_crown_bldg_cost }
 }
 
-# Inflation correction: building_upkeep_multiplier is additive, so
-# inflation sits in the same pool as our reductions. Scale our
-# contributions by (1 + inflation) so they cover the inflated base.
+# Yearly creep correction: the engine's years_since_game_start static
+# modifier adds building_upkeep_multiplier = 0.001 per year. Scale our
+# reductions to cover the inflated base when creep is enabled.
 
 epbm_inflation_factor = {
 	value = 1
-	add = inflation
 
 	if = {
 		limit = { NOT = { has_game_rule = epbm_yearly_creep_disabled } }
-		add = { value = current_year subtract = 1337 multiply = 0.001 }
+		add = {
+			value = current_year
+			subtract = 1337
+			multiply = 0.001
+		}
 	}
 }
 
@@ -65,4 +68,3 @@ epbm_dhimmi_upkeep_scale = {
 epbm_cossacks_upkeep_scale = {
 	if = { limit = { has_variable = epbm_show_mod_cossacks } value = var:epbm_show_mod_cossacks }
 }
-

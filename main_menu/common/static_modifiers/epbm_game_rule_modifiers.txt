@@ -10,8 +10,3 @@ epbm_baseline_20_offset = {
 
 	building_upkeep_multiplier = -0.8
 }
-
-INJECT:inflation_impact = {
-	building_upkeep_efficiency = 1.0
-	building_upkeep_multiplier = 1.0
-}

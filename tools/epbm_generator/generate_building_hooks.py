@@ -79,6 +79,58 @@ import epbm_generator_config as cfg  # noqa: E402
 
 PM_META_KEYS = {"category", "no_upkeep", "potential", "produced", "output"}
 
+
+def parse_employment_values(vanilla_dir, mod_dir=None, buildings=None):
+    """Parse employment script values from default_values.txt.
+
+    Collects all script value names referenced by building employment_size
+    fields, then resolves them from default_values.txt files.
+    Returns a dict mapping script value name to float (in thousands).
+    """
+    needed = set()
+    if buildings:
+        for bdata in buildings.values():
+            emp = bdata.get('employment_size')
+            if emp and not _is_numeric(emp):
+                needed.add(emp)
+
+    result = {}
+    search_dirs = []
+    main_menu = vanilla_dir.parent / "main_menu" if vanilla_dir.name == "in_game" else vanilla_dir / "main_menu"
+    sv_dir = main_menu / "common" / "script_values"
+    if sv_dir.exists():
+        search_dirs.append(sv_dir)
+    if mod_dir:
+        mod_sv = mod_dir / "common" / "script_values"
+        if mod_sv.exists():
+            search_dirs.append(mod_sv)
+
+    pat = re.compile(r'^(\w+)\s*=\s*([\d.]+)\s*$')
+    for d in search_dirs:
+        for f in sorted(d.iterdir()):
+            if not f.name.endswith(".txt"):
+                continue
+            try:
+                text = f.read_text(encoding="utf-8-sig")
+            except Exception:
+                continue
+            for line in text.splitlines():
+                m = pat.match(line.strip())
+                if m:
+                    name = m.group(1)
+                    if needed and name not in needed:
+                        continue
+                    result[name] = float(m.group(2))
+    return result
+
+
+def _is_numeric(s):
+    try:
+        float(s)
+        return True
+    except (ValueError, TypeError):
+        return False
+
 SKIP_FILES = {"readme.txt", "__readme.txt", "00_unique_buildings_to_make_obsolete.txt"}
 
 PREFIX = cfg.PREFIX
@@ -317,6 +369,7 @@ def _parse_building_block(bname, block, source_file):
         'file': source_file,
         'estate': block.get('estate'),
         'is_foreign': block.get('is_foreign') == 'yes',
+        'employment_size': block.get('employment_size'),
         'possible_pms': [],
         'unique_pms': OrderedDict(),
         'raw': block,
@@ -585,10 +638,10 @@ def classify(buildings, pms):
                 crown_with_pm += 1
 
         if has_tracked:
-            qualifying.append((bname, b['is_foreign'], b['estate']))
+            qualifying.append((bname, b['is_foreign'], b['estate'], b.get('employment_size')))
 
     used_pms = set()
-    for bname, _is_foreign, _estate in qualifying:
+    for bname, _is_foreign, _estate, _emp in qualifying:
         b = buildings[bname]
         for pm_name in b['possible_pms']:
             if pm_name in all_pm_goods:
@@ -645,7 +698,18 @@ def generate_crown_inject(crown_buildings):
 
 
 
-def generate_init_effects(qualifying, all_pm_goods, crown_buildings):
+def _resolve_employment(emp_name, emp_vals):
+    """Resolve an employment_size field to a numeric value."""
+    if emp_name is None:
+        return 0
+    try:
+        return float(emp_name)
+    except (ValueError, TypeError):
+        pass
+    return emp_vals.get(emp_name, 0)
+
+
+def generate_init_effects(qualifying, all_pm_goods, crown_buildings, employment_values=None):
     all_pm_dicts = _p('all_pm_dicts')
     profiles = _p('profiles')
     estate_map = _p('estate_map')
@@ -675,15 +739,17 @@ def generate_init_effects(qualifying, all_pm_goods, crown_buildings):
         lines.append("\t\t\"")
         lines.append("\t}")
 
-    # Tracked building types
+    # Tracked building types with employment-per-level
+    emp_vals = employment_values or {}
     lines.append("")
-    lines.append(f"\t# Tracked building types for calc engine iteration")
-    for bname, _is_foreign, _estate in sorted(qualifying, key=lambda x: x[0]):
+    lines.append(f"\t# Tracked building types (value = employment per level, in thousands)")
+    for bname, _is_foreign, _estate, emp_name in sorted(qualifying, key=lambda x: x[0]):
         bt_ref = f"building_type:{bname}"
-        lines.append(f"\tadd_to_global_variable_map = {{ name = {tracked_types} key = {bt_ref} value = 1 }}")
+        emp_val = _resolve_employment(emp_name, emp_vals)
+        lines.append(f"\tadd_to_global_variable_map = {{ name = {tracked_types} key = {bt_ref} value = {emp_val} }}")
 
     # Estate-assignment map
-    estate_buildings = [(b, e) for b, _, e in qualifying if e is not None]
+    estate_buildings = [(b, e) for b, _, e, _ in qualifying if e is not None]
     if estate_buildings:
         lines.append("")
         lines.append(f"\t# Estate-assigned buildings: charge full cost to the named estate")
@@ -745,6 +811,12 @@ def main():
     buildings = parse_all_buildings(vanilla_dir, mod_dir)
     print(f"  found {len(buildings)} buildings")
 
+    # ── Stage 2b: Parse employment values ──
+    print("")
+    print("Parsing employment script values...")
+    employment_values = parse_employment_values(vanilla_dir, mod_dir, buildings)
+    print(f"  found {len(employment_values)} employment value(s)")
+
     # ── Stage 3: Classify buildings ──
     print("")
     print("Classifying qualifying buildings...")
@@ -756,6 +828,14 @@ def main():
     non_foreign = [q for q in qualifying if not q[1]]
     foreign_count = sum(1 for q in qualifying if q[1])
     estate_count = sum(1 for q in qualifying if q[2] is not None)
+
+    missing_emp = [q[0] for q in qualifying if _resolve_employment(q[3], employment_values) == 0]
+    if missing_emp:
+        print(f"  WARNING: {len(missing_emp)} building(s) missing employment value:")
+        for b in sorted(missing_emp)[:10]:
+            print(f"    {b}")
+        if len(missing_emp) > 10:
+            print(f"    ... and {len(missing_emp) - 10} more")
     print(f"  Non-foreign buildings:     {len(non_foreign)}")
     print(f"  Foreign buildings:         {foreign_count}")
     print(f"  Estate-assigned:           {estate_count}")
@@ -767,7 +847,7 @@ def main():
     # ── Stage 4: Init effects ──
     print("")
     print("Writing generated init effects...")
-    init_effects = generate_init_effects(qualifying, all_pm_goods, crown_buildings)
+    init_effects = generate_init_effects(qualifying, all_pm_goods, crown_buildings, employment_values)
     out_path = out_effects / f"{PREFIX}_generated_init_effects.txt"
     _write_output(out_path, init_effects)
     print(f"  {'would write' if CHECK_MODE else 'wrote'} {out_path.relative_to(output_dir)}")

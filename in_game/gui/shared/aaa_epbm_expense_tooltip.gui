@@ -212,23 +212,6 @@ template ExpenseSettingTooltip {
 				visible = "[MaintenanceSetting.IsUpkeep]"
 				blockoverride "block_title" { raw_text = "#T Building Maintenance Breakdown#!" }
 
-				TooltipManualTableField = {
-					visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('epbm_raw_pool').GetValue, '(CFixedPoint)0')]"
-					blockoverride "field_content" {
-						text_single = { layoutpolicy_horizontal = expanding raw_text = "#F EPBM Raw Pool#!" }
-						expand = {}
-						text_single = { min_width = 60 align = right raw_text = "[GetPlayer.MakeScope.GetVariable('epbm_raw_pool').GetValue|2]@gold!" }
-					}
-				}
-				TooltipManualTableField = {
-					visible = "[GreaterThan_CFixedPoint(GetPlayer.MakeScope.GetVariable('epbm_engine_expected').GetValue, '(CFixedPoint)0')]"
-					blockoverride "field_content" {
-						text_single = { layoutpolicy_horizontal = expanding raw_text = "#F EPBM Expected#!" }
-						expand = {}
-						text_single = { min_width = 60 align = right raw_text = "[GetPlayer.MakeScope.GetVariable('epbm_engine_expected').GetValue|2]@gold!" }
-					}
-				}
-
 				using = epbm_estate_row_crown
 				using = epbm_estate_row_nobles
 				using = epbm_estate_row_clergy

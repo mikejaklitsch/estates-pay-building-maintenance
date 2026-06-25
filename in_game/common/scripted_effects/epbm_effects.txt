@@ -35,13 +35,6 @@ epbm_set_pay_from_power = {
 			value = { value = local_var:epbm_total_cost multiply = "estate_power(local_var:est)" }
 		}
 		set_variable = { name = epbm_pool_$estate$ value = var:epbm_pay_$estate$ }
-
-		if = {
-			limit = { has_variable = epbm_diag }
-			set_local_variable = { name = d_power value = "estate_power(local_var:est)" }
-			set_local_variable = { name = d_pay value = var:epbm_pay_$estate$ }
-			error_log = "EPBM DIAG split $estate$: power=[SCOPE.GetLocalVariable('d_power').GetValue|4] pay=[SCOPE.GetLocalVariable('d_pay').GetValue|2]"
-		}
 	}
 }
 
@@ -74,13 +67,6 @@ epbm_add_estate_cost = {
 		}
 
 		change_variable = { name = epbm_pay_$estate$ add = var:epbm_assigned_$estate$ }
-
-		if = {
-			limit = { has_variable = epbm_diag }
-			set_local_variable = { name = d_raw value = local_var:epbm_estate_$estate$ }
-			set_local_variable = { name = d_final value = var:epbm_pay_$estate$ }
-			error_log = "EPBM DIAG +assigned $estate$: raw=[SCOPE.GetLocalVariable('d_raw').GetValue|2] final_pay=[SCOPE.GetLocalVariable('d_final').GetValue|2]"
-		}
 	}
 }
 
@@ -142,10 +128,12 @@ epbm_snapshot_estate = {
 			limit = { has_variable = epbm_show_$estate$ }
 			set_variable = { name = epbm_prev_$estate$ value = var:epbm_show_$estate$ }
 		}
+
 		if = {
 			limit = { has_variable = epbm_show_pool_$estate$ }
 			set_variable = { name = epbm_prev_pool_$estate$ value = var:epbm_show_pool_$estate$ }
 		}
+
 		if = {
 			limit = { has_variable = epbm_show_assigned_$estate$ }
 			set_variable = { name = epbm_prev_assigned_$estate$ value = var:epbm_show_assigned_$estate$ }
