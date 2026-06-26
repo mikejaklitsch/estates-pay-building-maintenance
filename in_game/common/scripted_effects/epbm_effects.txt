@@ -139,7 +139,7 @@ epbm_snapshot_estate = {
 	}
 }
 
-@epbm_rebuild_version = 410
+@epbm_rebuild_version = 411
 
 # ═══════════════════════════════════════════════
 # Game start initialization. Scope: none.
