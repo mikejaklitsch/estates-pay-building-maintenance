@@ -1,148 +1,43 @@
-﻿# Estates Pay Building Maintenance - On Actions
-# ═══════════════════════════════════════════════
-# Rebuild version: major * 100 + minor (patch changes don't trigger rebuild)
-# Updated by deploy.py from .metadata/metadata.json
-@epbm_rebuild_version = 401 # bumped to force rebuild on saves from prior versions
-# State tracked via global_var:epbm_version (timed, 32 day TTL).
-# Refreshed monthly by the cache clear pulse. If the mod is removed,
-# the event stops firing and the variable expires, triggering a full
-# rebuild when the mod is re-added.
+﻿# Estates Pay Building Maintenance - On Action Dispatch
+@epbm_rebuild_version = 410
 
 on_game_start = {
-	on_actions = { epbm_initialize_all }
+	on_actions = { epbm_on_initialize }
 }
-
-epbm_initialize_all = {
-	effect = {
-		epbm_init_pool = yes
-		epbm_full_rebuild = yes
-
-		set_global_variable = {
-			name = epbm_version
-			value = @epbm_rebuild_version
-			days = 32
-		}
-
-		set_global_variable = epbm_compat_buildings_done
-	}
-}
-
-# ═══════════════════════════════════════════════
-# Global monthly pulse: version check, compat rebuild, cache clear
-# ═══════════════════════════════════════════════
 
 weather_monthly_pulse = {
-	on_actions = {
-		epbm_version_check
-		epbm_compat_buildings
-		epbm_monthly_cache_clear
-	}
+	on_actions = { epbm_on_global_monthly }
 }
-
-epbm_version_check = {
-	trigger = {
-		OR = { NOT = { has_global_variable = epbm_version } global_var:epbm_version < @epbm_rebuild_version }
-		NOT = { has_global_variable = epbm_rebuilding }
-	}
-
-	effect = {
-		set_global_variable = { name = epbm_rebuilding value = yes }
-		epbm_init_pool = yes
-		epbm_full_rebuild = yes
-
-		set_global_variable = {
-			name = epbm_version
-			value = @epbm_rebuild_version
-			days = 32
-		}
-
-		remove_global_variable = epbm_rebuilding
-	}
-}
-
-epbm_compat_buildings = {
-	trigger = { NOT = { has_global_variable = epbm_compat_buildings_done } }
-
-	effect = {
-		epbm_compat_rebuild_buildings = yes
-	}
-}
-
-epbm_monthly_cache_clear = {
-	trigger = { has_global_variable = epbm_version }
-
-	effect = {
-		set_global_variable = {
-			name = epbm_version
-			value = @epbm_rebuild_version
-			days = 32
-		}
-
-		every_in_global_list = {
-			variable = epbm_all_pm_dicts
-			if = { limit = { has_variable_map = epbm_costs } clear_variable_map = epbm_costs }
-		}
-
-		every_market_in_world = {
-			location = {
-				if = { limit = { has_variable_map = epbm_bt_costs } clear_variable_map = epbm_bt_costs }
-			}
-		}
-	}
-}
-
-# ═══════════════════════════════════════════════
-# Country monthly pulse: player recalc + charge, AI charge
-# ═══════════════════════════════════════════════
 
 monthly_country_pulse = {
-	on_actions = { epbm_player_monthly epbm_ai_monthly_charge }
+	on_actions = { epbm_on_country_monthly }
 }
-
-epbm_player_monthly = {
-	trigger = {
-		has_global_variable = epbm_version
-		is_ai = no
-		any_estate = { estate_type != estate_type:crown_estate }
-	}
-
-	effect = {
-		epbm_collect_maintenance = yes
-	}
-}
-
-epbm_ai_monthly_charge = {
-	trigger = {
-		has_global_variable = epbm_version
-		is_ai = yes
-		is_real_country = yes
-		any_estate = { estate_type != estate_type:crown_estate }
-	}
-
-	effect = {
-		epbm_snapshot_for_display = yes
-		epbm_charge_estates = yes
-	}
-}
-
-# ═══════════════════════════════════════════════
-# Yearly pulse
-# ═══════════════════════════════════════════════
 
 yearly_country_pulse = {
-	on_actions = { epbm_ai_yearly_recalc }
+	on_actions = { epbm_on_country_yearly }
 }
 
-epbm_ai_yearly_recalc = {
+epbm_on_initialize = {
+	effect = {
+		epbm_initialize = yes
+	}
+}
+
+epbm_on_global_monthly = {
+	trigger = { has_global_variable = epbm_version }
+	effect = { epbm_global_monthly = yes }
+}
+
+epbm_on_country_monthly = {
+	trigger = { has_global_variable = epbm_version any_active_estate = { exists = yes } }
+	events = { epbm.1 epbm.3 }
+}
+
+epbm_on_country_yearly = {
 	trigger = {
 		has_global_variable = epbm_version
 		global_var:epbm_version >= @epbm_rebuild_version
-		is_ai = yes
-		is_real_country = yes
-		any_estate = { estate_type != estate_type:crown_estate }
+		any_active_estate = { exists = yes }
 	}
-
-	effect = {
-		epbm_calculate_maintenance = yes
-	}
+	events = { epbm.2 }
 }

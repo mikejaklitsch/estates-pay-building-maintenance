@@ -246,7 +246,7 @@ template epbm_estate_row_crown {
 				tooltipwidget = { ContextualTooltipType = { blockoverride "tooltip_title" {} blockoverride "tooltip_content" { TooltipListBase = {
 					blockoverride "block_title" { raw_text = "#T Crown Maintenance Sources#!" }
 					TooltipManualTableField = { blockoverride "field_content" { text_single = { layoutpolicy_horizontal = expanding raw_text = "Shared Pool" } expand = {} text_single = { min_width = 60 align = right raw_text = "#R -[GetPlayer.MakeScope.GetVariable('epbm_crown_pool_cost').GetValue|2]#!@gold!" } } }
-					TooltipManualTableField = { blockoverride "field_content" { text_single = { layoutpolicy_horizontal = expanding raw_text = "Crown Buildings" } expand = {} text_single = { min_width = 60 align = right raw_text = "#R -[GetPlayer.MakeScope.GetVariable('epbm_crown_bldg_cost').GetValue|2]#!@gold!" } } }
+					TooltipManualTableField = { blockoverride "field_content" { text_single = { layoutpolicy_horizontal = expanding raw_text = "Government Buildings" } expand = {} text_single = { min_width = 60 align = right raw_text = "#R -[GetPlayer.MakeScope.GetVariable('epbm_crown_bldg_cost').GetValue|2]#!@gold!" } } }
 				} } } }
 			}
 		}

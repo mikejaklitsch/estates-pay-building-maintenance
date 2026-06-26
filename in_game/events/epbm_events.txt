@@ -1,10 +1,54 @@
 ﻿
-namespace = epbm_suppress
+namespace = epbm
+
+# AI monthly charge.
+
+epbm.1 = {
+	type = country_event
+	title = epbm_hidden_event.t
+	hidden = yes
+	outcome = neutral
+
+	trigger = { is_ai = yes }
+
+	immediate = { epbm_charge_estates = yes }
+
+	option = { name = "OK" }
+}
+
+# AI yearly calculate.
+
+epbm.2 = {
+	type = country_event
+	title = epbm_hidden_event.t
+	hidden = yes
+	outcome = neutral
+
+	trigger = { is_ai = yes }
+
+	immediate = { epbm_calculate_maintenance = yes }
+
+	option = { name = "OK" }
+}
+
+# Player monthly: snapshot, charge, recalculate.
+
+epbm.3 = {
+	type = country_event
+	title = epbm_hidden_event.t
+	hidden = yes
+	outcome = neutral
+
+	trigger = { is_ai = no }
+
+	immediate = { epbm_collect_maintenance = yes }
+
+	option = { name = "OK" }
+}
 
 # Silence "set but never used" warnings for variables read only via GUI.
-# This event is never triggered; orphan = yes tells the engine it's intentional.
 
-epbm_suppress.1 = {
+epbm.100 = {
 	type = country_event
 	title = epbm_suppress_title
 	desc = epbm_suppress_desc
@@ -15,8 +59,6 @@ epbm_suppress.1 = {
 	trigger = { always = no }
 
 	immediate = {
-		set_global_variable = { name = epbm_estate_ref value = estate_type:nobles_estate }
-
 		change_variable = { name = epbm_show_nobles multiply = 1 }
 		change_variable = { name = epbm_show_clergy multiply = 1 }
 		change_variable = { name = epbm_show_burghers multiply = 1 }
@@ -61,6 +103,7 @@ epbm_suppress.1 = {
 		change_variable = { name = epbm_show_crown_bldg multiply = 1 }
 		change_variable = { name = epbm_crown_pool_cost multiply = 1 }
 		change_variable = { name = epbm_crown_bldg_cost multiply = 1 }
+		change_variable = { name = epbm_charge_factor multiply = 1 }
 		change_variable = { name = epbm_mod_nobles multiply = 1 }
 		change_variable = { name = epbm_mod_clergy multiply = 1 }
 		change_variable = { name = epbm_mod_burghers multiply = 1 }
@@ -68,11 +111,6 @@ epbm_suppress.1 = {
 		change_variable = { name = epbm_mod_tribes multiply = 1 }
 		change_variable = { name = epbm_mod_dhimmi multiply = 1 }
 		change_variable = { name = epbm_mod_cossacks multiply = 1 }
-
-		change_variable = { name = epbm_show_raw_pool multiply = 1 }
-		change_variable = { name = epbm_show_engine_expected multiply = 1 }
-		change_variable = { name = epbm_raw_pool multiply = 1 }
-		change_variable = { name = epbm_engine_expected multiply = 1 }
 
 		change_variable = { name = epbm_show_mod_nobles multiply = 1 }
 		change_variable = { name = epbm_show_mod_clergy multiply = 1 }
@@ -105,8 +143,6 @@ epbm_suppress.1 = {
 		change_variable = { name = epbm_prev_assigned_cossacks multiply = 1 }
 		change_variable = { name = epbm_prev_crown_pool multiply = 1 }
 		change_variable = { name = epbm_prev_crown_bldg multiply = 1 }
-		change_variable = { name = epbm_prev_raw_pool multiply = 1 }
-		change_variable = { name = epbm_prev_engine_expected multiply = 1 }
 
 		add_country_modifier = { modifier = epbm_baseline_50_offset days = 1 }
 		add_country_modifier = { modifier = epbm_baseline_20_offset days = 1 }

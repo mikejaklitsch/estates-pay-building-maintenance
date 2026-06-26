@@ -148,7 +148,7 @@ template building_tooltip_detail {
 							texture = "[GetEstateIcon(Building.GetType.GetEligibleEstate)]"
 						}
                         text_single = {
-                            raw_text = "#R [Building.MakeScope.ScriptValue('epbm_estate_building_upkeep')|2]#!@expense!"
+                            raw_text = "#R [Multiply_CFixedPoint(Multiply_CFixedPoint(Building.GetLocation.GetMarket.GetCenterLocation.MakeScope.GetVariableFromVariableMap('epbm_bt_display', Building.GetType.MakeScope).GetValue, Building.GetLevel), Building.GetOwner.MakeScope.GetVariable('epbm_charge_factor').GetValue)|2]#!@expense!"
 							default_format = "#bold"
                         }
 						tooltipwidget = {

@@ -1,16 +1,6 @@
 ﻿# Estate building maintenance production methods.
 # Referenced by possible_production_methods in building definitions.
 
-# Block the vanilla empty PM so the EPBM maintenance PM is always selected.
-
-REPLACE:estate_building_input = {
-	category = building_maintenance
-
-	allow = {
-		always = no
-	}
-}
-
 epbm_toll_castle_maintenance = {
 	stone = 0.05
 	tools = 0.05
