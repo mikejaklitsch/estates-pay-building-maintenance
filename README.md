@@ -1,87 +1,86 @@
 # Estates Pay Building Maintenance
 
-Estates contribute to building maintenance in proportion to their power. Each estate's share of the shared maintenance pool is determined by its relative estate power. Estate-assigned buildings (noble villas, parish churches, guild halls, etc.) are charged in full to their owning estate.
+Estates contribute to building maintenance in proportion to their power. Each estate's share of the shared maintenance pool is set by its relative estate power. Estate-assigned buildings (noble villas, parish churches, guild halls, etc.) are charged in full to their owning estate.
 
-The crown pays full 100% maintenance cost (the real market price of goods consumed), up from the vanilla 20% discounted rate. Estates are charged their share directly, so the net cost to the crown is reduced by the total estate power.
+By default the crown pays the full market price of the goods a building consumes (100%), up from the vanilla 20% discounted rate. The 50% and 20% rates are selectable through an in-game game rule. Estates are charged their share directly, which lowers the crown's net cost.
 
 ## How It Works
 
 ### Maintenance Calculation
 
-Every building with a tracked production method has its maintenance cost calculated from that PM's goods inputs priced against the local market. The mod iterates all owned buildings each recalculation cycle (monthly for players, yearly for AI) and routes each building's cost to either the shared pool or a specific estate.
+Each building's maintenance cost is derived from an input-only production method priced against the building's local market. The calculation runs per country: monthly for players, yearly for AI. It iterates every owned building (domestic and foreign) and routes each building's cost to the shared pool, a specific estate, or the crown.
 
-Shared-pool costs are split across all estates proportional to estate power. Estate-assigned buildings bypass the shared pool and charge the owning estate directly. Government and military buildings (royal garden, forts, council halls) are crown-funded and excluded from estate maintenance.
+- Shared-pool costs are split across all estates in proportion to estate power.
+- Estate-assigned buildings bypass the pool and charge the owning estate in full.
+- Government-category buildings are priced but routed to the crown, not to estates.
+- Forts and walls (stockade, castle, bastion, star_fort, fortress, city_walls, and named wonder walls such as the Theodosian Walls) are excluded from the calculation entirely via a hard-coded blacklist (`epbm_blacklist`).
 
-### Engine-Side Upkeep Reduction
+Entry point: `epbm_calculate_maintenance` in `in_game/common/scripted_effects/epbm_calculate.txt`.
 
-The crown's upkeep savings are handled natively by the engine, not by script. Each estate injects a `building_upkeep_multiplier` reduction into its `power` block, which the engine scales automatically by the estate's relative power. This means the crown's upkeep bill drops in proportion to total estate power with zero per-tick script overhead.
+### Pricing and Caching
 
-A crown-building offset auto-modifier corrects for the fact that estates should not reduce upkeep on crown-only buildings.
+For each building the engine selects an input-only production method (at least one required good, no produced goods) and prices its goods against the local market. Market access and building efficiency are divided out to recover a per-level base cost, then reapplied at the building's actual level. The per-level cost is cached on the market-center location in the `epbm_pm_cache` variable map (keyed by production method) and `epbm_bt_costs` (keyed by building type). These caches are cleared on the global monthly pulse so prices track the market. There are no pooled or reserved locations; goods are read directly from the engine each cycle.
+
+### Crown Rate and Estate Reductions
+
+The crown's upkeep rate and the estate reductions are applied through country-scoped modifiers, not through gold transfers from the crown:
+
+- `INJECT:country_base_values` raises `building_upkeep_multiplier` by 0.8 (vanilla 0.2 to 1.0), so the crown pays the full goods price by default. The `epbm_baseline_50` / `epbm_baseline_20` game rules apply an offsetting static modifier (`-0.5` / `-0.8`) to bring the rate back to 50% or 20%.
+- Seven auto modifiers (`epbm_nobles_upkeep` through `epbm_cossacks_upkeep`), one per estate, each apply `building_upkeep_multiplier = -1.0` scaled by a per-estate script value. The calculation engine computes each estate's scale (its estate-power share of the shared pool plus its assigned buildings, times the burden and inflation factors) and writes it to the variables those script values read. This is where the crown's bill drops in proportion to estate power.
+- `epbm_cancel_yearly_creep` subtracts the engine's `years_since_game_start` upkeep creep when the `epbm_yearly_creep_disabled` game rule is set.
 
 ### Estate Charging
 
-Estates are charged via `add_gold_to_estate` (which generates/destroys gold rather than transferring from the crown). The amount each estate pays matches the upkeep reduction they provide, so net gold destroyed equals vanilla upkeep.
+Estates are charged via `add_gold_to_estate` with a negative value (`epbm_charge_estate_pay`), which destroys the estate's gold rather than transferring it to the crown. Each estate's charge is the sum of its shared-pool share and its assigned-building costs, scaled by the country charge factor (maintenance burden times inflation, divided by the efficiency divisor). Charging runs monthly for both players and AI; recalculation runs monthly for players and yearly for AI.
 
 ### Production Method Profiles
 
-Each tracked building type has a dedicated maintenance production method that defines its goods profile. These PMs are injected into the building's `possible_production_methods` so the engine always selects them. The goods inputs on each PM represent the maintenance cost profile for that building type.
-
-For shared-pool buildings, goods profiles are stored on pre-allocated pooled locations (a set of 250 game locations reserved at game start). Each unique PM maps to a pooled location via `epbm_profiles`, and per-market price lookups are cached on the same location (`epbm_costs` variable map) to avoid redundant price calculations within a single recalculation cycle.
+Estate-assigned buildings (villas, churches, guild halls, and similar) normally consume no goods, so each is given a dedicated maintenance production method that defines a goods profile. These PMs are defined in `production_methods/epbm_estate_maintenance_pms.txt` and injected into each building's `possible_production_methods` in `building_types/epbm_estate_building_maintenance.txt`. Ordinary economic buildings are priced from their own existing input PMs and need no injected profile.
 
 ### Foreign Buildings
 
-Foreign buildings are iterated via `every_owned_foreign_building` and use the same estate power split as domestic buildings.
+Foreign buildings are iterated with `every_owned_foreign_building` and priced the same way, then routed to the crown or the shared pool (they are not estate-assigned).
+
+### Game Rules
+
+Two game rules are exposed in the new-game setup (`main_menu/common/game_rules/epbm_game_rules.txt`):
+
+- `epbm_baseline_maintenance`: 100% (default), 50%, or 20% of the goods market price. 20% matches the vanilla upkeep fraction.
+- `epbm_yearly_creep`: whether building maintenance rises slightly each year (vanilla behavior) or stays flat (default: disabled).
 
 ## File Structure
 
 ```
 in_game/
   common/
-    auto_modifiers/          Crown upkeep multiplier and offset
-    building_types/          INJECT stubs for estate-assigned and crown buildings
-    estates/                 Per-estate power block upkeep reductions
-    on_action/               Version tracking, rebuild triggers, monthly pulse
-    production_methods/      Maintenance PMs with goods profiles
-    script_values/           Generated dispatch values and manual helpers
-    scripted_effects/        Calculation engine, charging, lifecycle, init
-    scripted_triggers/       Building eligibility checks
-  events/                   Orphan event placeholder
-  gui/shared/               Government tooltip overrides
-  localization/english/     GUI loc strings
+    auto_modifiers/          Crown base rate, yearly-creep cancel, 7 per-estate upkeep-share reductions
+    building_types/          INJECT maintenance PMs onto estate-assigned buildings
+    on_action/               Game-start init and monthly/yearly pulses
+    production_methods/      Maintenance goods profiles for estate-assigned buildings
+    script_values/           Burden/inflation/efficiency factors and per-estate modifier scales
+    scripted_effects/        Calculation engine, charging, lifecycle, blacklist init
+  events/                    Hidden AI/player pulse events and an orphan warning-suppression event
+  gui/shared/                Expense and government tooltip overrides
+  localization/english/      GUI loc strings
 
 loading_screen/
-  common/defines/           Estate upkeep define override
+  common/defines/            NEstate.UPKEEP_PER_BUILDING = 0
 
 main_menu/
   common/
-    game_concepts/           In-game concept explanations
-    modifier_icons/          Custom modifier icons
-    modifier_type_definitions/  Custom modifier type registration
-  gui/shared/               Building tooltip overrides
-  localization/english/     Modifier loc strings
+    game_concepts/           Estate building maintenance concept
+    game_rules/              Baseline-rate and yearly-creep game rules
+    static_modifiers/        Baseline-rate offset modifiers (50% / 20%)
+  gui/shared/                Building tooltip overrides
+  localization/english/      Modifier and game-rule loc strings
 
-tools/
-  epbm_generator/           Code generator for building hooks and init effects
+tools/                       Developer utilities: building/PM parsing (epbm_generator/), save parsing
+                             (parse_save.py), and log analysis. Not part of the runtime; the mod
+                             detects buildings dynamically and ships no generated files.
 ```
-
-### Generator
-
-`tools/epbm_generator/` produces several generated files from a config-driven building list:
-
-- `epbm_generated_init_effects.txt`: pool allocation effects and PM registration
-- `epbm_generated_script_values.txt`: dispatch script values for per-building-type cost lookups
-- `epbm_generated_crown_inject.txt`: crown building INJECT stubs
-
-The generator supports a mod overlay system for cross-mod compatibility patches and has a check mode (`--check`) for CI validation.
 
 ## Version and Compatibility
 
-- Built for Europa Universalis V 1.2.*/1.3.*
-- Save-game safe: can be added to existing saves. Removal should also be safe, though some internal data may linger in the save file.
-- Mods that add new buildings with maintenance production methods need a compatibility patch for estate contribution.
-- Optional submods available for 50% or 20% (vanilla rate) maintenance multipliers.
-
-## Submods
-
-- [50% Building Maintenance](https://steamcommunity.com/sharedfiles/filedetails/?id=3671010689)
-- [20% Building Maintenance (Vanilla)](https://steamcommunity.com/sharedfiles/filedetails/?id=3671010534)
+- Version 4.1.1. Metadata supported game version: 1.3.*.
+- Save-game safe: can be added to an existing save. A version stamp (`epbm_version` / `@epbm_rebuild_version`) forces a full recalculation when the mod updates. Removal should also be safe, though some variables may linger in the save file.
+- Buildings from other mods are priced automatically if they have an input-only production method. An estate-assigned building added by another mod is charged to its estate only if it is given a maintenance production method.
