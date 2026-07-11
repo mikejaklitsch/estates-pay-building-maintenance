@@ -1,17 +1,16 @@
+﻿
 template building_tooltip_detail {
-	TooltipDebugTextBlock = {
-		blockoverride "text" {
-			debug_text = "[Building.GetDebugText]"
-		}
-	}
+	TooltipDebugTextBlock = { blockoverride "text" { debug_text = "[Building.GetDebugText]" } }
 
 	hbox = {
 		layoutpolicy_horizontal = expanding
 		spacing = 10
+
 		widget = { ### EMPLOYMENT PIECHART
 			visible = "[GreaterThan_CFixedPoint(Building.GetLevel, '(CFixedPoint)0')]"
 			size = { 90 90 }
 			using = marker_bg_circle
+
 			tooltipwidget = {
 				SimpleContextualTooltipType = {
 					blockoverride "title_icon" {
@@ -20,9 +19,7 @@ template building_tooltip_detail {
 							texture = "[GetGraphicalCultureTextureForCountryPopType(Building.GetType.GetPopType, Building.GetOwner)]"
 						}
 					}
-					blockoverride "concept_link" {
-						text = "[employed|e]"
-					}
+					blockoverride "concept_link" { text = "[employed|e]" }
 
 					datacontext = "[Building]"
 					textcontext = "BUILDING_EMPLOYMENT_TT"
@@ -31,9 +28,7 @@ template building_tooltip_detail {
 
 			piechart = {
 				parentanchor = center
-				block "piechart_size" {
-					size = { 90% 90% }
-				}
+				block "piechart_size" { size = { 90% 90% } }
 				using = piechart_angles
 
 				icon = {
@@ -47,16 +42,13 @@ template building_tooltip_detail {
 		}
 
 		TooltipListBase = { ### SIDE TABLE
-            TooltipListRowContent = {
-                TooltipManualTableField = {
-                    blockoverride "field_content" {
-                        text_single = {
-                            text = "[employment|e]"
-                        }
-                        expand = {}
-                        text_single = {
-                            raw_text = "[Building.GetEmploymentSize|w] / [Building.GetMaxWorkersRequired|w]"
-                        }
+			TooltipListRowContent = {
+				TooltipManualTableField = {
+					blockoverride "field_content" {
+						text_single = { text = "[employment|e]" }
+						expand = {  }
+						text_single = { raw_text = "[Building.GetEmploymentSize|w] / [Building.GetMaxWorkersRequired|w]" }
+
 						tooltipwidget = {
 							SimpleContextualTooltipType = {
 								blockoverride "title_icon" {
@@ -65,71 +57,74 @@ template building_tooltip_detail {
 										texture = "[GetGraphicalCultureTextureForCountryPopType(Building.GetType.GetPopType, Building.GetOwner)]"
 									}
 								}
-								blockoverride "concept_link" {
-									text = "[employed|e]"
-								}
+								blockoverride "concept_link" { text = "[employed|e]" }
 
 								datacontext = "[Building]"
 								textcontext = "BUILDING_EMPLOYMENT_TT"
 							}
 						}
-                    }
-                }
+					}
+				}
 
-                TooltipManualTableField = {
-                    blockoverride "field_content" {
-                        text_single = {
-                            text = "BUILDING_LEVEL"
-							default_format = "#W"
-                        }
-                        expand = {}
-                        text_single = {
-                            raw_text = "[Building.GetLevel]/[Building.GetMaxLevel|0L]"
-                        }
+				TooltipManualTableField = {
+					blockoverride "field_content" {
+						text_single = { text = "BUILDING_LEVEL" default_format = "#W" }
+						expand = {  }
+						text_single = { raw_text = "[Building.GetLevel]/[Building.GetMaxLevel|0L]" }
+
 						tooltipwidget = {
 							SimpleContextualStringPairTooltipType = {
 								blockoverride "title_icon" {
-									icon = {
-										using = tooltip_title_icon_size
-										texture = "gfx/interface/icons/outliner/categories/buildings.dds"
-									}
+									icon = { using = tooltip_title_icon_size texture = "gfx/interface/icons/outliner/categories/buildings.dds" }
 								}
 								blockoverride "tooltip_title" {
-									ContextualTooltipHeader = {}
-									TooltipLockProgress = {}
+									ContextualTooltipHeader = {  }
+									TooltipLockProgress = {  }
 
-									blockoverride "title_text" {
-										datacontext = "[Building.GetLocation]"
-										text = "BUILDING_LEVEL_MAX_SCRIPT_TITLE"
-									}
+									blockoverride "title_text" { datacontext = "[Building.GetLocation]" text = "BUILDING_LEVEL_MAX_SCRIPT_TITLE" }
 								}
-								blockoverride "concept_link" {
-									text = "[building|e]"
-								}
+								blockoverride "concept_link" { text = "[building|e]" }
 								lowpriotextcontext = "[Building.GetType.GetMaxLevelInformation(Building.GetLocation)]"
 							}
 						}
-                    }
-                }
+					}
+				}
 
 				vbox = {
 					visible = "[Building.IsProducing]"
 					layoutpolicy_horizontal = expanding
 					datamodel = "[DataModelFirst(Building.GetProductionMethods, '(int32)1')]"
+
 					item = {
 						TooltipManualTableField = {
 							blockoverride "field_content" {
-								text_single = {
-									text = "[production_efficiency|e]"
+								text_single = { text = "[production_efficiency|e]" }
+								expand = {  }
+								text_single = { text = "BUILDING_PROD_EFFICIENCY" default_format = "@bold!" }
+								tooltipwidget = { using = building_production_efficiency_tooltip }
+							}
+						}
+					}
+				}
+
+				# Base game establishment ramp (construction progress) — synced from 1.3.10
+				TooltipManualTableField = {
+					visible = "[Building.GetHasEstablishmentRamp]"
+					blockoverride "field_content" {
+						text_single = {
+							layoutpolicy_horizontal = expanding
+							autoresize = no
+							text = "BUILDING_ESTABLISHMENT_LABEL"
+						}
+						text_single = { autoresize = yes raw_text = "[Building.GetEstablishmentProgressFraction|0%]" }
+
+						tooltipwidget = {
+							SimpleContextualStringPairTooltipType = {
+								blockoverride "title_icon" {
+									icon = { using = tooltip_title_icon_size texture = "gfx/interface/icons/flat_icons/building_panel/establishment.dds" }
 								}
-								expand = {}
-								text_single = {
-									text = "BUILDING_PROD_EFFICIENCY"
-									default_format = "@bold!"
-								}
-								tooltipwidget = {
-									using = building_production_efficiency_tooltip
-								}
+								blockoverride "concept_link" { text = "[establishment|e]" }
+								blockoverride "tooltip_textcontext" { textcontext = "[Building.GetEstablishmentTooltip]" }
 							}
 						}
 					}
@@ -137,63 +132,41 @@ template building_tooltip_detail {
 
 				TooltipManualTableField = {
 					visible = "[And(Not(Building.GetType.IsFort), Building.GetType.OnlyEstatesCanBuild)]"
-                    blockoverride "field_content" {
-                        text_single = {
-                            text = "BUILDING_UPKEEP"
-							default_format = "#W"
-                        }
-                        expand = {}
-						icon = {
-							size = { 24 24 }
-							texture = "[GetEstateIcon(Building.GetType.GetEligibleEstate)]"
-						}
-                        text_single = {
-                            raw_text = "#R [Multiply_CFixedPoint(Multiply_CFixedPoint(Building.GetLocation.GetMarket.GetCenterLocation.MakeScope.GetVariableFromVariableMap('epbm_bt_display', Building.GetType.MakeScope).GetValue, Building.GetLevel), Building.GetOwner.MakeScope.GetVariable('epbm_charge_factor').GetValue)|2]#!@expense!"
+					blockoverride "field_content" {
+						text_single = { text = "BUILDING_UPKEEP" default_format = "#W" }
+						expand = {  }
+						icon = { size = { 24 24 } texture = "[GetEstateIcon(Building.GetType.GetEligibleEstate)]" }
+
+						text_single = {
+							raw_text = "#R [Multiply_CFixedPoint(Multiply_CFixedPoint(Building.GetLocation.GetMarket.GetCenterLocation.MakeScope.GetVariableFromVariableMap('epbm_bt_display', Building.GetType.MakeScope).GetValue, Building.GetLevel), Building.GetOwner.MakeScope.GetVariable('epbm_charge_factor').GetValue)|2]#!@expense!"
 							default_format = "#bold"
-                        }
-						tooltipwidget = {
-							using = Building_upkeep_tooltip
 						}
-                    }
-                }
+
+						tooltipwidget = { using = Building_upkeep_tooltip }
+					}
+				}
 
 				TooltipManualTableField = {
 					visible = "[And(Not(Building.GetType.IsFort), Not(Building.GetType.OnlyEstatesCanBuild))]"
-                    blockoverride "field_content" {
-                        text_single = {
-                            text = "BUILDING_UPKEEP"
-							default_format = "#W"
-                        }
-                        expand = {}
-                        text_single = {
-                            raw_text = "#R [Building.GetUpkeep|2]#!@expense!"
-							default_format = "#bold"
-                        }
-						tooltipwidget = {
-							using = Building_upkeep_tooltip
-						}
-                    }
-                }
+					blockoverride "field_content" {
+						text_single = { text = "BUILDING_UPKEEP" default_format = "#W" }
+						expand = {  }
+						text_single = { raw_text = "#R [Building.GetUpkeep|2]#!@expense!" default_format = "#bold" }
+						tooltipwidget = { using = Building_upkeep_tooltip }
+					}
+				}
 
 				TooltipManualTableField = {
 					visible = "[Building.GetType.IsFort]"
-                    blockoverride "field_content" {
-                        text_single = {
-                            text = "BUILDING_UPKEEP"
-							default_format = "#W"
-                        }
-                        expand = {}
-                        text_single = {
-                            raw_text = "#R [Building.GetFortMaintenanceValue|2]#!@expense!"
-							default_format = "#bold"
-                        }
-						tooltipwidget = {
-							using = Building_upkeep_tooltip
-						}
-                    }
-                }
-            }
-        }
+					blockoverride "field_content" {
+						text_single = { text = "BUILDING_UPKEEP" default_format = "#W" }
+						expand = {  }
+						text_single = { raw_text = "#R [Building.GetFortMaintenanceValue|2]#!@expense!" default_format = "#bold" }
+						tooltipwidget = { using = Building_upkeep_tooltip }
+					}
+				}
+			}
+		}
 	}
 
 	TooltipContentSection = {
@@ -203,57 +176,33 @@ template building_tooltip_detail {
 				layoutpolicy_horizontal = expanding
 				spacing = 2
 
-				TooltipTableHeader = {
-					blockoverride "tableheader_text" {
-						text = "ACTIVE_PRODUCTION_METHOD"
-					}
-				}
+				TooltipTableHeader = { blockoverride "tableheader_text" { text = "ACTIVE_PRODUCTION_METHOD" } }
 
 				datacontext = "[ActiveProductionMethod.GetMethod]"
 				datacontext = "[Building.GetLocation.GetOwner]"
 				datacontext = "[Building.GetLocation.GetMarket]"
 
-				hbox = {
-					using = production_method_active
-				}
+				hbox = { using = production_method_active }
 			}
 		}
 	}
 
 	TooltipTextBlock = {
 		visible = "[LessThan_CFixedPoint(Building.GetInputGoodsAccess,'(CFixedPoint)1.0')]"
-		blockoverride "text" {
-			text = "[Building.GetInputGoodsInformation]"
-		}
-		blockoverride "textblock_background_tint"  {
-			modify_texture = {
-				using = color_red_texture
-			}
-		}
+		blockoverride "text" { text = "[Building.GetInputGoodsInformation]" }
+		blockoverride "textblock_background_tint" { modify_texture = { using = color_red_texture } }
 	}
 
 	TooltipTextBlock = {
 		visible = "[Not(GreaterThan_CFixedPoint(Building.GetLocation.GetMarketAccess,'(CFixedPoint)0'))]"
-		blockoverride "text" {
-			text = "BUILDING_LACK_MARKET_ACCESS"
-		}
-		blockoverride "textblock_background_tint"  {
-			modify_texture = {
-				using = color_red_texture
-			}
-		}
+		blockoverride "text" { text = "BUILDING_LACK_MARKET_ACCESS" }
+		blockoverride "textblock_background_tint" { modify_texture = { using = color_red_texture } }
 	}
 
 	TooltipTextBlock = {
 		visible = "[Not(Building.IsOpen)]"
-		blockoverride "text" {
-			text = "[GetToggleBuildingInfo(Building.Self)]"
-		}
-		blockoverride "textblock_background_tint"  {
-			modify_texture = {
-				using = color_red_texture
-			}
-		}
+		blockoverride "text" { text = "[GetToggleBuildingInfo(Building.Self)]" }
+		blockoverride "textblock_background_tint" { modify_texture = { using = color_red_texture } }
 	}
 
 	TooltipStringPairList = {
@@ -265,37 +214,21 @@ template building_tooltip_detail {
 		textcontext = "[Building.GetCountryModifiers]"
 	}
 
-	TooltipTextBlock = {
-		visible = "[Building.IsSubsidized]"
-		blockoverride "text" {
-			text = "[Building.GetSubsidizeInfo]"
-		}
-	}
+	TooltipTextBlock = { visible = "[Building.IsSubsidized]" blockoverride "text" { text = "[Building.GetSubsidizeInfo]" } }
 
-	TooltipTextBlock = {
-		visible = "[Building.ShowHostileInfo]"
-		blockoverride "text" {
-			text = "[Building.GetSubsidizeInfo]"
-		}
-	}
+	TooltipTextBlock = { visible = "[Building.ShowHostileInfo]" blockoverride "text" { text = "[Building.GetSubsidizeInfo]" } }
 
 	TooltipListBase = {
 		visible = "[Not(Building.GetType.OnlyEstatesCanBuild)]"
-		TooltipStringPairList = {
-			textcontext = "[Building.GetMarketInfo]"
-		}
+		TooltipStringPairList = { textcontext = "[Building.GetMarketInfo]" }
+
 		TooltipListRowContent = {
 			visible = "[Building.IsProducing]"
 			TooltipManualTableField = {
 				blockoverride "field_content" {
-					text_single = {
-						text = "TOTAL_POTENTIAL_PROFIT"
-						default_format = "#color_white"
-					}
-					expand = {}
-					text_single = {
-						raw_text = "[Building.GetProfit|2+=L]@gold!"
-					}
+					text_single = { text = "TOTAL_POTENTIAL_PROFIT" default_format = "#color_white" }
+					expand = {  }
+					text_single = { raw_text = "[Building.GetProfit|2+=L]@gold!" }
 				}
 			}
 		}
@@ -308,27 +241,15 @@ template building_tooltip_detail {
 
 	TooltipTextBlock = {
 		visible = "[And(LessThan_CFixedPoint(Building.GetProfit, '(CFixedPoint)0'), Not(Building.IsSubsidized))]"
-		blockoverride "text" {
-			text = "BUILDING_PROFIT_TT_TEXT_UNPROFITABLE"
-		}
+		blockoverride "text" { text = "BUILDING_PROFIT_TT_TEXT_UNPROFITABLE" }
 
-		blockoverride "textblock_background_tint"  {
-			modify_texture = {
-				using = color_red_texture
-			}
-		}
+		blockoverride "textblock_background_tint" { modify_texture = { using = color_red_texture } }
 	}
 
 	TooltipTextBlock = {
 		visible = "[And(LessThanOrEqualTo_CFixedPoint(Building.GetProfit, '(CFixedPoint)0'), Building.IsSubsidized)]"
-		blockoverride "text" {
-			text = "BUILDING_PROFIT_TT_TEXT_UNPROFITABLE_AND_SUBSIDIZED"
-		}
+		blockoverride "text" { text = "BUILDING_PROFIT_TT_TEXT_UNPROFITABLE_AND_SUBSIDIZED" }
 
-		blockoverride "textblock_background_tint"  {
-			modify_texture = {
-				using = color_yellow_texture
-			}
-		}
+		blockoverride "textblock_background_tint" { modify_texture = { using = color_yellow_texture } }
 	}
 }
