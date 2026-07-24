@@ -1,0 +1,16 @@
+﻿# EPBM scripted triggers.
+
+# True if this estate is one of the 7 vanilla types whose auto_modifier
+# scale is tracked by name. Scope: estate.
+
+epbm_is_known_estate = {
+	OR = {
+		estate_type = estate_type:nobles_estate
+		estate_type = estate_type:clergy_estate
+		estate_type = estate_type:burghers_estate
+		estate_type = estate_type:peasants_estate
+		estate_type = estate_type:tribes_estate
+		estate_type = estate_type:dhimmi_estate
+		estate_type = estate_type:cossacks_estate
+	}
+}

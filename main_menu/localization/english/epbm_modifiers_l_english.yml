@@ -1,7 +1,7 @@
 ﻿l_english:
  game_concept_epbm_estate_building_maintenance: "Estate Building Maintenance"
  game_concept_epbm_estate_building_maintenance_desc: "[estates|E] pay a share of [building_maintenance|E] split by [estate_power|E]. [buildings|E] assigned to a specific [estate|E] are charged in full to that estate."
- AUTO_MODIFIER_NAME_epbm_cancel_yearly_creep: "Yearly Maintenance Creep Offset"
+ AUTO_MODIFIER_NAME_epbm_cancel_yearly_creep: "Years Since Game Start Offset"
  AUTO_MODIFIER_NAME_epbm_nobles_upkeep: "Nobility Maintenance Share"
  AUTO_MODIFIER_NAME_epbm_clergy_upkeep: "Clergy Maintenance Share"
  AUTO_MODIFIER_NAME_epbm_burghers_upkeep: "Burghers Maintenance Share"
@@ -9,6 +9,7 @@
  AUTO_MODIFIER_NAME_epbm_tribes_upkeep: "Tribes Maintenance Share"
  AUTO_MODIFIER_NAME_epbm_dhimmi_upkeep: "Dhimmi Maintenance Share"
  AUTO_MODIFIER_NAME_epbm_cossacks_upkeep: "Cossacks Maintenance Share"
+ AUTO_MODIFIER_NAME_epbm_other_upkeep: "Other Estates Maintenance Share"
  rule_epbm_baseline_maintenance: "Estate Building Maintenance"
  setting_epbm_baseline_100: "100%"
  setting_epbm_baseline_100_desc: "Building maintenance costs 100% of the goods market price."

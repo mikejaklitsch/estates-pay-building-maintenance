@@ -13,12 +13,13 @@ epbm_calculate_maintenance = {
 	set_local_variable = { name = epbm_total_cost value = 0 }
 	set_local_variable = { name = epbm_crown_total_cost value = 0 }
 
-	epbm_for_each_estate = { effect = epbm_init_estate_var }
+	if = { limit = { has_variable_map = epbm_estate_costs } clear_variable_map = epbm_estate_costs }
 
-	# Estate buildings: iterate per estate, charge directly to each.
+	# Estate buildings: iterate per estate, accumulate cost per estate into variable map.
 	every_estate = {
 		limit = { estate_type != estate_type:crown_estate }
-		save_temporary_scope_as = epbm_cur_estate
+		save_scope_as = epbm_cur_estate
+		set_local_variable = { name = epbm_cur_estate_cost value = 0 }
 
 		every_building_owned_by_estate = {
 			save_temporary_scope_as = epbm_bldg
@@ -27,7 +28,21 @@ epbm_calculate_maintenance = {
 
 			epbm_price_building = yes
 
-			if = { limit = { local_var:epbm_bldg_cost > 0 } epbm_route_estate_building_cost = yes }
+			if = {
+				limit = { local_var:epbm_bldg_cost > 0 }
+				change_local_variable = { name = epbm_cur_estate_cost add = local_var:epbm_bldg_cost }
+			}
+		}
+
+		if = {
+			limit = { local_var:epbm_cur_estate_cost > 0 }
+			prev = {
+				add_to_variable_map = {
+					name = epbm_estate_costs
+					key = scope:epbm_cur_estate
+					value = local_var:epbm_cur_estate_cost
+				}
+			}
 		}
 	}
 
@@ -65,7 +80,10 @@ epbm_calculate_maintenance = {
 	}
 	else = { set_local_variable = { name = epbm_shared_fraction value = 0 } }
 
+	# Modifier scales: known 7 by name + "other" bucket
 	epbm_for_each_estate = { effect = epbm_compute_modifier_scale }
+
+	epbm_compute_other_modifier_scale = yes
 
 	# Country charge factor for scaling raw goods cost
 	set_variable = {
@@ -80,8 +98,8 @@ epbm_calculate_maintenance = {
 	# Scale shared pool by charge factor
 	change_local_variable = { name = epbm_total_cost multiply = var:epbm_charge_factor }
 
-	epbm_split_by_estate_power = yes
-	epbm_add_estate_building_costs = yes
+	epbm_split_by_estate_power_dynamic = yes
+	epbm_add_estate_building_costs_dynamic = yes
 
 	# Crown costs for tooltip: pool share + scaled crown building costs
 	set_variable = {
@@ -213,22 +231,6 @@ epbm_route_building_cost = {
 }
 
 # ═══════════════════════════════════════════════
-# Route an estate building's cost to its owning estate.
-# Requires scope:epbm_cur_estate from the estate iterator.
-# ═══════════════════════════════════════════════
-
-epbm_route_estate_building_cost = {
-	epbm_for_each_estate = { effect = epbm_route_to_cur_estate }
-}
-
-epbm_route_to_cur_estate = {
-	if = {
-		limit = { scope:epbm_cur_estate = { estate_type = estate_type:$estate$_estate } }
-		change_local_variable = { name = epbm_estate_$estate$ add = local_var:epbm_bldg_cost }
-	}
-}
-
-# ═══════════════════════════════════════════════
 # Foreign buildings: same pricing, crown/shared routing only.
 # ═══════════════════════════════════════════════
 
@@ -250,21 +252,4 @@ epbm_calc_foreign_building_costs = {
 
 		if = { limit = { local_var:epbm_bldg_cost > 0 } epbm_route_building_cost = yes }
 	}
-}
-
-# ═══════════════════════════════════════════════
-# Country: split the shared pool across estates by estate power
-# ═══════════════════════════════════════════════
-
-epbm_split_by_estate_power = {
-	if = { limit = { local_var:epbm_total_cost > 0 } epbm_for_each_estate = { effect = epbm_set_pay_from_power } }
-	else = { epbm_for_each_estate = { effect = epbm_zero_pay } }
-}
-
-# ═══════════════════════════════════════════════
-# Country: fold estate-assigned building costs on top of the split
-# ═══════════════════════════════════════════════
-
-epbm_add_estate_building_costs = {
-	epbm_for_each_estate = { effect = epbm_add_estate_cost }
 }

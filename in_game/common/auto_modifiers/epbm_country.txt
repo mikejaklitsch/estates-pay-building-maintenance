@@ -63,3 +63,8 @@ epbm_cossacks_upkeep = {
 	scales_with = epbm_cossacks_upkeep_scale
 	building_upkeep_multiplier = -1.0
 }
+
+epbm_other_upkeep = {
+	scales_with = epbm_other_upkeep_scale
+	building_upkeep_multiplier = -1.0
+}

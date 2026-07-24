@@ -1,14 +1,5 @@
-﻿# EPBM — charging + display snapshot. Both are 7-way fanouts over the
-# estate-fanout macros in epbm_effects.txt.
-
-# ═══════════════════════════════════════════════
-# Transfer the saved monthly amount to each estate. Scope: country.
-# Reads var:epbm_pay_* (set by calculate_maintenance). Runs monthly.
-# ═══════════════════════════════════════════════
-
-epbm_charge_estates = {
-	epbm_for_each_estate = { effect = epbm_charge_estate_pay }
-}
+﻿# EPBM — display snapshot. Crown uses named vars; estates use variable maps.
+# Modifier snapshots use named vars for the known 7 + "other" bucket.
 
 # ═══════════════════════════════════════════════
 # Snapshot pay vars into show vars so tooltips keep displaying last
@@ -27,7 +18,7 @@ epbm_snapshot_for_display = {
 		set_variable = { name = epbm_prev_crown_bldg value = var:epbm_show_crown_bldg }
 	}
 
-	epbm_for_each_estate = { effect = epbm_snapshot_estate }
+	epbm_snapshot_estates_dynamic = yes
 
 	if = {
 		limit = { has_variable = epbm_crown_pool_cost }
@@ -40,4 +31,9 @@ epbm_snapshot_for_display = {
 	}
 
 	epbm_for_each_estate = { effect = epbm_snapshot_mod }
+
+	if = {
+		limit = { has_variable = epbm_mod_other }
+		set_variable = { name = epbm_show_mod_other value = var:epbm_mod_other }
+	}
 }
