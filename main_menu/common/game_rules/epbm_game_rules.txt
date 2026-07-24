@@ -18,7 +18,7 @@ epbm_baseline_maintenance = {
 }
 
 epbm_yearly_creep = {
-	default = epbm_yearly_creep_enabled
+	default = epbm_yearly_creep_disabled
 
 	epbm_yearly_creep_enabled = { flag = general_rule }
 

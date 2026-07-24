@@ -1,0 +1,14 @@
+﻿# Registers @building_maintenance! for inline use in loc strings
+# (EPBM_ESTATE_MAINT_LABEL). Vanilla has the concept and the texture but no
+# texticon entry for it; unregistered @names render nothing.
+
+texticon = {
+	icon = building_maintenance
+
+	iconsize = {
+		texture = "gfx/interface/icons/flat_icons/building_panel/building_maintenance.dds"
+		size = { 18 18 }
+		offset = { 2 4 }
+		fontsize = 16
+	}
+}
