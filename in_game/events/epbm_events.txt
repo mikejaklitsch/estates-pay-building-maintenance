@@ -1,7 +1,9 @@
 ﻿
 namespace = epbm
 
-# AI monthly charge.
+# Monthly, every country with an active estate. The AI pays the bill from
+# its yearly calculation. The player snapshots, pays last month's bill,
+# and calculates this month's bill.
 
 epbm.1 = {
 	type = country_event
@@ -9,14 +11,18 @@ epbm.1 = {
 	hidden = yes
 	outcome = neutral
 
-	trigger = { is_ai = yes }
+	trigger = { has_global_variable = epbm_version any_active_estate = { exists = yes } }
 
-	immediate = { epbm_charge_estates_dynamic = yes }
+	immediate = {
+		if = { limit = { is_ai = yes } epbm_charge_estates_dynamic = yes }
+		else = { epbm_collect_maintenance = yes }
+	}
 
 	option = { name = "OK" }
 }
 
-# AI yearly calculate.
+# AI yearly calculate. The snapshot moves the new scales into the show
+# vars that the auto_modifiers read.
 
 epbm.2 = {
 	type = country_event
@@ -24,24 +30,13 @@ epbm.2 = {
 	hidden = yes
 	outcome = neutral
 
-	trigger = { is_ai = yes }
+	trigger = {
+		is_ai = yes
+		has_global_variable = epbm_version
+		any_active_estate = { exists = yes }
+	}
 
-	immediate = { epbm_calculate_maintenance = yes }
-
-	option = { name = "OK" }
-}
-
-# Player monthly: snapshot, charge, recalculate.
-
-epbm.3 = {
-	type = country_event
-	title = epbm_hidden_event.t
-	hidden = yes
-	outcome = neutral
-
-	trigger = { is_ai = no }
-
-	immediate = { epbm_collect_maintenance = yes }
+	immediate = { epbm_calculate_maintenance = yes epbm_snapshot_for_display = yes }
 
 	option = { name = "OK" }
 }
@@ -59,31 +54,23 @@ epbm.100 = {
 	trigger = { always = no }
 
 	immediate = {
-		change_variable = { name = epbm_show_crown_pool multiply = 1 }
-		change_variable = { name = epbm_show_crown_bldg multiply = 1 }
-		change_variable = { name = epbm_crown_pool_cost multiply = 1 }
-		change_variable = { name = epbm_crown_bldg_cost multiply = 1 }
-		change_variable = { name = epbm_prev_crown_pool multiply = 1 }
-		change_variable = { name = epbm_prev_crown_bldg multiply = 1 }
-		change_variable = { name = epbm_charge_factor multiply = 1 }
-
-		change_variable = { name = epbm_mod_nobles multiply = 1 }
-		change_variable = { name = epbm_mod_clergy multiply = 1 }
-		change_variable = { name = epbm_mod_burghers multiply = 1 }
-		change_variable = { name = epbm_mod_peasants multiply = 1 }
-		change_variable = { name = epbm_mod_tribes multiply = 1 }
-		change_variable = { name = epbm_mod_dhimmi multiply = 1 }
-		change_variable = { name = epbm_mod_cossacks multiply = 1 }
-		change_variable = { name = epbm_mod_other multiply = 1 }
-
-		change_variable = { name = epbm_show_mod_nobles multiply = 1 }
-		change_variable = { name = epbm_show_mod_clergy multiply = 1 }
+		change_variable = { name = epbm_charge_factor     multiply = 1 }
+		change_variable = { name = epbm_mod_nobles        multiply = 1 }
+		change_variable = { name = epbm_mod_clergy        multiply = 1 }
+		change_variable = { name = epbm_mod_burghers      multiply = 1 }
+		change_variable = { name = epbm_mod_peasants      multiply = 1 }
+		change_variable = { name = epbm_mod_tribes        multiply = 1 }
+		change_variable = { name = epbm_mod_dhimmi        multiply = 1 }
+		change_variable = { name = epbm_mod_cossacks      multiply = 1 }
+		change_variable = { name = epbm_mod_other         multiply = 1 }
+		change_variable = { name = epbm_show_mod_nobles   multiply = 1 }
+		change_variable = { name = epbm_show_mod_clergy   multiply = 1 }
 		change_variable = { name = epbm_show_mod_burghers multiply = 1 }
 		change_variable = { name = epbm_show_mod_peasants multiply = 1 }
-		change_variable = { name = epbm_show_mod_tribes multiply = 1 }
-		change_variable = { name = epbm_show_mod_dhimmi multiply = 1 }
+		change_variable = { name = epbm_show_mod_tribes   multiply = 1 }
+		change_variable = { name = epbm_show_mod_dhimmi   multiply = 1 }
 		change_variable = { name = epbm_show_mod_cossacks multiply = 1 }
-		change_variable = { name = epbm_show_mod_other multiply = 1 }
+		change_variable = { name = epbm_show_mod_other    multiply = 1 }
 
 		add_country_modifier = { modifier = epbm_baseline_50_offset days = 1 }
 		add_country_modifier = { modifier = epbm_baseline_20_offset days = 1 }

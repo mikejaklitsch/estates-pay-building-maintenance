@@ -1,7 +1,9 @@
 ﻿# EPBM — calculation engine. Entry point: epbm_calculate_maintenance.
-# Estate buildings are charged in full to the owning estate via the
-# estate iterator; everything else goes to a shared pool split by
-# estate_power, with government buildings routed to crown.
+# Three loops: the engine exposes estate, domestic, and foreign buildings
+# through separate iterators that do not overlap. Estate buildings are
+# charged in full to the owning estate; all other non-blacklisted
+# buildings go into a shared pool split by estate power. The crown pays
+# its own power share through the engine's building maintenance line.
 # No pre-registration: PM goods are read directly from the engine.
 
 # ═══════════════════════════════════════════════
@@ -11,7 +13,6 @@
 
 epbm_calculate_maintenance = {
 	set_local_variable = { name = epbm_total_cost value = 0 }
-	set_local_variable = { name = epbm_crown_total_cost value = 0 }
 
 	if = { limit = { has_variable_map = epbm_estate_costs } clear_variable_map = epbm_estate_costs }
 
@@ -23,9 +24,6 @@ epbm_calculate_maintenance = {
 
 		every_building_owned_by_estate = {
 			save_temporary_scope_as = epbm_bldg
-			building_type ?= { save_temporary_scope_as = epbm_bt }
-			location ?= { market ?= { save_temporary_scope_as = epbm_mkt } }
-
 			epbm_price_building = yes
 
 			if = {
@@ -46,7 +44,7 @@ epbm_calculate_maintenance = {
 		}
 	}
 
-	# Non-estate buildings: crown and shared pool.
+	# Non-estate buildings: all go to the shared pool.
 	every_owned_building = {
 		limit = {
 			is_opened = yes
@@ -55,78 +53,61 @@ epbm_calculate_maintenance = {
 			}
 			NOT = { building_category = estate_category }
 		}
-
 		save_temporary_scope_as = epbm_bldg
-		building_type ?= { save_temporary_scope_as = epbm_bt }
-		location ?= { market ?= { save_temporary_scope_as = epbm_mkt } }
-
 		epbm_price_building = yes
 
-		if = { limit = { local_var:epbm_bldg_cost > 0 } epbm_route_building_cost = yes }
-	}
-
-	epbm_calc_foreign_building_costs = yes
-
-	# S/(S+C): fraction of non-estate pool that is shared (not crown)
-	if = {
-		limit = { local_var:epbm_total_cost > 0 }
-		set_local_variable = {
-			name = epbm_shared_fraction
-			value = {
-				value = local_var:epbm_total_cost
-				divide = { value = local_var:epbm_total_cost add = local_var:epbm_crown_total_cost }
-			}
+		if = {
+			limit = { local_var:epbm_bldg_cost > 0 }
+			change_local_variable = { name = epbm_total_cost add = local_var:epbm_bldg_cost }
 		}
 	}
-	else = { set_local_variable = { name = epbm_shared_fraction value = 0 } }
+
+	every_owned_foreign_building = {
+		limit = {
+			is_opened = yes
+			NOT = {
+				building_type = { is_key_in_global_variable_map = { name = epbm_blacklist target = this } }
+			}
+			NOT = { building_category = estate_category }
+		}
+		save_temporary_scope_as = epbm_bldg
+		epbm_price_building = yes
+
+		if = {
+			limit = { local_var:epbm_bldg_cost > 0 }
+			change_local_variable = { name = epbm_total_cost add = local_var:epbm_bldg_cost }
+		}
+	}
 
 	# Modifier scales: known 7 by name + "other" bucket
 	epbm_for_each_estate = { effect = epbm_compute_modifier_scale }
 
 	epbm_compute_other_modifier_scale = yes
 
-	# Country charge factor for scaling raw goods cost
-	set_variable = {
-		name = epbm_charge_factor
-		value = {
-			value = epbm_maint_burden
-			multiply = epbm_inflation_factor
-			divide = epbm_efficiency_divisor
-		}
-	}
+	set_variable = { name = epbm_charge_factor value = { value = epbm_base_multiplier divide = epbm_efficiency_divisor } }
 
 	# Scale shared pool by charge factor
 	change_local_variable = { name = epbm_total_cost multiply = var:epbm_charge_factor }
 
-	epbm_split_by_estate_power_dynamic = yes
-	epbm_add_estate_building_costs_dynamic = yes
-
-	# Crown costs for tooltip: pool share + scaled crown building costs
-	set_variable = {
-		name = epbm_crown_pool_cost
-		value = { value = local_var:epbm_total_cost multiply = "estate_power(estate_type:crown_estate)" }
-	}
-	set_variable = {
-		name = epbm_crown_bldg_cost
-		value = { value = local_var:epbm_crown_total_cost multiply = var:epbm_charge_factor }
-	}
+	epbm_split_costs_dynamic = yes
 }
 
 # ═══════════════════════════════════════════════
 # Price one building. Scope: building.
-# Requires scope:epbm_bldg, scope:epbm_bt, scope:epbm_mkt.
-# Finds an input-only PM, gets or computes the per-level base cost,
-# then scales by level and building efficiency (employment fraction).
-# Sets local_var:epbm_bldg_cost.
+# Requires scope:epbm_bldg. Finds an input-only PM, gets or computes the
+# per-level base cost, then scales by level and building efficiency
+# (employment fraction). Sets local_var:epbm_bldg_cost.
 # ═══════════════════════════════════════════════
 
 epbm_price_building = {
 	set_local_variable = { name = epbm_bldg_cost value = 0 }
 
 	random_production_method_of_building = {
+		# The produced_goods check comes first: it is cheaper than the goods
+		# list, and it rejects most production methods.
 		limit = {
-			any_required_goods = { count >= 1 }
 			NOT = { exists = produced_goods }
+			any_required_goods = { count >= 1 }
 			is_available_for = scope:epbm_bldg.owner
 			is_allowed_for = scope:epbm_bldg.owner
 			is_visible_for = scope:epbm_bldg.owner
@@ -135,21 +116,40 @@ epbm_price_building = {
 		save_temporary_scope_as = epbm_pm
 
 		prev = {
-			set_local_variable = { name = epbm_per_level value = 0 }
+			# Saved here, not by the callers: most buildings have no upkeep PM
+			# and never reach this point.
+			building_type ?= { save_temporary_scope_as = epbm_bt }
+			location ?= { market ?= { save_temporary_scope_as = epbm_mkt } }
 
-			# Check cache on market center
+			# Foreign buildings always read building_efficiency as 0. They use
+			# efficiency 1 and do not write the market cache.
+			set_local_variable = { name = epbm_is_domestic value = 0 }
+			set_local_variable = { name = epbm_bldg_eff    value = 1 }
+
+			if = {
+				limit = { is_building_owned_by = location.owner }
+				set_local_variable = { name = epbm_is_domestic value = 1 }
+				set_local_variable = { name = epbm_bldg_eff    value = "location.building_efficiency(scope:epbm_bt)" }
+			}
+
+			set_local_variable = { name = epbm_per_level    value = 0 }
+			set_local_variable = { name = epbm_pm_cache_hit value = 0 }
+
+			# Check cache on market center. A cached 0 is a hit: a PM with
+			# free inputs is not priced again.
 			scope:epbm_mkt = {
 				location = {
 					if = {
 						limit = { has_variable_map = epbm_pm_cache is_key_in_variable_map = { name = epbm_pm_cache target = scope:epbm_pm } }
-						set_local_variable = { name = epbm_per_level value = "variable_map(epbm_pm_cache|scope:epbm_pm)" }
+						set_local_variable = { name = epbm_per_level    value = "variable_map(epbm_pm_cache|scope:epbm_pm)" }
+						set_local_variable = { name = epbm_pm_cache_hit value = 1 }
 					}
 				}
 			}
 
 			# Cache miss: compute from building_goods_input
 			if = {
-				limit = { local_var:epbm_per_level <= 0 }
+				limit = { local_var:epbm_pm_cache_hit = 0 }
 
 				scope:epbm_pm = {
 					every_required_goods = {
@@ -160,9 +160,9 @@ epbm_price_building = {
 					}
 				}
 
-				# Divide out market access and efficiency to recover base per-level cost
+				# Market access lowers goods demanded without changing price paid;
+				# divide it out so the per-level cost reflects the full-access rate.
 				set_local_variable = { name = epbm_loc_access value = "location.market_access" }
-				set_local_variable = { name = epbm_bldg_eff value = "location.building_efficiency(scope:epbm_bt)" }
 
 				if = {
 					limit = { local_var:epbm_loc_access > 0 }
@@ -176,36 +176,39 @@ epbm_price_building = {
 
 				set_local_variable = { name = epbm_per_level value = { value = local_var:epbm_bldg_cost divide = building_level } }
 
-				# Cache the per-level base cost
-				scope:epbm_mkt = {
-					location = {
-						add_to_variable_map = {
-							name = epbm_pm_cache
-							key = scope:epbm_pm
-							value = local_var:epbm_per_level
-						}
-						add_to_variable_map = {
-							name = epbm_bt_costs
-							key = scope:epbm_bt
-							value = local_var:epbm_per_level
-						}
+				# Cache the per-level base cost. An unstaffed or cut-off building
+				# reads 0 inputs, so it must not write a 0 that other buildings
+				# with the same PM would read as a hit.
+				if = {
+					limit = {
+						local_var:epbm_is_domestic = 1
+						local_var:epbm_bldg_eff > 0
+						local_var:epbm_loc_access > 0
+					}
+					scope:epbm_mkt = {
+						location = {
+							add_to_variable_map = {
+								name = epbm_pm_cache
+								key = scope:epbm_pm
+								value = local_var:epbm_per_level
+							}
 
-						if = {
-							limit = { is_key_in_variable_map = { name = epbm_bt_display target = scope:epbm_bt } }
-							remove_from_variable_map = { name = epbm_bt_display key = scope:epbm_bt }
-						}
+							if = {
+								limit = { has_variable_map = epbm_bt_display is_key_in_variable_map = { name = epbm_bt_display target = scope:epbm_bt } }
+								remove_from_variable_map = { name = epbm_bt_display key = scope:epbm_bt }
+							}
 
-						add_to_variable_map = {
-							name = epbm_bt_display
-							key = scope:epbm_bt
-							value = local_var:epbm_per_level
+							add_to_variable_map = {
+								name = epbm_bt_display
+								key = scope:epbm_bt
+								value = local_var:epbm_per_level
+							}
 						}
 					}
 				}
 			}
 
 			# Apply level and efficiency to get actual cost
-			set_local_variable = { name = epbm_bldg_eff value = "location.building_efficiency(scope:epbm_bt)" }
 			set_local_variable = {
 				name = epbm_bldg_cost
 				value = {
@@ -215,41 +218,5 @@ epbm_price_building = {
 				}
 			}
 		}
-	}
-}
-
-# ═══════════════════════════════════════════════
-# Route a non-estate building's cost to crown or shared pool.
-# ═══════════════════════════════════════════════
-
-epbm_route_building_cost = {
-	if = {
-		limit = { building_category = government_category }
-		change_local_variable = { name = epbm_crown_total_cost add = local_var:epbm_bldg_cost }
-	}
-	else = { change_local_variable = { name = epbm_total_cost add = local_var:epbm_bldg_cost } }
-}
-
-# ═══════════════════════════════════════════════
-# Foreign buildings: same pricing, crown/shared routing only.
-# ═══════════════════════════════════════════════
-
-epbm_calc_foreign_building_costs = {
-	every_owned_foreign_building = {
-		limit = {
-			is_opened = yes
-			NOT = {
-				building_type = { is_key_in_global_variable_map = { name = epbm_blacklist target = this } }
-			}
-			NOT = { building_category = estate_category }
-		}
-
-		save_temporary_scope_as = epbm_bldg
-		building_type ?= { save_temporary_scope_as = epbm_bt }
-		location ?= { market ?= { save_temporary_scope_as = epbm_mkt } }
-
-		epbm_price_building = yes
-
-		if = { limit = { local_var:epbm_bldg_cost > 0 } epbm_route_building_cost = yes }
 	}
 }

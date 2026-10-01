@@ -1,5 +1,4 @@
 ﻿# Estates Pay Building Maintenance - On Action Dispatch
-@epbm_rebuild_version = 411
 
 on_game_start = {
 	on_actions = { epbm_on_initialize }
@@ -9,12 +8,16 @@ weather_monthly_pulse = {
 	on_actions = { epbm_on_global_monthly }
 }
 
+# The country events are listed on the engine hooks, not in a nested
+# on_action: the engine checks event triggers in parallel only here.
+# The immediates still run serially.
+
 monthly_country_pulse = {
-	on_actions = { epbm_on_country_monthly }
+	events = { epbm.1 }
 }
 
 yearly_country_pulse = {
-	on_actions = { epbm_on_country_yearly }
+	events = { epbm.2 }
 }
 
 epbm_on_initialize = {
@@ -24,19 +27,7 @@ epbm_on_initialize = {
 }
 
 epbm_on_global_monthly = {
-	effect = { epbm_global_monthly = yes }
-}
-
-epbm_on_country_monthly = {
-	trigger = { has_global_variable = epbm_version any_active_estate = { exists = yes } }
-	events = { epbm.1 epbm.3 }
-}
-
-epbm_on_country_yearly = {
-	trigger = {
-		has_global_variable = epbm_version
-		global_var:epbm_version >= @epbm_rebuild_version
-		any_active_estate = { exists = yes }
+	effect = {
+		epbm_global_monthly = yes
 	}
-	events = { epbm.2 }
 }

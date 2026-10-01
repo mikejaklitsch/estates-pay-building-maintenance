@@ -8,7 +8,8 @@ The crown pays full 100% maintenance cost (the real market price of goods consum
 [*] Each building's maintenance cost is calculated from its production method's goods inputs priced against the local market
 [*] Shared buildings are split across estates proportional to estate power
 [*] 35 estate-assigned buildings (noble villas, parish churches, guild halls, etc.) are charged in full to their owning estate
-[*] Government and military buildings (royal garden, forts, council halls, etc.) are crown-funded and excluded from estate maintenance
+[*] Government buildings (royal garden, council halls, etc.) are part of the shared pool like any other building
+[*] Forts and walls are excluded from estate maintenance
 [*] Foreign buildings use the same estate power split as domestic buildings
 [/list]
 

@@ -1,0 +1,8 @@
+﻿# Game start only: cancels building upkeep for two months, so AI countries
+# do not declare bankruptcy before the estate refunds apply. The setup file
+# 99_epbm_starting_maintenance.txt gives it to every start-time country.
+
+epbm_starting_maintenance = {
+	game_data = { category = country }
+	building_upkeep_multiplier = -1.0
+}

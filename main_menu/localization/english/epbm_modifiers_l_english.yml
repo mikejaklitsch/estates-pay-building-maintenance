@@ -24,3 +24,4 @@
  setting_epbm_yearly_creep_disabled_desc: "Building maintenance stays flat over time. The vanilla yearly increase is cancelled."
  STATIC_MODIFIER_NAME_epbm_baseline_50_offset: "Reduced Building Maintenance"
  STATIC_MODIFIER_NAME_epbm_baseline_20_offset: "Vanilla Building Maintenance"
+ STATIC_MODIFIER_NAME_epbm_starting_maintenance: "Starting Maintenance Relief"

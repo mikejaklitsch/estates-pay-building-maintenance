@@ -24,9 +24,9 @@ epbm_cancel_yearly_creep = {
 }
 
 # ═══════════════════════════════════════════════
-# Estate upkeep reductions. Each estate's scale is its fraction of total
-# building cost (shared pool power share + assigned buildings), computed
-# during epbm_calculate_maintenance. Scaled by maint_burden and creep.
+# Estate upkeep reductions. Each estate's scale is its estate power times
+# epbm_base_multiplier, computed during epbm_calculate_maintenance. The
+# crown keeps its own power share of the engine's building upkeep.
 # ═══════════════════════════════════════════════
 
 epbm_nobles_upkeep = {

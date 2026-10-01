@@ -1,31 +1,21 @@
-﻿# Fraction of building maintenance borne by the estate system (0.0-1.0).
-
+﻿
 epbm_efficiency_divisor = {
 	value = 1
-	add = "modifier:building_upkeep_efficiency"
+	add = modifier:building_upkeep_efficiency
 	min = 0.5
 }
 
-epbm_maint_burden = {
-	if = { limit = { has_game_rule = epbm_baseline_50 } value = 0.5 }
-	else_if = { limit = { has_game_rule = epbm_baseline_20 } value = 0.2 }
-	else = { value = 1.0 }
-}
+# Sum of all non-estate building_upkeep_multiplier sources.
+# Mirrors exactly what the engine accumulates from country_base_values
+# (0.2 vanilla + 0.8 inject = 1.0), game rule offsets, and yearly creep.
+# The creep adds to the base; it does not scale it. Used both for
+# auto_modifier scales and for charge_factor.
 
-epbm_crown_total_display = {
-	value = 0
+epbm_base_multiplier = {
+	value = 1.0
 
-	if = { limit = { has_variable = epbm_crown_pool_cost } add = var:epbm_crown_pool_cost }
-
-	if = { limit = { has_variable = epbm_crown_bldg_cost } add = var:epbm_crown_bldg_cost }
-}
-
-# Yearly creep correction: the engine's years_since_game_start static
-# modifier adds building_upkeep_multiplier = 0.001 per year. Scale our
-# reductions to cover the inflated base when creep is enabled.
-
-epbm_inflation_factor = {
-	value = 1
+	if      = { limit = { has_game_rule = epbm_baseline_50 } subtract = 0.5 }
+	else_if = { limit = { has_game_rule = epbm_baseline_20 } subtract = 0.8 }
 
 	if = {
 		limit = { NOT = { has_game_rule = epbm_yearly_creep_disabled } }
