@@ -34,12 +34,15 @@ END_DATE = "1337.6.1"
 
 _HERE = Path(__file__).resolve().parent
 _MOD_ROOT = _HERE.parents[1]
-OUTPUT = _MOD_ROOT / "main_menu" / "setup" / "start" / "99_epbm_starting_maintenance.txt"
+# 1.4 moved the start setup from setup/start to setup/<start year>, named by
+# the setup_folder of the bookmark in main_menu/common/bookmarks.
+SETUP_FOLDER = "1337"
+OUTPUT = _MOD_ROOT / "main_menu" / "setup" / SETUP_FOLDER / "99_epbm_starting_maintenance.txt"
 
 
 def vanilla_countries_setup() -> Path:
     for game in VANILLA_GAME_CANDIDATES:
-        p = game / "main_menu" / "setup" / "start" / "10_countries.txt"
+        p = game / "main_menu" / "setup" / SETUP_FOLDER / "10_countries.txt"
         if p.exists():
             return p
     sys.exit("vanilla 10_countries.txt not found; add its install to VANILLA_GAME_CANDIDATES")

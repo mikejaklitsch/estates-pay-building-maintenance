@@ -114,6 +114,12 @@ INJECT:local_schools = {
 	possible_production_methods = { epbm_local_schools_maintenance }
 }
 
+# 1.4: new peasants estate building. Same profile as local_schools.
+
+INJECT:bardic_school = {
+	possible_production_methods = { epbm_bardic_school_maintenance }
+}
+
 INJECT:local_newspaper = {
 	possible_production_methods = { local_newspaper_maintenance }
 }
@@ -130,10 +136,6 @@ INJECT:cinque_port = {
 
 INJECT:gallowglass_sept = {
 	possible_production_methods = { epbm_gallowglass_sept_maintenance }
-}
-
-INJECT:pirate_stronghold = {
-	possible_production_methods = { epbm_pirate_stronghold_maintenance }
 }
 
 INJECT:corporation_of_london = {

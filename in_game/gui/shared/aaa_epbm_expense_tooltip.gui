@@ -22,7 +22,7 @@ template ExpenseSettingTooltip {
 			raw_text = "[AddTextIf(MaintenanceSetting.IsBureaucracy, bureaucracy)|e][AddTextIf(Not(MaintenanceSetting.IsBureaucracy), MaintenanceSetting.GetName)]"
 		}
 		blockoverride "tooltip_content" {
-			# ─── BEGIN BASE GAME CONTENT (synced to 1.3.10) ──────────────────
+			# ─── BEGIN BASE GAME CONTENT (synced to vanilla 1.4.0-beta) ─────────────────────
 
 			TooltipStringPairList = {
 				name = "GetFortsLimitInfo"
@@ -74,7 +74,7 @@ template ExpenseSettingTooltip {
 
 			TooltipStringPairList = {
 				name = "GetModifierDesc"
-				visible = "[MaintenanceSetting.ShowModifier]"
+				visible = "[And(MaintenanceSetting.ShowModifier, Not(MaintenanceSetting.IsCourt))]"
 				textcontext = "[MaintenanceSetting.GetModifierDesc]"
 			}
 
@@ -106,9 +106,10 @@ template ExpenseSettingTooltip {
 				textcontext = "[MaintenanceSetting.GetExpenseBreakdown]"
 			}
 
-			# EPBM FIX: removed vanilla GetCourtSpendingCostDetails block
-			# (visible IsCourt) — it duplicated the modifier list already shown
-			# by GetModifierDesc above. Re-verify/keep removed on each resync.
+			TooltipStringPairList = {
+				visible = "[MaintenanceSetting.IsCourt]"
+				textcontext = "[GetPlayer.GetCourtSpendingCostDetails]"
+			}
 
 			TooltipScrolledStringPairList = {
 				name = "GetExpenseBreakdown"
@@ -157,7 +158,52 @@ template ExpenseSettingTooltip {
 				textcontext = "[GetPlayer.GetBuildingUpkeepGoodsCostInfo]"
 			}
 
-			# ─── END BASE GAME CONTENT (synced to 1.3.10) ────────────────────
+			TooltipScrolledStringPairList = {
+				visible = "[MaintenanceSetting.IsBureaucracy]"
+				blockoverride "block_scrollarea" { maximumsize = { -1 150 } }
+				blockoverride "block_title" { text = "BUREAUCRACY_AVAILABLE_ALTERNATIVES_TITLE" }
+				textcontext = "[GetPlayer.GetAvailableBureaucraciesDesc]"
+			}
+
+			caesar_plotline = {
+				visible = "[MaintenanceSetting.HasMaintenanceHistory]"
+				layoutpolicy_horizontal = expanding
+				size = { -1 180 }
+
+				blockoverride "header" { text = "MAINTENANCE_LAST_YEAR" }
+				blockoverride "line_color" {
+					color = {
+						.9
+						.9
+						.9
+						1.0
+					}
+				}
+				blockoverride "line_plotpoints" { plotpoints = "[MaintenanceSetting.GetMaintenanceHistoryTrend]" }
+				blockoverride "tooltip" {
+					marker = {
+						text_single = {
+							position = { 0 -20 }
+							autoresize = yes
+
+							margin_right = 4
+							margin_top = 4
+							align = left|nobaseline
+							using = bg_number_container_bckg
+							default_format = "#t"
+
+							text = "[MaintenanceSetting.GetMaintenanceDataPointValue(PlotLine.GetSnappedIndexNearMouse)]"
+						}
+					}
+				}
+				blockoverride "maxvalue" { raw_text = "[MaintenanceSetting.GetMaxMaintenanceForPlot|1]@gold!" }
+				blockoverride "minvalue" { raw_text = "[MaintenanceSetting.GetMinMaintenanceForPlot|1]@gold!" }
+				blockoverride "startdate" { text = "[MaintenanceSetting.GetMaintenanceHistoryStartDate]" }
+				blockoverride "enddate" { text = "[MaintenanceSetting.GetMaintenanceHistoryEndDate]" }
+				blockoverride "multiitem" {  }
+			}
+
+			# ─── END BASE GAME CONTENT ───────────────────────────────────────
 
 			# ═════════════════════════════════════════════════════════════════
 			# ─── MOD EXTENSION POINTS (composable across mods) ───

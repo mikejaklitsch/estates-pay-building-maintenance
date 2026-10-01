@@ -191,6 +191,12 @@ epbm_local_schools_maintenance = {
 	category = building_maintenance
 }
 
+epbm_bardic_school_maintenance = {
+	paper = 0.1
+	cloth = 0.2
+	category = building_maintenance
+}
+
 local_newspaper_maintenance = {
 	paper = 0.1
 	category = building_maintenance
@@ -215,15 +221,6 @@ epbm_gallowglass_sept_maintenance = {
 	weaponry = 0.05
 	leather = 0.05
 	cloth = 0.02
-	category = building_maintenance
-}
-
-epbm_pirate_stronghold_maintenance = {
-	naval_supplies = 0.1
-	weaponry = 0.05
-	liquor = 0.1
-	firearms = 0.1
-	lumber = 0.1
 	category = building_maintenance
 }
 

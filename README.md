@@ -28,7 +28,7 @@ The crown's upkeep rate and the estate reductions are applied through country-sc
 - `INJECT:country_base_values` raises `building_upkeep_multiplier` by 0.8 (vanilla 0.2 to 1.0), so the crown pays the full goods price by default. The `epbm_baseline_50` / `epbm_baseline_20` game rules apply an offsetting static modifier (`-0.5` / `-0.8`) to bring the rate back to 50% or 20%.
 - Seven auto modifiers (`epbm_nobles_upkeep` through `epbm_cossacks_upkeep`), one per estate, each apply `building_upkeep_multiplier = -1.0` scaled by a per-estate script value. An eighth auto modifier, `epbm_other_upkeep`, covers estates added by other mods. The calculation engine computes each estate's scale (its estate power times `epbm_base_multiplier`) and writes it to the variables those script values read. The AI and the player both snapshot these scales after each calculation. This is where the crown's bill drops in proportion to estate power.
 - `epbm_cancel_yearly_creep` subtracts the engine's `years_since_game_start` upkeep creep when the `epbm_yearly_creep_disabled` game rule is set.
-- `epbm_starting_maintenance` (`building_upkeep_multiplier = -1.0`) is given to every start-time country from 1337.4.1 to 1337.6.1 by the setup file `main_menu/setup/start/99_epbm_starting_maintenance.txt`. The estate refunds do not apply for the first month or two, and without this relief many nations declare bankruptcy on day 1.
+- `epbm_starting_maintenance` (`building_upkeep_multiplier = -1.0`) is given to every start-time country from 1337.4.1 to 1337.6.1 by the setup file `main_menu/setup/1337/99_epbm_starting_maintenance.txt` (1.3 used `setup/start`; 1.4 names the folder by the bookmark's `setup_folder`). The estate refunds do not apply for the first month or two, and without this relief many nations declare bankruptcy on day 1.
 
 ### Estate Charging
 
@@ -72,7 +72,7 @@ main_menu/
     game_concepts/           Estate building maintenance concept
     game_rules/              Baseline-rate and yearly-creep game rules
     static_modifiers/        Baseline-rate offset modifiers (50% / 20%), starting maintenance relief
-  setup/start/               Generated: starting maintenance relief for every start-time country
+  setup/1337/                Generated: starting maintenance relief for every start-time country
   gui/shared/                Building tooltip overrides
   localization/english/      Modifier and game-rule loc strings
 
@@ -85,6 +85,6 @@ tools/                       Developer utilities: building/PM parsing (epbm_gene
 
 ## Version and Compatibility
 
-- Version 4.3.0. Metadata supported game version: 1.3.*.
+- Version 4.4.0. Metadata supported game version: 1.4.*. The last 1.3 release is 4.3.0 (git tag `v1.3.11`).
 - Save-game safe: can be added to an existing save. A version stamp (`epbm_version` / `@epbm_rebuild_version`) forces a full recalculation when the mod updates. Removal should also be safe, though some variables may linger in the save file.
 - Buildings from other mods are priced automatically if they have an input-only production method. An estate-assigned building added by another mod is charged to its estate only if it is given a maintenance production method.
